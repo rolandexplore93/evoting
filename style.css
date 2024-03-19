@@ -1,3 +1,11 @@
+:root {
+    --primary-green: #4CAF50;
+    --primary-white: #FFFFFF;
+    --off-white: #FAF9F6;
+    --navy-blue: #003366;
+    --light-grey: #D4D4D4;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -21,11 +29,20 @@ html {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    height: 100px;
-    background-color: #f3f3f3;
+    height: 50px;
+    background-color: var(--primary-green);
+    color: var(--primary-white);
+    position: sticky;
+    top: 0;
 }
 
-.header .logo, .header .election-result {
+a {
+    color: var(--primary-white);
+    text-decoration: none;
+}
+
+.header .logo,
+.header .election-result {
     padding: 0 20px;
 }
 
@@ -39,20 +56,21 @@ html {
     margin: 0 10px;
 }
 
-.header nav ul li a{
-    color: #333;
+.header nav ul li a {
+    color: var(--primary-white);
     text-decoration: none;
 }
 
 .main {
     flex-grow: 1;
     display: flex;
-    background: #fff;
+    background-color: var(--off-white);
 }
 
 .main-content {
     flex: 3;
     display: flex;
+    flex-direction: column;
     text-align: center;
     justify-content: center;
     align-items: center;
@@ -60,10 +78,34 @@ html {
     height: 100%;
 }
 
+.slidecontent {
+    overflow: hidden;
+    position: relative;
+}
+
+.slidecontenttext {
+    position: relative;
+    white-space: nowrap;
+    will-change: transform;
+    animation: scrolling-text 10s linear infinite;
+    /* animation: name duration timing-function delay iteration-count direction fill-mode; */
+}
+
+@keyframes scrolling-text {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-100%);
+    }
+}
+
 .sidebar {
     flex: 1;
     padding: 10px;
     border-left: 1px solid #ddd;
+    background-color: var(--light-grey);
+    color: var(--navy-blue);
 }
 
 .footer {
@@ -71,7 +113,8 @@ html {
     justify-content: center;
     align-items: center;
     height: 50px;
-    background: #ddd;
+    background-color: var(--primary-green);
+    color: var(--primary-white);
 }
 
 .mybutton {
@@ -83,15 +126,19 @@ html {
     padding: 7px 16px;
     min-height: 36px;
     min-width: 36px;
-    color: #202223;
-    background: #ffffff;
+    color: var(--primary-white);
+    background: var(--primary-green);;
     border-radius: 4px;
     font-weight: 500;
     font-size: 14px;
     box-shadow: rgba(0, 0, 0, 0.05) 0px 1px 0px 0px;
 }
 
+/* #click-to-vote {
+} */
+
 .mybutton:hover {
-    background-color: #f6f6f7;
+    background-color: var(--navy-blue);
     outline: 1px solid transparent;
+    color: var(--light-grey);
 }

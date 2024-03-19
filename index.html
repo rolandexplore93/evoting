@@ -9,32 +9,28 @@
 </head>
 <body>
   <div class="container">
-    <div class="header">
-      <div class="logo"><span class="fi fi-ng"></span> NEEV</div>
-      <nav>
-        <ul>
-          <li><a href="#">Home</a></li>
-          <li><a href="#">Admin</a></li>
-          <li><a href="#">Voter</a></li>
-        </ul>
-      </nav>
-      <div><a href="#">Election Results</a></div>
-    </div>
+    <page-header></page-header>
     <div class="main">
       <div class="main-content">
+        <div class="slidecontent">
+          <p class="slidecontenttext">This is Electronic Voting System</p>
+        </div>
         <img class="flag" src="./images/nigeria-flag.png" alt="Nigeria-flag" style="max-width: 100%; height: auto" />
       </div>
       <div class="sidebar">
         <h3 style="text-decoration: underline">News Updates</h3>
         <h4>Upcoming Election Countdown</h4>
-        <p>Presidential Election 2024: Time left: ...</p>
+        <p>Presidential Election 2024: Time left: 35 days 12 hours 15 mins</p>
         <div>
           <p>Election is live</p>
-          <button class="mybutton">Click here to VOTE</button>
+          <a id="click-to-vote" href="./user.html"><button class="mybutton">Click here to VOTE</button></a>
         </div>
       </div>
     </div>
     <div class="footer">&copy; NEEV. All rights reserved.</div>
   </div>
+
+
+  <script src="./script.js"></script>
 </body>
 </html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evoting - Naija Electronic Voting System (NEVS)</title>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./user.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <page-header></page-header>
+        <div class="main">
+            <div id="form">
+                <div id="login-or-signup">
+                    <button onclick="showLoginForm()">Login</button>
+                    <button onclick="showSignupForm()">Sign up</button>
+                </div>
+
+                <div id="login">
+                    <input type="email" placeholder="Email">
+                    <input type="password" placeholder="Password">
+                    <button id="go-to-useraccount">Login</button>
+                    <a href="#">Forget password? Click Reset Password</a>
+                    <a href="#" onclick="showSignupForm()">Click here to Register if you don't have an account</a>
+                </div>
+
+                <div id="signup" style="display: none;">
+                    <input type="text" placeholder="Enter NIN number">
+                    <input type="text" placeholder="Surname">
+                    <input type="text" placeholder="Firstname">
+                    <input type="text" placeholder="Other names">
+                    <input type="date" name="dob" id="dob">
+                    <input type="email" placeholder="Email">
+                    <input type="password" placeholder="Password">
+                    <button>Upload ID</button>
+                    <button>Upload Selfie (plain background only)</button>
+                    <button onclick="register()">Register</button>
+                    <a href="#" onclick="showLoginForm()">Already registered? Click here to Login</a>
+                </div>
+
+                <div id="signup-success" class="modal">
+                    <div class="modal-content">
+                        <p>Account created successfully. Please login and verify your email and phone number.</p>
+                        <p>Once your profile is verified and approved, your voting ID will be generated.</p>
+                        <button id="go-to-login">Go to login</button>
+                        <button id="go-to-profile">Go to my profile</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">&copy; NEEV. All rights reserved.</div>
+    </div>
+    <script src="./script.js"></script>
+    <script src="./user.js"></script>
+</body>
+
+</html>
