@@ -24,8 +24,8 @@
                     <input type="email" placeholder="Email">
                     <input type="password" placeholder="Password">
                     <button id="go-to-useraccount">Login</button>
-                    <a href="#">Forget password? Click Reset Password</a>
-                    <a href="#" onclick="showSignupForm()">Click here to Register if you don't have an account</a>
+                    <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
+                    <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
                 </div>
 
                 <div id="signup" style="display: none;">
@@ -47,7 +47,22 @@
                     </label>
                     <button>Upload Selfie (plain background only)</button>
                     <button onclick="register()">Register</button>
-                    <a href="#" onclick="showLoginForm()">Already registered? Click here to Login</a>
+                    <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>
+                </div>
+
+                <div id="reset-password" style="display: none;">
+                    <p style="text-align: center; text-decoration: underline; color: #003366;">Reset Password</p>
+                    <input type="email" placeholder="Email">
+                    <p style="text-align: center;">or</p>
+                    <input type="text" placeholder="Phone number" disabled>
+                    <button onclick="showResetPasswordSuccess()">Submit</button>
+                    <p>If you know your login details, <a href="#" onclick="showLoginForm()">click here to Login</a></p>
+                    <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
+                </div>
+
+                <div id="reset-password-success" style="display: none;">
+                    <p style="text-align: center; color: #003366;">Password reset link has been sent to your email/password.</p>
+                    <button onclick="showLoginForm()">OK</button>
                 </div>
 
                 <div id="signup-success" class="modal">

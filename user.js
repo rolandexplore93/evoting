@@ -2,12 +2,25 @@ function showLoginForm() {
     document.getElementById('signup').style.display = 'none';
     document.getElementById('login').style.display = 'block';
     document.getElementById('signup-success').style.display = 'none';
+    document.getElementById('reset-password').style.display = 'none';
+    document.getElementById('reset-password-success').style.display = 'none';
 }
 
 function showSignupForm() {
     document.getElementById('login').style.display = 'none';
     document.getElementById('signup').style.display = 'block';
     document.getElementById('signup-success').style.display = 'none';
+    document.getElementById('reset-password').style.display = 'none';
+    document.getElementById('reset-password-success').style.display = 'none';
+}
+
+function showResetPassword () {
+    document.getElementById('reset-password').style.display = 'block';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('signup').style.display = 'none';
+    document.getElementById('signup-success').style.display = 'none';
+    document.getElementById('login-or-signup').style.display = 'none';
+    document.getElementById('reset-password-success').style.display = 'none';
 }
 
 document.getElementById('go-to-useraccount').onclick = function () {
@@ -22,6 +35,15 @@ function register() {
 
 function showSignupSuccess() {
     document.getElementById('signup-success').style.display = 'block';
+}
+
+function showResetPasswordSuccess() {
+    document.getElementById('reset-password-success').style.display = 'block';
+    document.getElementById('reset-password').style.display = 'none';
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('signup').style.display = 'none';
+    document.getElementById('signup-success').style.display = 'none';
+    document.getElementById('login-or-signup').style.display = 'none';
 }
 
 

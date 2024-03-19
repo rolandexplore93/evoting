@@ -16,7 +16,7 @@ input[type="email"],
 input[type="password"],
 input[type="text"] {
     display: block;
-    width: 90%;
+    width: 95%;
     margin: 10px auto;
     padding: 10px;
 }
@@ -30,10 +30,10 @@ button {
 }
 
 a {
-    display: block;
     text-align: center;
-    margin: 10px auto;
     cursor: pointer;
+    color: var(--navy-blue);
+    text-decoration: underline;
 }
 
 .modal {
@@ -54,7 +54,7 @@ a {
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 400px;
 }
 
 #form {
@@ -63,9 +63,5 @@ a {
     margin: auto;
     padding: 20px;
     background: #fff;
-  }
-
-  a {
-    color: var(--navy-blue);
-    text-decoration: none;
 }
+
