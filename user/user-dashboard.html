@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Evoting - Naija Electronic Voting System (NEVS)</title>
     <link rel="stylesheet" href=".././style.css" />
+    <link rel="stylesheet" href="./user-dashboard.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
 </head>
 
@@ -19,22 +20,67 @@
                 </div>
                 <div>
                     <p>ID CARD</p>
-                    <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px"><span>&#8987</span>
+                    <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px">
+                    <span>&#8987</span>
                 </div>
                 <div class="user-details">
                     <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span>&#10004</span></p>
-                    <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
-                    <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
-                    <p>Other names: <input type="text" name="" id="" value="Mark" disabled></p>
-                    <p>Date of Birth: <input type="date" name="" id="" value="01/10/1960" disabled></p>
-                    <p>Age: <input type="number" name="" id="" value="64" disabled></p>
-                    <p>Gender: <input type="text" name="" id="" value="Male" disabled></p>
-                    <p>State: <input type="text" name="" id="" value="Lagos" disabled></p>
-                    <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
-                    <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span>&#10008</span></p>
-                    <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span>&#8987</span></p>
+                    <div>
+                        <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
+                        <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
+                    </div>
+                    <div>
+                        <p>Other names: <input type="text" name="" id="" value="Mark" disabled></p>
+                        <p>Gender: <input type="text" name="" id="" value="Male" disabled></p>
+                    </div>
+                    <div>
+                        <p>Date of Birth: <input type="date" name="" id="" value="01/10/1960" disabled></p>
+                        <p>Age: <input type="number" name="" id="" value="64" disabled></p>
+                    </div>
+                    <div>
+                        <p>State: <input type="text" name="" id="" value="Lagos" disabled></p>
+                        <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
+                    </div>
+                    <div style="display: flex;">
+                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span>&#10008</span></p>
+                        <button class="mybutton">Verify Email</button>
+                    </div>
+                    <div style="display: flex;">
+                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span>&#8987</span></p>
+                        <button class="mybutton">Verify Phone number</button>
+                    </div>
+                    <div id="verification-modal" class="modal">
+                        <div class="verify-email-content">
+                            <p>Enter the verification code sent to your email</p>
+                            <input type="text" name="" id=""></p>
+                            <button id="go-to-login">Verify</button>
+                        </div>
+                        <div class="verify-email-success">
+                            <p>Email verified successfully</p>
+                            <button id="go-to-dashboard">Done</button>
+                        </div>
+                        <div class="verify-email-error">
+                            <p>Email verification code is incorrect</p>
+                            <button id="go-to-email-otp">Try again</button>
+                            <button id="go-to-dashboard">Cancel</button>
+                        </div>
+                        <div class="verify-phone-content">
+                            <p>Enter the verification code sent to your phone number</p>
+                            <input type="text" name="" id=""></p>
+                            <button id="go-to-login">Verify</button>
+                        </div>
+                        <div class="verify-phoneno-success">
+                            <p>Phone number verified successfully</p>
+                            <button id="go-to-dashboard">Done</button>
+                        </div>
+                        <div class="verify-phoneno-error">
+                            <p>Phone number verification code is incorrect</p>
+                            <button id="go-to-phoneno-otp">Try again</button>
+                            <button id="go-to-dashboard">Cancel</button>
+                        </div>
+                    </div>
                 </div>
-                <button>Edit Profile</button>
+                <button class="mybutton">Edit Profile</button>
             </div>
             <div class="main-content">
                 <userpage-header></userpage-header>

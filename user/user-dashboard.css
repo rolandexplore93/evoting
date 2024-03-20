@@ -1,0 +1,15 @@
+.user-details > div p {
+    /* border: 1px solid red; */
+    margin: 3px 0;
+}
+
+.user-details > div {
+    margin: 5px 0;
+}
+
+input[type="email"],
+input[type="text"] {
+    width: 60%;
+    margin: 0px auto;
+    padding: 2px;
+}

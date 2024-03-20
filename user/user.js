@@ -25,6 +25,7 @@ function showResetPassword () {
 
 document.getElementById('go-to-useraccount').onclick = function () {
     alert('Authenticating and redirecting to user profile...');
+    window.location = '/user/user-dashboard.html';
 }
 
 function register() {
