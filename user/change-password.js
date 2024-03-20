@@ -3,7 +3,7 @@ function showChangePasswordSuccessOrError() {
     // document.getElementById('change-password-successful').style.display = 'none';
     // document.getElementById('change-password-successful').style.display = 'none';
 
-    let x=2;
+    let x=1;
     if (x == 1) {
         document.getElementById('change-password-successful').style.display = 'block';
         document.getElementById('change-password-error').style.display = 'none';
