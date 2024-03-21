@@ -107,3 +107,5 @@ function openTab(e, tabTitle){
     document.getElementById(tabTitle).style.display = 'block';
     e.currentTarget.className += " active";
 }
+
+document.getElementById('defaultPage').click()
