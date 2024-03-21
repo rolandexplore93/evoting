@@ -62,14 +62,14 @@
                     <p style="text-align: center; color: #003366;">Password reset link has been sent to your email/password.</p>
                     <button onclick="showLoginForm()">OK</button>
                 </div>
-
-                <div id="signup-success" class="modal">
-                    <div class="modal-content">
-                        <p>Account created successfully. Please login and verify your email and phone number.</p>
-                        <p>Once your profile is verified and approved, your voting ID will be generated.</p>
-                        <button id="go-to-login">Go to login</button>
-                        <button id="go-to-profile">Go to my profile</button>
-                    </div>
+            </div>
+            <div id="signup-success" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>Account created successfully. Please login and verify your email and phone number.</p>
+                    <p>Once your profile is verified and approved, your voting ID will be generated.</p>
+                    <button class="mybutton" id="go-to-login" style="position: relative; right: 0;">Login</button>
+                    <!-- <button id="go-to-profile">Go to my profile</button> -->
                 </div>
             </div>
         </div>

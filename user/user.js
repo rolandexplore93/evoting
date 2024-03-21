@@ -1,26 +1,34 @@
+const signup = document.getElementById('signup');
+const login = document.getElementById('login');
+const signupSuccess = document.getElementById('signup-success');
+const resetPassword = document.getElementById('reset-password');
+const resetPasswordSucsess = document.getElementById('reset-password-success');
+const loginOrSignup = document.getElementById('login-or-signup');
+const form = document.getElementById('form');
+
 function showLoginForm() {
-    document.getElementById('signup').style.display = 'none';
-    document.getElementById('login').style.display = 'block';
-    document.getElementById('signup-success').style.display = 'none';
-    document.getElementById('reset-password').style.display = 'none';
-    document.getElementById('reset-password-success').style.display = 'none';
+    signup.style.display = 'none';
+    login.style.display = 'block';
+    signupSuccess.style.display = 'none';
+    resetPassword.style.display = 'none';
+    resetPasswordSucsess.style.display = 'none';
 }
 
 function showSignupForm() {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'block';
-    document.getElementById('signup-success').style.display = 'none';
-    document.getElementById('reset-password').style.display = 'none';
-    document.getElementById('reset-password-success').style.display = 'none';
+    login.style.display = 'none';
+    signup.style.display = 'block';
+    signupSuccess.style.display = 'none';
+    resetPassword.style.display = 'none';
+    resetPasswordSucsess.style.display = 'none';
 }
 
 function showResetPassword () {
-    document.getElementById('reset-password').style.display = 'block';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'none';
-    document.getElementById('signup-success').style.display = 'none';
-    document.getElementById('login-or-signup').style.display = 'none';
-    document.getElementById('reset-password-success').style.display = 'none';
+    resetPassword.style.display = 'block';
+    login.style.display = 'none';
+    signup.style.display = 'none';
+    signupSuccess.style.display = 'none';
+    loginOrSignup.style.display = 'none';
+    resetPasswordSucsess.style.display = 'none';
 }
 
 document.getElementById('go-to-useraccount').onclick = function () {
@@ -29,38 +37,45 @@ document.getElementById('go-to-useraccount').onclick = function () {
 }
 
 function register() {
-    document.getElementById('signup').style.display = 'none';
-    document.getElementById('signup-success').style.display = 'block';
-    showSignupSuccess();
+    // signup.style.display = 'none';
+    signupSuccess.style.display = 'block';
+    form.style.display = 'none';
+    // showSignupSuccess();
 }
 
-function showSignupSuccess() {
-    document.getElementById('signup-success').style.display = 'block';
-}
+// function showSignupSuccess() {
+//     signupSuccess.style.display = 'block';
+// }
 
 function showResetPasswordSuccess() {
-    document.getElementById('reset-password-success').style.display = 'block';
-    document.getElementById('reset-password').style.display = 'none';
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('signup').style.display = 'none';
-    document.getElementById('signup-success').style.display = 'none';
-    document.getElementById('login-or-signup').style.display = 'none';
+    resetPasswordSucsess.style.display = 'block';
+    resetPassword.style.display = 'none';
+    login.style.display = 'none';
+    signup.style.display = 'none';
+    signupSuccess.style.display = 'none';
+    loginOrSignup.style.display = 'none';
 }
 
 
 document.getElementById('go-to-login').onclick = function () {
-    document.getElementById('signup-success').style.display = 'none';
+    signupSuccess.style.display = 'none';
+    form.style.display = 'block';
+    login.style.display = 'block';
     showLoginForm();
 }
 
 // When the user clicks on "Go to my profile", authenticate and redirect user to user profile
-document.getElementById('go-to-profile').onclick = function () {
-    alert('Authenticating and redirecting to user profile...');
-}
+// document.getElementById('go-to-profile').onclick = function () {
+//     alert('Authenticating and redirecting to user profile...');
+// }
+const modal = document.getElementsByClassName('modal')[0];
+console.log(modal)
+const modalContent = document.getElementsByClassName('modal-content');
 
-window.onclick = function (event) {
-    const modal = document.getElementById('signup-success');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
+const closeModal = document.getElementsByClassName('close')[0];
+closeModal.onclick = function() {
+    login.style.display = 'block';
+    modal.style.display = 'none';
+    form.style.display = 'block';
+    showLoginForm();
 }

@@ -5,14 +5,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Evoting - Naija Electronic Voting System (NEVS)</title>
-    <link rel="stylesheet" href=".././style.css" />
+    <link rel="stylesheet" href="../style.css" />
     <link rel="stylesheet" href="./user-dashboard.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
 </head>
 
 <body>
     <div class="container">
-        <div class="main">
+        <div class="main" id="main">
             <div class="sidebar">
                 <div>
                     <p>Profile photo</p>
@@ -21,10 +21,10 @@
                 <div>
                     <p>ID CARD</p>
                     <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px">
-                    <span>&#8987</span>
+                    <span class="pending">&#8987</span>
                 </div>
                 <div class="user-details">
-                    <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span>&#10004</span></p>
+                    <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span class="verified">&#10004</span></p>
                     <div>
                         <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
                         <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
@@ -42,57 +42,56 @@
                         <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
                     </div>
                     <div style="display: flex;">
-                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span>&#10008</span></p>
-                        <button class="mybutton">Verify Email</button>
+                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span class="not-verified">&#10008</span></p>
+                        <button class="mybutton" onclick="verifyEmail()">Verify Email</button>
                     </div>
                     <div style="display: flex;">
-                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span>&#8987</span></p>
-                        <button class="mybutton">Verify Phone number</button>
-                    </div>
-                    <div id="verification-modal" class="modal">
-                        <div class="verify-email-content">
-                            <p>Enter the verification code sent to your email</p>
-                            <input type="text" name="" id=""></p>
-                            <button id="go-to-login">Verify</button>
-                        </div>
-                        <div class="verify-email-success">
-                            <p>Email verified successfully</p>
-                            <button id="go-to-dashboard">Done</button>
-                        </div>
-                        <div class="verify-email-error">
-                            <p>Email verification code is incorrect</p>
-                            <button id="go-to-email-otp">Try again</button>
-                            <button id="go-to-dashboard">Cancel</button>
-                        </div>
-                        <div class="verify-phone-content">
-                            <p>Enter the verification code sent to your phone number</p>
-                            <input type="text" name="" id=""></p>
-                            <button id="go-to-login">Verify</button>
-                        </div>
-                        <div class="verify-phoneno-success">
-                            <p>Phone number verified successfully</p>
-                            <button id="go-to-dashboard">Done</button>
-                        </div>
-                        <div class="verify-phoneno-error">
-                            <p>Phone number verification code is incorrect</p>
-                            <button id="go-to-phoneno-otp">Try again</button>
-                            <button id="go-to-dashboard">Cancel</button>
-                        </div>
+                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span class="pending">&#8987</span></p>
+                        <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone number</button>
                     </div>
                 </div>
                 <button class="mybutton">Edit Profile</button>
             </div>
+
             <div class="main-content">
                 <userpage-header></userpage-header>
-
             </div>
-
-
+        </div>
+        <div id="verification-modal" class="modal">
+            <div id="verify-email-content" class="modal-content">
+                <p>Enter the verification code sent to your email</p>
+                <input type="text" name="" id=""></p>
+                <button id="verify-email-otp">Verify</button>
+            </div>
+            <div id="verify-email-success" class="modal-content">
+                <p>Email verified successfully</p>
+                <button id="otp-email-success">Done</button>
+            </div>
+            <div id="verify-email-error" class="modal-content">
+                <p>Email verification code is incorrect</p>
+                <button id="otp-email-error">Try again</button>
+                <button id="go-to-dashboard">Cancel</button>
+            </div>
+            <div id="verify-phone-content" class="modal-content">
+                <p>Enter the verification code sent to your phone number</p>
+                <input type="text" name="" id=""></p>
+                <button id="verify-phone-otp">Verify</button>
+            </div>
+            <div id="verify-phoneno-success" class="modal-content">
+                <p>Phone number verified successfully</p>
+                <button id="otp-phone-success">Done</button>
+            </div>
+            <div id="verify-phoneno-error" class="modal-content">
+                <p>Phone number verification code is incorrect</p>
+                <button id="otp-phone-error">Try again</button>
+                <button id="go-to-dashboard-now">Cancel</button>
+            </div>
         </div>
         <page-footer></page-footer>
     </div>
 
     <script src=".././script.js"></script>
+    <script src="./user-dashboard.js"></script>
 </body>
 
 </html>
