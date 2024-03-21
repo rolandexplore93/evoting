@@ -13,6 +13,7 @@
 <body>
     <div class="container">
         <div class="main" id="main">
+            <!-- Sidebar content tab -->
             <div class="sidebar">
                 <div>
                     <p>Profile photo</p>
@@ -52,11 +53,26 @@
                 </div>
                 <button class="mybutton">Edit Profile</button>
             </div>
-
-            <div class="main-content">
-                <userpage-header></userpage-header>
+            <!-- Main content tab -->
+            <div class="main-content" id="main-content">
+                <div class="user-header">
+                    <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEEV</a></div>
+                    <nav class="tab">
+                        <ul>
+                            <li><a class="tablinks active" onclick="openTab(event, 'Dashboard')">Dashboard</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Election')">Elections</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Election-Results')">Election Results</a></li>
+                        </ul>
+                    </nav>
+                    <Button>Logout</Button>
+                </div>
+                <!-- Tab contents -->
+                <div class="tabcontent" id="Dashboard">Dashboard content</div>
+                <div class="tabcontent" id="Election">Election cotnent</div>
+                <div class="tabcontent" id="Election-Results">Election-Results cotnent</div>
             </div>
         </div>
+        <!-- Modal layouts -->
         <div id="verification-modal" class="modal">
             <div id="verify-email-content" class="modal-content">
                 <p>Enter the verification code sent to your email</p>

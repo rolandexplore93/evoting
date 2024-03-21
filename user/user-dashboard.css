@@ -47,11 +47,82 @@ input[type="text"] {
     width: 600px;
 }
 
-
-#verification-modal {
-    /* display: none; */
-}
+/* #verification-modal {
+    display: none;
+} */
 
 #verification-modal > div {
     display: none;
 }
+
+/* Main content */
+/* Header layout */
+/* .main-content {
+    border: 1px solid red;
+} */
+
+#main-content {
+    justify-content:flex-start;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 50px;
+    background-color: var(--primary-green);
+    color: var(--primary-white);
+    position: sticky;
+    top: 0px;
+    border: 1px solid red;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+a {
+    color: var(--primary-white);
+    text-decoration: none;
+}
+
+.user-header .logo,
+.user-header > Button {
+    padding: 0 20px;
+}
+
+/* Tabs styles */
+.tab {
+    overflow: hidden;
+}
+
+.user-header nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.user-header nav ul li {
+    margin: 0 10px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.user-header nav ul li a {
+    color: var(--primary-white);
+    text-decoration: none;
+}
+
+.user-header nav ul li:hover {
+    background-color: rgb(240, 222, 202);
+}
+
+.user-header nav ul li a.active {
+    background-color: var(--primary-white);
+    color: var(--primary-green);
+}
+
+.tabcontent {
+    display: none;
+}
+
+
