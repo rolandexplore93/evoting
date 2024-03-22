@@ -109,3 +109,10 @@ function openTab(e, tabTitle){
 }
 
 document.getElementById('defaultPage').click()
+
+// Copy VOTING ID 
+function clickToCopyVotingId() {
+    const copyValue = document.getElementById('voting-id').innerHTML;
+    navigator.clipboard.writeText(copyValue);
+    alert("Copied " + copyValue);
+}

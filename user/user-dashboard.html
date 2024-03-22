@@ -67,9 +67,26 @@
                     <Button>Logout</Button>
                 </div>
                 <!-- Tab contents -->
-                <div class="tabcontent" id="Dashboard">Dashboard content</div>
-                <div class="tabcontent" id="Election">Election cotnent</div>
-                <div class="tabcontent" id="Election-Results">Election-Results cotnent</div>
+                <div class="tabcontent-wrapper">
+                    <div class="tabcontent" id="Dashboard">
+                        <table>
+                            <tr>
+                              <th>Title</th>
+                              <th>Value</th>
+                              <th>Action</th>
+                            </tr>
+                            <tr>
+                              <td>VOTING ID</td>
+                              <td id="voting-id">232123213</td>
+                              <td>
+                                <button onclick="clickToCopyVotingId('voting-id')">Click to Copy NIN</button>
+                              </td>
+                            </tr>
+                          </table>
+                    </div>
+                    <div class="tabcontent" id="Election">Election content</div>
+                    <div class="tabcontent" id="Election-Results">Election-Results content</div>
+                </div>
             </div>
         </div>
         <!-- Modal layouts -->
