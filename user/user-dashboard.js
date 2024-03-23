@@ -113,7 +113,14 @@ document.getElementById('defaultPage').click()
 function clickToCopyVotingId() {
     const copyValue = document.getElementById('voting-id').innerHTML;
     navigator.clipboard.writeText(copyValue);
-    alert("Copied " + copyValue);
+
+    document.getElementById('copy-voting-id').textContent = 'Voting ID Copied';  
+    document.getElementById('copy-voting-id').classList.add('copy-clipboard');
+
+    setTimeout(() => {
+        document.getElementById('copy-voting-id').classList.remove('copy-clipboard');
+        document.getElementById('copy-voting-id').textContent = 'Copy Voting Id';  
+    }, 600)
 }
 
 // Dummy data voting simulation
@@ -122,9 +129,9 @@ const voter = {
     votingId: '232123213',
     hasVoted: false,
     votedElections: { 
-        "General1": false,
-        "General2": true, 
-        "General3": false
+        "GeneralElection": false,
+        "StateElection": true, 
+        "LGAElection": false
     }
 };
 
@@ -189,7 +196,7 @@ function handleElectionSelection(electionSelected) {
     if (voter.votedElections[electionSelected]) {
         showStep('nevs-voter-already-voted')
     } else {
-        if (electionSelected == 'General1') {
+        if (electionSelected == 'GeneralElection') {
             showStep('nevs-PRESIDENT') // Open Presidential election
         }
     }

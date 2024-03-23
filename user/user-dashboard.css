@@ -175,3 +175,12 @@ button {
 .election-tab {
     display: none;
 }
+
+.copy-clipboard {
+    background-color: #4CAF50;
+    padding: 3px;
+    color: #fff;
+    outline: 0;
+    border: 0;
+    border-radius: 3px;
+}

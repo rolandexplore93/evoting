@@ -85,7 +85,7 @@
                                 <td>VOTING ID</td>
                                 <td id="voting-id">232123213</td>
                                 <td>
-                                    <button onclick="clickToCopyVotingId('voting-id')">Click to Copy NIN</button>
+                                    <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')">Copy Voting Id</button>
                                 </td>
                             </tr>
                         </table>
@@ -136,9 +136,9 @@
                             <label for="electionSelection">Select Election:</label>
                             <select id="electionSelection">
                                 <option value="">Select...</option>
-                                <option value="General1">General1</option>
-                                <option value="General2">General2</option>
-                                <option value="General3">General3</option>
+                                <option value="GeneralElection">General Election</option>
+                                <option value="StateElection">State Election</option>
+                                <option value="LGAElection">LGA Election</option>
                             </select>
                             <button id="confirmElection" onclick="confirmElection()">Confirm Election</button>
                         </div>
