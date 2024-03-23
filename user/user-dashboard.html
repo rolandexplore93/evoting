@@ -25,7 +25,8 @@
                     <span class="pending">&#8987</span>
                 </div>
                 <div class="user-details">
-                    <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span class="verified">&#10004</span></p>
+                    <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span
+                            class="verified">&#10004</span></p>
                     <div>
                         <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
                         <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
@@ -43,11 +44,13 @@
                         <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
                     </div>
                     <div style="display: flex;">
-                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span class="not-verified">&#10008</span></p>
+                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span
+                                class="not-verified">&#10008</span></p>
                         <button class="mybutton" onclick="verifyEmail()">Verify Email</button>
                     </div>
                     <div style="display: flex;">
-                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span class="pending">&#8987</span></p>
+                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span
+                                class="pending">&#8987</span></p>
                         <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone number</button>
                     </div>
                 </div>
@@ -56,12 +59,15 @@
             <!-- Main content tab -->
             <div class="main-content" id="main-content">
                 <div class="user-header">
-                    <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEEV</a></div>
+                    <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEEV</a>
+                    </div>
                     <nav class="tab">
                         <ul>
-                            <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a>
+                            </li>
                             <li><a class="tablinks" onclick="openTab(event, 'Election')">Elections</a></li>
-                            <li><a class="tablinks" onclick="openTab(event, 'Election-Results')">Election Results</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Election-Results')">Election Results</a>
+                            </li>
                         </ul>
                     </nav>
                     <Button>Logout</Button>
@@ -71,20 +77,174 @@
                     <div class="tabcontent" id="Dashboard">
                         <table>
                             <tr>
-                              <th>Title</th>
-                              <th>Value</th>
-                              <th>Action</th>
+                                <th>Title</th>
+                                <th>Value</th>
+                                <th>Action</th>
                             </tr>
                             <tr>
-                              <td>VOTING ID</td>
-                              <td id="voting-id">232123213</td>
-                              <td>
-                                <button onclick="clickToCopyVotingId('voting-id')">Click to Copy NIN</button>
-                              </td>
+                                <td>VOTING ID</td>
+                                <td id="voting-id">232123213</td>
+                                <td>
+                                    <button onclick="clickToCopyVotingId('voting-id')">Click to Copy NIN</button>
+                                </td>
                             </tr>
-                          </table>
+                        </table>
                     </div>
-                    <div class="tabcontent" id="Election">Election content</div>
+                    <div class="tabcontent" id="Election">
+                        <h1>Elections 2024</h1>
+                        <!-- Go to election panel -->
+                        <div class="" id="nevs-start-election-page">
+                            <button onclick="goToElections()" id="start-election">Start Election</button>
+                        </div>
+                        <!-- When profile is not yet approved -->
+                        <div class="election-tab" id="nevs-profile-not-verified">
+                            <p>Your profile has not yet been verified.</p>
+                            <button onclick="goToElectionPage()">OK</button>
+                        </div>
+                        <!-- Profile approved. Voter choose language -->
+                        <div class="election-tab" id="nevs-choose-language">
+                            <label for="language">Choose Language:</label>
+                            <select id="language">
+                                <option value="English">English</option>
+                                <option value="Yoruba">Yoruba</option>
+                                <option value="Hausa">Hausa</option>
+                                <option value="igbo">Igbo</option>
+                                <option value="pidgin">Pidgin</option>
+                            </select>
+                            <button onclick="enterVotingId()">Next</button>
+                        </div>
+                        <!-- Voter enter voting id and validate it -->
+                        <div class="election-tab" id="nevs-enter-voting-id">
+                            <input type="text" id="votingID" placeholder="Enter Voting ID">
+                            <button onclick="validateVotingId()">Submit</button>
+                        </div>
+                        <!-- Voting id is not correct -->
+                        <div class="election-tab" id="nevs-voting-id-not-valid">
+                            <p>Voting Id is not correct and not linked to your account</p>
+                            <button onclick="ReEnterVotingId()">Try Again</button>
+                            <button onclick="goToElectionPage()">Quit</button>
+                        </div>
+                        <!-- Correct voting id. Show election T&C -->
+                        <div class="election-tab" id="nevs-election-conditions">
+                            <p>Election conditions and warning text...</p>
+                            <input type="checkbox" id="agreeConditions" name="agreeConditions" value="agreeConditions">
+                            <label for="agreeConditions">I agree this terms and conditions</label>
+                            <button id="startVoting" onclick="startVoting()" disabled>Start Voting</button>
+                        </div>
+                        <!-- Start election voting process -->
+                        <div class="election-tab" id="nevs-select-election">
+                            <label for="electionSelection">Select Election:</label>
+                            <select id="electionSelection">
+                                <option value="">Select...</option>
+                                <option value="General1">General1</option>
+                                <option value="General2">General2</option>
+                                <option value="General3">General3</option>
+                            </select>
+                            <button id="confirmElection" onclick="confirmElection()">Confirm Election</button>
+                        </div>
+                        <!-- Voter cannot vote twice -->
+                        <div class="election-tab" id="nevs-voter-already-voted">
+                            <p>You have already voted.</p>
+                            <button onclick="goToElectionPage()">Ok</button>
+                            <button onclick="goToResults()">See Results</button>
+                        </div>
+                        <!-- Voting activities / President election -->
+                        <div class="election-tab" id="nevs-PRESIDENT">
+                            <h2>PRESIDENTIAL Election</h2>
+                            <form id="PRESIDENT">
+                                <table>
+                                    <tr>
+                                        <th>Party</th>
+                                        <th>Party Logo</th>
+                                        <th>Candidate Name</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr>
+                                        <td>P1</td>
+                                        <td>P1 Logo</td>
+                                        <td>Roland</td>
+                                        <td>Roland Image</td>
+                                        <td><input type="radio" name="PRESIDENTVote" value="Roland"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>P2</td>
+                                        <td>P2 Logo</td>
+                                        <td>Orobola</td>
+                                        <td>Orobola Image</td>
+                                        <td><input type="radio" name="PRESIDENTVote" value="Orobola"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>P3</td>
+                                        <td>P3 Logo</td>
+                                        <td>Oguns</td>
+                                        <td>Oguns Image</td>
+                                        <td><input type="radio" name="PRESIDENTVote" value="Oguns"></td>
+                                    </tr>
+                                </table>
+                                <button type="button" id="votePRESIDENT" onclick="voteCandidate()">Vote</button>
+                            </form>
+                        </div>
+                        <div class="election-tab" id="nevs-confirm-vote">
+                            <p>Confirm your vote for PRESIDENT?</p>
+                            <button id="changePRESIDENTVote" onclick="changeVote()">Change Vote</button>
+                            <button id="confirmPRESIDENTVote" onclick="goToNextElection()">Yes</button>
+                        </div>
+                        <!-- Senate election -->
+                        <div class="election-tab" id="nevs-SENATE">
+                            <h2>SENATE Election</h2>
+                            <form id="SENATE">
+                                <table>
+                                    <tr>
+                                        <th>Party</th>
+                                        <th>Party Logo</th>
+                                        <th>Candidate Name</th>
+                                        <th>Image</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    <tr>
+                                        <td>P1</td>
+                                        <td>P1 Logo</td>
+                                        <td>Charles</td>
+                                        <td>Charles Image</td>
+                                        <td><input type="radio" name="SENATEVote" value="Roland"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>P2</td>
+                                        <td>P2 Logo</td>
+                                        <td>Mary</td>
+                                        <td>Mary Image</td>
+                                        <td><input type="radio" name="SENATEVote" value="Orobola"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>P3</td>
+                                        <td>P3 Logo</td>
+                                        <td>AY</td>
+                                        <td>AY Image</td>
+                                        <td><input type="radio" name="SENATEVote" value="Oguns"></td>
+                                    </tr>
+                                </table>
+                                <button type="button" id="voteSENATE" onclick="voteCandidateSen()">Vote</button>
+                            </form>
+                        </div>
+                        <div class="election-tab" id="nevs-confirm-vote-sen">
+                            <p>Confirm your vote for SENATE?</p>
+                            <button id="changeSENATEVote" onclick="changeVoteSen()">Change Vote</button>
+                            <button id="confirmSENATEVote" onclick="votingCompleted()">Yes</button>
+                        </div>
+                        <!-- Successful voting -->
+                        <div class="election-tab" id="nevs-voting-successful">
+                            <p>VOTING SUCCESSFUL</p>
+                            <button onclick="goToDashboard()">Ok</button>
+                            <button onclick="goToResults()">See Results</button>
+                        </div>
+                        <div class="election-tab"></div>
+                        <div class="election-tab"></div>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <hr>
+                    </div>
                     <div class="tabcontent" id="Election-Results">Election-Results content</div>
                 </div>
             </div>
