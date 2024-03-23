@@ -15,35 +15,35 @@ function verifyEmail() {
 }
 
 // emailotp enter code
-verifyEmailOTP.onclick = function() {
+verifyEmailOTP.onclick = function () {
     modal.style.display = 'block';
     verifyEmailContent.style.display = 'none';
     verifyEmailSuccess.style.display = 'block';
 }
 
 //emailotp error
-verifyEmailOTP.onclick = function() {
+verifyEmailOTP.onclick = function () {
     modal.style.display = 'block';
     verifyEmailContent.style.display = 'none';
     verifyEmailError.style.display = 'block';
 }
 
 //emailotp success done
-document.getElementById('otp-email-success').onclick = function(){
+document.getElementById('otp-email-success').onclick = function () {
     modal.style.display = 'none';
     verifyEmailContent.style.display = 'none';
     verifyEmailSuccess.style.display = 'none';
 }
 
 //emailotp error try again
-document.getElementById('otp-email-error').onclick = function(){
+document.getElementById('otp-email-error').onclick = function () {
     modal.style.display = 'block';
     verifyEmailContent.style.display = 'block';
     verifyEmailError.style.display = 'none';
 }
 
 //emailotp error cancel page
-document.getElementById('go-to-dashboard').onclick = function(){
+document.getElementById('go-to-dashboard').onclick = function () {
     modal.style.display = 'none';
     verifyEmailContent.style.display = 'none';
     verifyEmailError.style.display = 'none';
@@ -55,42 +55,42 @@ function verifyPhoneNumber() {
 }
 
 // phoneno enter code
-verifyPhoneOTP.onclick = function() {
+verifyPhoneOTP.onclick = function () {
     modal.style.display = 'block';
     verifyPhoneContent.style.display = 'none';
     verifyPhonenoSuccess.style.display = 'block';
 }
 
 //phoneno otp error
-verifyPhoneOTP.onclick = function() {
+verifyPhoneOTP.onclick = function () {
     modal.style.display = 'block';
     verifyPhoneContent.style.display = 'none';
     verifyPhonenoError.style.display = 'block';
 }
 
 // phoneno success done
-document.getElementById('otp-phone-success').onclick = function(){
+document.getElementById('otp-phone-success').onclick = function () {
     modal.style.display = 'none';
     verifyPhoneContent.style.display = 'none';
     verifyPhonenoSuccess.style.display = 'none';
 }
 
 //phoneno otp error try again
-document.getElementById('otp-phone-error').onclick = function(){
+document.getElementById('otp-phone-error').onclick = function () {
     modal.style.display = 'block';
     verifyPhoneContent.style.display = 'block';
     verifyPhonenoError.style.display = 'none';
 }
 
 //phoneno otp error cancel page
-document.getElementById('go-to-dashboard-now').onclick = function(){
+document.getElementById('go-to-dashboard-now').onclick = function () {
     modal.style.display = 'none';
     verifyPhoneContent.style.display = 'none';
     verifyPhonenoError.style.display = 'none';
 }
 
 // Tab functionality
-function openTab(e, tabTitle){
+function openTab(e, tabTitle) {
     var index, tabContent, tabLinks;
 
     tabContent = document.getElementsByClassName('tabcontent');
@@ -109,17 +109,18 @@ function openTab(e, tabTitle){
 
 document.getElementById('defaultPage').click()
 
+
 // Copy VOTING ID 
 function clickToCopyVotingId() {
     const copyValue = document.getElementById('voting-id').innerHTML;
     navigator.clipboard.writeText(copyValue);
 
-    document.getElementById('copy-voting-id').textContent = 'Voting ID Copied';  
+    document.getElementById('copy-voting-id').textContent = 'Voting ID Copied';
     document.getElementById('copy-voting-id').classList.add('copy-clipboard');
 
     setTimeout(() => {
         document.getElementById('copy-voting-id').classList.remove('copy-clipboard');
-        document.getElementById('copy-voting-id').textContent = 'Copy Voting Id';  
+        document.getElementById('copy-voting-id').textContent = 'Copy Voting Id';
     }, 600)
 }
 
@@ -128,9 +129,9 @@ const voter = {
     hasVotingId: true,
     votingId: '232123213',
     hasVoted: false,
-    votedElections: { 
+    votedElections: {
         "GeneralElection": false,
-        "StateElection": true, 
+        "StateElection": true,
         "LGAElection": false
     }
 };
@@ -175,12 +176,12 @@ function ReEnterVotingId() {
 }
 
 // Checkbox confirmation: Agree to conditions and start voting
-document.getElementById('agreeConditions').addEventListener('change', function(){
+document.getElementById('agreeConditions').addEventListener('change', function () {
     document.getElementById('startVoting').disabled = !this.checked;
 });
 
 // Select election activities
-function startVoting(){
+function startVoting() {
     showStep('nevs-select-election')
 };
 
@@ -203,24 +204,24 @@ function handleElectionSelection(electionSelected) {
 };
 
 // Vote for President
-function voteCandidate () {
+function voteCandidate() {
     showStep('nevs-confirm-vote');
 }
 
-function changeVote () {
+function changeVote() {
     showStep('nevs-PRESIDENT');
 }
 
-function goToNextElection () {
+function goToNextElection() {
     showStep('nevs-SENATE');
 }
 
 // Vote of Senate
-function voteCandidateSen () {
+function voteCandidateSen() {
     showStep('nevs-confirm-vote-sen');
 }
 
-function changeVoteSen () {
+function changeVoteSen() {
     showStep('nevs-SENATE');
 }
 
@@ -245,3 +246,6 @@ function showStep(stepId) {
     // Show the targeted step
     document.getElementById(stepId).style.display = 'block';
 }
+
+
+

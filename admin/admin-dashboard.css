@@ -1,0 +1,88 @@
+* {
+    box-sizing: border-box;
+}
+
+/* Main content */
+/* Header layout */
+/* .main-content {
+    border: 1px solid red;
+} */
+
+#main-content {
+    justify-content: flex-start;
+    border: 1px solid red;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    height: 50px;
+    background-color: var(--primary-green);
+    color: var(--primary-white);
+    position: sticky;
+    top: 0px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+a {
+    color: var(--primary-white);
+    text-decoration: none;
+}
+
+.user-header .logo,
+.user-header>Button {
+    padding: 0 20px;
+}
+
+/* Tabs styles */
+.tab {
+    overflow: hidden;
+}
+
+.user-header nav ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+.user-header nav ul li {
+    margin: 0 10px;
+    padding: 0;
+    cursor: pointer;
+}
+
+.user-header nav ul li a {
+    color: var(--primary-white);
+    text-decoration: none;
+}
+
+.user-header nav ul li:hover {
+    background-color: rgb(240, 222, 202);
+}
+
+.user-header nav ul li a.active {
+    background-color: var(--primary-white);
+    color: var(--primary-green);
+}
+
+.tabcontent {
+    display: none;
+}
+
+/* Styling tab content pages */
+.tabcontent-wrapper {
+    /* border: 1px solid red; */
+    margin-top: 30px;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+/* Dashboard tab */
+/* Add party tab */
+/* Create Election tab */
+/* Add Candidates tab */
+/* Voters tab */
+/* Approve vote tab */
