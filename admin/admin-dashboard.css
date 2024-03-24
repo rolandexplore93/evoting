@@ -88,6 +88,24 @@ a {
     border: 2px solid blue;
 } */
 /* Add party tab */
+#Add-Party {
+    text-align: center;
+    padding: 20px;
+    color: red;
+}
+
+#addPartyForm, #partyAddedSuccess {
+    margin-top: 20px;
+}
+
+input[type="text"], input[type="file"] {
+    margin: 10px 0;
+    display: block;
+}
+
+button {
+    cursor: pointer;
+}
 /* Create Election tab */
 /* Add Candidates tab */
 /* Voters tab */

@@ -51,8 +51,46 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tabcontent" id="Add-Party">Add-Party</div>
-                    <div class="tabcontent" id="Create-Election">Create-Election</div>
+                    <div class="tabcontent" id="Add-Party">
+                        <button onclick="showAddPartyForm()" id="addPartyButton">Add Party</button>
+                        <div id="addPartyForm" style="display:none;">
+                            <input type="text" id="partyName" placeholder="Party Name">
+                            <input type="text" id="partyAcronym" placeholder="Party Acronym">
+                            <input type="file" id="partyLogo">
+                            <button onclick="addParty()">Add</button>
+                        </div>
+                        <div id="partyAddedSuccess" style="display:none;">
+                            <p>Party added successfully!</p>
+                            <button onclick="goToAddParty()">OK</button>
+                        </div>
+                    </div>
+                    <div class="tabcontent" id="Create-Election">
+                        <button onclick="showCreateElectionForm()" id="createElectionTag">Create Election</button>
+                        <div id="createElectionForm" style="display:none;">
+                            <select id="electionCategory">
+                                <option value="Gen1">Gen1</option>
+                                <option value="Gen2">Gen2</option>
+                                <option value="Gen3">Gen3</option>
+                            </select>
+                            <select id="electionType">
+                                <option value="Pres1">Pres1</option>
+                                <option value="Sen1">Sen1</option>
+                                <option value="HOR1">HOR1</option>
+                            </select>
+                            <select id="selectParty">
+                                <option value="P1">P1</option>
+                                <option value="P2">P2</option>
+                                <option value="P3">P3</option>
+                            </select>
+                            <input type="datetime-local" id="openDateTime">
+                            <input type="datetime-local" id="closeDateTime">
+                            <button onclick="createElection()">Create</button>
+                        </div>
+                        <div id="electionCreatedSuccess" style="display:none;">
+                            <p>Election created successfully!</p>
+                            <button onclick="goToCreateElection()">OK</button>
+                        </div>
+                    </div>
                     <div class="tabcontent" id="Add-Candidates">Add Candidates</div>
                     <div class="tabcontent" id="Voters">Voters</div>
                     <div class="tabcontent" id="Approve-Votes">Approve Votes</div>
