@@ -10,7 +10,6 @@
 
 #main-content {
     justify-content: flex-start;
-    border: 1px solid red;
 }
 
 .user-header {
@@ -81,6 +80,13 @@ a {
 }
 
 /* Dashboard tab */
+/* #Dashboard {
+    border: 2px solid yellow;
+} */
+
+/* #Dashboard > div {
+    border: 2px solid blue;
+} */
 /* Add party tab */
 /* Create Election tab */
 /* Add Candidates tab */

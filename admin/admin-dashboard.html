@@ -19,13 +19,14 @@
                     </div>
                     <nav class="tab">
                         <ul>
-                            <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a>
+                            </li>
                             <li><a class="tablinks" onclick="openTab(event, 'Add-Party')">Add Party</a></li>
                             <li><a class="tablinks" onclick="openTab(event, 'Create-Election')">Create Election</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Add-Candidates')">Add Candidates</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Voters')">Voters</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Approve-Votes')">Approve Votes</a>
-                                <li><a class="tablinks" onclick="openTab(event, 'Election-Results')">Election Results</a>
+                            <li><a class="tablinks" onclick="openTab(event, 'Election-Results')">Election Results</a>
                             </li>
                         </ul>
                     </nav>
@@ -33,7 +34,23 @@
                 </div>
                 <!-- Tab content -->
                 <div class="tabcontent-wrapper">
-                    <div class="tabcontent" id="Dashboard">Dashboard</div>
+                    <div class="tabcontent" id="Dashboard">
+                        <div style="display: flex;">
+                            <div class="admin-main">
+                                <div class="slidecontent">
+                                    <p class="slidecontenttext">One Nation, 36 States, 774 LGAs</p>
+                                    <p class="slidecontenttext">Nigeria: Giant of Africa</p>
+                                </div>
+                                <img class="flag" src="/images/nigeria-flag.png" alt="Nigeria-flag"
+                                    style="max-width: 80%; height: auto" />
+                            </div>
+                            <div class="admin-sidebar">
+                                <h3 style="text-decoration: underline">News Updates</h3>
+                                <h4>Upcoming General Elections</h4>
+                                <p>Presidential Election 2024: Time left: 35 days 12 hours 15 mins</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tabcontent" id="Add-Party">Add-Party</div>
                     <div class="tabcontent" id="Create-Election">Create-Election</div>
                     <div class="tabcontent" id="Add-Candidates">Add Candidates</div>
