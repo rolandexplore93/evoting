@@ -92,10 +92,7 @@ function showAddCandidateForm() {
 function updateElectionTypes() {
     const category = document.getElementsByClassName('electionCategory')[1].value;
     const selectElectionType = document.getElementsByClassName('electionType')[1];
-    console.log(category)
-    console.log(selectElectionType)
-    console.log(electionData[category])
-    selectElectionType.innerHTML = `<option value="">qSelect Election Type</option>`;
+    selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
 
     if (category && electionData[category]) {
         electionData[category].forEach(type => {
@@ -109,7 +106,7 @@ function updateElectionTypes() {
 function updateParties() {
     const selectElection = document.getElementsByClassName('electionType')[1].value;
     const selectParty = document.getElementsByClassName('selectParty')[1];
-    selectParty.innerHTML = `<option value="">qSelect Party</option>`;
+    selectParty.innerHTML = `<option value="">Select Party</option>`;
 
     console.log(selectElection)
     console.log(selectParty)
@@ -120,4 +117,17 @@ function updateParties() {
             selectParty.add(option)
         });
     };
+}
+
+function addCandidate() {
+    document.getElementById('addCandidateForm').style.display = 'none';
+    document.getElementById('candidateAddedSuccess').style.display = 'block';
+}
+
+function resetAddCandidate() {
+    document.getElementsByClassName('electionCategory')[1].selectedIndex = 0;
+    updateElectionTypes(); // Reset the parties
+    document.getElementById('candidateName').value = '';
+    document.getElementById('candidatePhoto').value = '';
+    document.getElementById('candidateAddedSuccess').style.display = 'none';
 }
