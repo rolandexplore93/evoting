@@ -47,7 +47,7 @@ function showCreateElectionForm() {
     document.getElementById('createElectionForm').style.display = 'block';
 }
 
-// Display party added successfully
+// Display creation election successful
 function createElection() {
     document.getElementById('createElectionForm').style.display = 'none';
     document.getElementById('electionCreatedSuccess').style.display = 'block';
@@ -66,8 +66,35 @@ function goToCreateElection() {
     document.getElementById('createElectionTag').style.display = 'block';
 }
 
+// Create AddPartyToElectionForm logic
+function ShowAddPartyToElectionForm() {
+    document.getElementById('addPartyToElectionForm').style.display = 'block';
+}
+
+// Display party added to election
+function addPartiesToElection() {
+    document.getElementById('addPartyToElectionForm').style.display = 'none';
+    document.getElementById('addPartyToElectionSuccess').style.display = 'block';
+    document.getElementById('addPartyToElectionTag').style.display = 'none';
+}
+
+// When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
+function goToShowAddPartyToElectionForm() {
+    document.getElementById('electionCategory').selectedIndex = 0;
+    document.getElementById('electionType').selectedIndex = 0;
+    document.getElementById('selectParties').selectedIndex = 0;
+    document.getElementById('addPartyToElectionForm').style.display = 'none';
+    document.getElementById('addPartyToElectionSuccess').style.display = 'none';
+    document.getElementById('addPartyToElectionTag').style.display = 'block';
+}
+
+
 // ADD CANDIDATE LOGIC
 // Dummy data representing election relationships
+// const listOfParties = {
+//     "1":""
+// }
+
 const electionData = {
     "GeneralElections": ["President", "Senate", "MHA"],
     "StatesElections": ["Governor", "HOR"],
@@ -90,10 +117,12 @@ function showAddCandidateForm() {
 }
 
 function updateElectionTypes() {
-    const category = document.getElementsByClassName('electionCategory')[1].value;
+    const category = document.getElementsByClassName('electionCategory')[2].value;
     const selectElectionType = document.getElementsByClassName('electionType')[1];
     selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
-
+    console.log(category)
+    console.log(selectElectionType)
+    console.log(electionData[category])
     if (category && electionData[category]) {
         electionData[category].forEach(type => {
             const option = new Option(type, type);
@@ -105,7 +134,7 @@ function updateElectionTypes() {
 }
 function updateParties() {
     const selectElection = document.getElementsByClassName('electionType')[1].value;
-    const selectParty = document.getElementsByClassName('selectParty')[1];
+    const selectParty = document.getElementsByClassName('selectParty')[0];
     selectParty.innerHTML = `<option value="">Select Party</option>`;
 
     console.log(selectElection)

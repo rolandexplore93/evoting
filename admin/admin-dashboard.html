@@ -21,7 +21,7 @@
                         <ul>
                             <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a>
                             </li>
-                            <li><a class="tablinks" onclick="openTab(event, 'Add-Party')">Add Party</a></li>
+                            <li><a class="tablinks" onclick="openTab(event, 'Add-Party')">Create Party</a></li>
                             <li><a class="tablinks" onclick="openTab(event, 'Create-Election')">Create Election</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Add-Candidates')">Add Candidates</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Voters')">Voters</a>
@@ -52,48 +52,86 @@
                         </div>
                     </div>
                     <div class="tabcontent" id="Add-Party">
-                        <button onclick="showAddPartyForm()" id="addPartyButton">Add Party</button>
-                        <div id="addPartyForm" style="display:none;">
-                            <input type="text" id="partyName" placeholder="Party Name">
-                            <input type="text" id="partyAcronym" placeholder="Party Acronym">
-                            <small style="color: black; text-decoration: underline;"> Party Logo</small>
-                            <input type="file" id="partyLogo">
-                            <button onclick="addParty()">Add</button>
-                        </div>
-                        <div id="partyAddedSuccess" style="display:none;">
-                            <p>Party added successfully!</p>
-                            <button onclick="goToAddParty()">OK</button>
+                        <div>
+                            <button onclick="showAddPartyForm()" id="addPartyButton">Add Party</button>
+                            <div id="addPartyForm" style="display:none;">
+                                <input type="text" id="partyName" placeholder="Party Name">
+                                <input type="text" id="partyAcronym" placeholder="Party Acronym">
+                                <small style="color: black; text-decoration: underline;"> Party Logo</small>
+                                <input type="file" id="partyLogo">
+                                <button onclick="addParty()">Add</button>
+                            </div>
+                            <div id="partyAddedSuccess" style="display:none;">
+                                <p>Party added successfully!</p>
+                                <button onclick="goToAddParty()">OK</button>
+                            </div>
                         </div>
                     </div>
+                    <!-- Create Election -->
                     <div class="tabcontent" id="Create-Election">
-                        <button onclick="showCreateElectionForm()" id="createElectionTag">Create Election</button>
-                        <div id="createElectionForm" style="display:none;">
-                            <select id="electionCategory" class="electionCategory">
-                                <option value="GeneralElections">General Elections</option>
-                                <option value="StatesElections">States Elections</option>
-                                <option value="LgaElections">LGA Elections</option>
-                            </select>
-                            <select id="electionType" class="electionType">
-                                <option value="President">President</option>
-                                <option value="Senate">Senate</option>
-                                <option value="HOR">HOR</option>
-                            </select>
-                            <select id="selectParty" class="selectParty">
+                        <div>
+                            <button onclick="showCreateElectionForm()" id="createElectionTag">Create Election</button>
+                            <div id="createElectionForm" style="display:none;">
+                                <select id="electionCategory" class="electionCategory">
+                                    <option value="GeneralElections">General Elections</option>
+                                    <option value="StatesElections">States Elections</option>
+                                    <option value="LgaElections">LGA Elections</option>
+                                </select>
+                                <select id="electionType" class="electionType">
+                                    <option value="President">President</option>
+                                    <option value="Senate">Senate</option>
+                                    <option value="HOR">HOR</option>
+                                </select>
+                                <!-- <select id="selectParty" class="selectParty">
                                 <option value="ADC">ADC</option>
                                 <option value="APC">APC</option>
                                 <option value="LP">LP</option>
                                 <option value="NNPP">NNPP</option>
                                 <option value="PDP">PDP</option>
-                            </select>
-                            <input type="datetime-local" id="openDateTime">
-                            <input type="datetime-local" id="closeDateTime">
-                            <button onclick="createElection()">Create</button>
+                                </select> -->
+                                <input type="datetime-local" id="openDateTime">
+                                <input type="datetime-local" id="closeDateTime">
+                                <button onclick="createElection()">Create</button>
+                            </div>
+                            <div id="electionCreatedSuccess" style="display:none;">
+                                <p>Election created successfully!</p>
+                                <button onclick="goToCreateElection()">OK</button>
+                            </div>
                         </div>
-                        <div id="electionCreatedSuccess" style="display:none;">
-                            <p>Election created successfully!</p>
-                            <button onclick="goToCreateElection()">OK</button>
+                        <br><hr>
+                        <!-- Add Parties to Election -->
+                        <div>
+                            <button onclick="ShowAddPartyToElectionForm()" id="addPartyToElectionTag">Add Parties to Election</button>
+                            <div id="addPartyToElectionForm" style="display: none;">
+                                <select id="electionCategory" class="electionCategory">
+                                    <option value="GeneralElections">General Elections - ${President}</option>
+                                    <option value="StatesElections">States Elections - ${Governor}</option></option>
+                                    <option value="LgaElections">LGA Elections - ${Chairman}</option></option>
+                                    <!-- Map all elections created dynamically taking the election category and type -->
+                                </select>
+                                <!-- <select id="electionType" class="electionType">
+                                    <option value="President">President</option>
+                                    <option value="Senate">Senate</option>
+                                    <option value="HOR">HOR</option>
+                                </select> -->
+                                <br>
+                                <select id="selectParties" class="selectParties" multiple>
+                                    <option value="" disabled>Select Parties</option>
+                                    <option value="ADC">ADC</option>
+                                    <option value="APC">APC</option>
+                                    <option value="LP">LP</option>
+                                    <option value="NNPP">NNPP</option>
+                                    <option value="PDP">PDP</option>
+                                </select>
+                                <button onclick="addPartiesToElection()">Create</button>
+                            </div>
+                            <div id="addPartyToElectionSuccess" style="display:none;">
+                                <p>Parties successfully added to Election</p>
+                                <button onclick="goToShowAddPartyToElectionForm()">OK</button>
+                            </div>
                         </div>
                     </div>
+                    <!-- Add Candidates -->
                     <div class="tabcontent" id="Add-Candidates">
                         <button onclick="showAddCandidateForm()">Add Candidate</button>
                         <div id="addCandidateForm" style="display:none;">
@@ -120,7 +158,30 @@
                             <button onclick="resetAddCandidate()">OK</button>
                         </div>
                     </div>
-                    <div class="tabcontent" id="Voters">Voters</div>
+                    <div class="tabcontent" id="Voters">
+                        <div class="votersHeader">
+                            <div class="votersTab">
+                                <ul>
+                                    <li><a class="votersTabLinks" onclick="openVotersTab(event, 'AllVotersTab')" id="defaultVotersPage">All</a></li>
+                                    <li><a class="votersTabLinks" onclick="openVotersTab(event, 'ApprovedVoters')">Approved</a></li>
+                                    <li><a class="votersTabLinks" onclick="openVotersTab(event, 'UnderReviewVoters')">Under Review</a>
+                                    <li><a class="votersTabLinks" onclick="openVotersTab(event, 'RejectedVoters')">Rejected</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="votersTabContentWrapper">
+                            <div class="votersTabContent" id="AllVotersTab" onclick="openAllVotersTable()">All content</div>
+                            <div class="votersTabContent" id="ApprovedVoters">Approved content </div>
+                            <div class="votersTabContent" id="UnderReviewVoters">Under Review content</div>
+                            <div class="votersTabContent" id="RejectedVoters">Rejected content</div>
+                        </div>
+                        <div class="modal" id="votersModal">
+                            <div class="modal-content">
+                                <span class="close-modal">&times;</span>
+                                <div class="modal-contentt">Content for modal</div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="tabcontent" id="Approve-Votes">Approve Votes</div>
                     <div class="tabcontent" id="Election-Results">Election Results</div>
                 </div>
@@ -131,8 +192,9 @@
     </div>
     </div>
 
-    <script src=".././script.js"></script>
-    <script src="./admin-dashboard.js"></script>
+    <script src="/script.js"></script>
+    <script src="/admin/admin-dashboard.js"></script>
+    <script src="/admin/voters.js"></script>
 </body>
 
 </html>
