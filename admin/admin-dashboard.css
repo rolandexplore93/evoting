@@ -121,4 +121,18 @@ button {
 /* Create Election tab */
 /* Add Candidates tab */
 /* Voters tab */
+/* Style for the table */
+#votersTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#votersTable th, #votersTable td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#votersTable th {
+    background-color: #f2f2f2;
+}
 /* Approve vote tab */

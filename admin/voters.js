@@ -2,14 +2,13 @@
 const voters = [
     { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
     { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
+    { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
 ];
 
-// console.log('yesllll')
+// All Voters list
 function openAllVotersTable() {
-    console.log('yes')
     const container = document.getElementsByClassName('votersTabContent')[0];
-    console.log(container)
-    let tableHTML = `<table>
+    let tableHTML = `<table id='votersTable'>
                         <thead>
                             <tr>
                                 <th>Surname</th>
@@ -37,6 +36,103 @@ function openAllVotersTable() {
     container.innerHTML = tableHTML;
 }
 
+// Approved Voters list
+function openApprovedVotersTable() {
+    const container = document.getElementsByClassName('votersTabContent')[1];
+    let tableHTML = `<table id='votersTable'>
+                        <thead>
+                            <tr>
+                                <th>Surname</th>
+                                <th>Given Names</th>
+                                <th>Age</th>
+                                <th>Verification Progress</th>
+                                <th>Profile Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+    
+    // Filter approvers voters list
+    const approvedVoters = voters.filter(voter => voter.ProfileStatus === 'Approved');
+    approvedVoters.forEach((voter, index) => {
+        tableHTML += `<tr>
+                        <td>${voter.Surname}</td>
+                        <td>${voter.GivenNames}</td>
+                        <td>${voter.Age}</td>
+                        <td>${voter.VerificationProgress}</td>
+                        <td>${voter.ProfileStatus}</td>
+                        <td><button onclick="openModal(${index})">View</button></td>
+                    </tr>`;
+    });
+
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = tableHTML;
+}
+
+// Under Review Voters list
+function openUnderReviewVotersTable() {
+    const container = document.getElementsByClassName('votersTabContent')[2];
+    let tableHTML = `<table id='votersTable'>
+                        <thead>
+                            <tr>
+                                <th>Surname</th>
+                                <th>Given Names</th>
+                                <th>Age</th>
+                                <th>Verification Progress</th>
+                                <th>Profile Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+    
+    // Filter under review voters list
+    const underReviewVoters = voters.filter(voter => voter.ProfileStatus === 'Under Review');
+    underReviewVoters.forEach((voter, index) => {
+        tableHTML += `<tr>
+                        <td>${voter.Surname}</td>
+                        <td>${voter.GivenNames}</td>
+                        <td>${voter.Age}</td>
+                        <td>${voter.VerificationProgress}</td>
+                        <td>${voter.ProfileStatus}</td>
+                        <td><button onclick="openModal(${index})">View</button></td>
+                    </tr>`;
+    });
+
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = tableHTML;
+}
+
+// Rejected Voters list
+function openRejectedVotersTable() {
+    const container = document.getElementsByClassName('votersTabContent')[3];
+    let tableHTML = `<table id='votersTable'>
+                        <thead>
+                            <tr>
+                                <th>Surname</th>
+                                <th>Given Names</th>
+                                <th>Age</th>
+                                <th>Verification Progress</th>
+                                <th>Profile Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+    
+    // Filter under review voters list
+    const rejectedVoters = voters.filter(voter => voter.ProfileStatus === 'Rejected');
+    rejectedVoters.forEach((voter, index) => {
+        tableHTML += `<tr>
+                        <td>${voter.Surname}</td>
+                        <td>${voter.GivenNames}</td>
+                        <td>${voter.Age}</td>
+                        <td>${voter.VerificationProgress}</td>
+                        <td>${voter.ProfileStatus}</td>
+                    </tr>`;
+    });
+
+    tableHTML += `</tbody></table>`;
+    container.innerHTML = tableHTML;
+}
+
 // VotersTab functionality
 function openVotersTab(e, tabTitle) {
     var index, votersTabContent, votersTabLinks;
@@ -56,6 +152,12 @@ function openVotersTab(e, tabTitle) {
 
     if ( tabTitle == 'AllVotersTab') {
         openAllVotersTable();
+    } else if (tabTitle == 'ApprovedVoters') {
+        openApprovedVotersTable();
+    } else if (tabTitle == 'UnderReviewVoters') {
+        openUnderReviewVotersTable();
+    } else {
+        openRejectedVotersTable()
     }
 }
 
