@@ -131,7 +131,35 @@ function openRejectedVotersTable() {
 
     tableHTML += `</tbody></table>`;
     container.innerHTML = tableHTML;
+};
+
+
+// OPEN MODAL
+function openModal(index) {
+    console.log(index)
+    // const voter = voters[index];
+    // const modal = document.getElementById("modal");
+    // const modalContent = document.getElementById("modalContent");
+
+    // // Update the modal content with voter details
+    // modalContent.innerHTML = `<strong>Surname:</strong> ${voter.Sname}<br>
+    //                           <strong>Given Names:</strong> ${voter.Gnames}<br>
+    //                           <strong>Age:</strong> ${voter.Age}<br>
+    //                           <strong>Voting Progress:</strong> ${voter.VProgress}<br>
+    //                           <strong>Participation Status:</strong> ${voter.PStatus}`;
+
+    // modal.style.display = "block";
 }
+
+
+
+
+
+
+
+
+
+
 
 // VotersTab functionality
 function openVotersTab(e, tabTitle) {

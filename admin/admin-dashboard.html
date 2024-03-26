@@ -158,6 +158,7 @@
                             <button onclick="resetAddCandidate()">OK</button>
                         </div>
                     </div>
+                    <!-- Voters -->
                     <div class="tabcontent" id="Voters">
                         <div class="votersHeader">
                             <div class="votersTab">
@@ -182,7 +183,32 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tabcontent" id="Approve-Votes">Approve Votes</div>
+                    <!-- Approve Votes -->
+                    <div class="tabcontent" id="Approve-Votes">
+                        <div class="votesHeader">
+                            <div class="votesTab">
+                                <ul>
+                                    <li><a class="votesTabLinks" onclick="openVotesTab(event, 'AllVotesTab')" id="defaultVotesPage">All</a></li>
+                                    <li><a class="votesTabLinks" onclick="openVotesTab(event, 'ApprovedVotes')">Approved Votes</a></li>
+                                    <li><a class="votesTabLinks" onclick="openVotesTab(event, 'UnderReviewVotes')">Votes Under Review</a>
+                                    <li><a class="votesTabLinks" onclick="openVotesTab(event, 'RejectedVotes')">Rejected Votes</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="votesTabContentWrapper">
+                            <div class="votesTabContent" id="AllVotesTab" onclick="openAllVotesTable()">All votes</div>
+                            <div class="votesTabContent" id="ApprovedVotes">Approved votes </div>
+                            <div class="votesTabContent" id="UnderReviewVotes">votes Under Review content</div>
+                            <div class="votesTabContent" id="RejectedVotes">Rejected votes</div>
+                        </div>
+                        <div class="modal" id="votesModal">
+                            <div class="modal-content">
+                                <span class="close-modal">&times;</span>
+                                <div class="modal-contentt">Content for votes modal</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Election Results -->
                     <div class="tabcontent" id="Election-Results">Election Results</div>
                 </div>
             </div>
@@ -195,6 +221,7 @@
     <script src="/script.js"></script>
     <script src="/admin/admin-dashboard.js"></script>
     <script src="/admin/voters.js"></script>
+    <script src="/admin/votesCast.js"></script>
 </body>
 
 </html>
