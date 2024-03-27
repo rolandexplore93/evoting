@@ -1,0 +1,45 @@
+.main {
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+.eSidebar {
+    flex: 1;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+.eMainbar {
+    flex: 3;
+    padding: 20px;
+}
+
+.eSidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.eSidebar ul li {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #ddd;
+    margin-bottom: 5px;
+}
+
+.eSidebar ul li:hover {
+    background-color: #ccc;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
