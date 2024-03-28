@@ -136,12 +136,12 @@ function openRejectedVotersTable() {
 // OPEN MODAL
 function openVotersModal(index) {
     const voter = voters[index];
-    console.log(voter)
     const modalContent = document.getElementById("modal-content-voters");
-    // Update the modal content with vote details
+    // Update the modal content with voter details
     modalContent.innerHTML = `
+    <span class="close">&times;</span>
     <div class="topSection">
-        <div class="topSectionSelfie"><img src="/images/placeholder-image.jpeg" alt="" width="200px" height="200px"></div>
+        <div class="topSectionSelfie"><img src="/images/placeholder-image.jpeg" alt="" width="300px" height="300px"></div>
         <div class="topSectionPersonInfo">
             <div>
                 <p>Surname: ${voter.Surname}</p>
@@ -160,7 +160,7 @@ function openVotersModal(index) {
             <p>NIN: ${voter.Age}</p>
         </div>
         <div class="topSectionIDPhoto">
-            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="200px">
+            <img src="/images/placeholder-image.jpeg" alt="" width="300px" height="300px">
             <button>Verify ID</button>
         </div>
     </div>

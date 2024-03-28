@@ -199,8 +199,6 @@ button {
     width: 600px;
 }
 
-
-
 /* Modal content close icon */
 .close {
     color: rgb(236, 91, 91);
@@ -214,4 +212,21 @@ button {
     color: red;
     text-decoration: none;
     cursor: pointer;
+}
+
+.topSection {
+    display: flex;
+}
+
+
+.topSection > div {
+    flex: 1;
+}
+
+.topSectionPersonInfo > div {
+    display: flex;
+}
+
+.topSectionPersonInfo > div > p {
+    flex: 1;
 }
