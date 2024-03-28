@@ -12,7 +12,9 @@
     justify-content: flex-start;
 }
 
-.user-header, .votersTab, .votesTab {
+.user-header,
+.votersTab,
+.votesTab {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -37,40 +39,54 @@ a {
 }
 
 /* Tabs styles */
-.tab, .votersTab, .votesTab {
+.tab,
+.votersTab,
+.votesTab {
     overflow: hidden;
 }
 
 /* .user-header is votersheader; nav ir votersTab */
-.user-header nav ul, .votersTab ul, .votesTab ul {
+.user-header nav ul,
+.votersTab ul,
+.votesTab ul {
     display: flex;
     list-style: none;
     padding: 0;
 }
 
-.user-header nav ul li, .votersTab ul li, .votesTab ul li {
+.user-header nav ul li,
+.votersTab ul li,
+.votesTab ul li {
     margin: 0 10px;
     padding: 0;
     cursor: pointer;
 }
 
-.user-header nav ul li a, .votersTab ul li a, .votesTab ul li a {
+.user-header nav ul li a,
+.votersTab ul li a,
+.votesTab ul li a {
     color: var(--primary-white);
     text-decoration: none;
 }
 
-.user-header nav ul li:hover, .votersTab ul li:hover, .votesTab ul li:hover {
+.user-header nav ul li:hover,
+.votersTab ul li:hover,
+.votesTab ul li:hover {
     background-color: rgb(240, 222, 202);
 }
 
-.user-header nav ul li a.active, .votersTab ul li a.active, .votesTab ul li a.active {
+.user-header nav ul li a.active,
+.votersTab ul li a.active,
+.votesTab ul li a.active {
     background-color: var(--primary-white);
     color: var(--primary-green);
 }
 
-.tabcontent, .votersTabContent, .votesTabContent {
+.tabcontent,
+.votersTabContent,
+.votesTabContent {
     display: none;
-    
+
     /* width: 70%; */
     /* min-width: 300px; */
 }
@@ -106,11 +122,13 @@ a {
     color: red;
 }
 
-#addPartyForm, #partyAddedSuccess {
+#addPartyForm,
+#partyAddedSuccess {
     margin-top: 20px;
 }
 
-input[type="text"], input[type="file"] {
+input[type="text"],
+input[type="file"] {
     margin: 10px 0;
     display: block;
 }
@@ -118,21 +136,28 @@ input[type="text"], input[type="file"] {
 button {
     cursor: pointer;
 }
+
 /* Create Election tab */
 /* Add Candidates tab */
+
 /* Voters tab */
 /* Style for the table */
-#votersTable, #votesTable {
+#votersTable,
+#votesTable {
     width: 100%;
     border-collapse: collapse;
 }
 
-#votersTable th, #votersTable td, #votesTable th, #votesTable td {
+#votersTable th,
+#votersTable td,
+#votesTable th,
+#votesTable td {
     border: 1px solid #ddd;
     padding: 8px;
 }
 
-#votersTable th, #votesTable th {
+#votersTable th,
+#votesTable th {
     background-color: #f2f2f2;
 }
 
@@ -182,11 +207,11 @@ button {
     float: right;
     font-size: 38px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+
+.close:hover,
+.close:focus {
     color: red;
     text-decoration: none;
     cursor: pointer;
-  }
+}

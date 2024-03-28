@@ -28,7 +28,7 @@ function openAllVotersTable() {
                         <td>${voter.Age}</td>
                         <td>${voter.VerificationProgress}</td>
                         <td>${voter.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td><button onclick="openVotersModal(${index})">View</button></td>
                     </tr>`;
     });
 
@@ -61,7 +61,7 @@ function openApprovedVotersTable() {
                         <td>${voter.Age}</td>
                         <td>${voter.VerificationProgress}</td>
                         <td>${voter.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td><button onclick="openVotersModal(${index})">View</button></td>
                     </tr>`;
     });
 
@@ -94,7 +94,7 @@ function openUnderReviewVotersTable() {
                         <td>${voter.Age}</td>
                         <td>${voter.VerificationProgress}</td>
                         <td>${voter.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td><button onclick="openVotersModal(${index})">View</button></td>
                     </tr>`;
     });
 
@@ -133,37 +133,84 @@ function openRejectedVotersTable() {
     container.innerHTML = tableHTML;
 };
 
-
-// // OPEN MODAL
-// function openModal(index) {
-//     console.log(index)
-//     // const voter = voters[index];
-//     // const modal = document.getElementById("modal");
-//     // const modalContent = document.getElementById("modalContent");
-
-//     // // Update the modal content with voter details
-//     // modalContent.innerHTML = `<strong>Surname:</strong> ${voter.Sname}<br>
-//     //                           <strong>Given Names:</strong> ${voter.Gnames}<br>
-//     //                           <strong>Age:</strong> ${voter.Age}<br>
-//     //                           <strong>Voting Progress:</strong> ${voter.VProgress}<br>
-//     //                           <strong>Participation Status:</strong> ${voter.PStatus}`;
-
-//     // modal.style.display = "block";
-// }
-
-
 // OPEN MODAL
-function openModal(index) {
+function openVotersModal(index) {
     const voter = voters[index];
+    console.log(voter)
     const modalContent = document.getElementById("modal-content-voters");
     // Update the modal content with vote details
-    modalContent.innerHTML = `<strong>VoteId:</strong> ${voter?.Age}<br>
-                              <strong>Given Names:</strong> ${voter?.GivenNames}<br>
-                              <strong>Age:</strong> ${voter?.Age}<br>
-                              <strong>Voting Progress:</strong> ${voter?.VerificationProgress}<br>
-                              <strong>Participation Status:</strong> ${voter?.ProfileStatus}
-                              <span class="close">&times;</span>
-                            `;
+    modalContent.innerHTML = `
+    <div class="topSection">
+        <div class="topSectionSelfie"><img src="/images/placeholder-image.jpeg" alt="" width="200px" height="200px"></div>
+        <div class="topSectionPersonInfo">
+            <div>
+                <p>Surname: ${voter.Surname}</p>
+                <p>Given names: ${voter.GivenNames}</p>
+            </div>
+            <div>
+                <p>Gender: ${voter.Surname}</p>
+                <p>Date of Birth: ${voter.Age}</p>
+                <p>Age: ${voter.Age}</p>
+            </div>
+            <div>
+                <p>Nationality: ${voter.Surname}</p>
+                <p>State of Origin: ${voter.Age}</p>
+                <p>LGA: ${voter.Age}</p>
+            </div>
+            <p>NIN: ${voter.Age}</p>
+        </div>
+        <div class="topSectionIDPhoto">
+            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="200px">
+            <button>Verify ID</button>
+        </div>
+    </div>
+    <div class="bottomSection">
+            <table id='votersTable'>
+            <thead>
+                <tr>
+                    <th>Requirement</th>
+                    <th>Description</th>
+                    <th>Verification Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>NIN ${voter.Age}</td>
+                    <td>22378482${voter.Age}</td>
+                    <td>Verified${voter.Age}</td>
+                </tr>
+                <tr>
+                    <td>ID Card ${voter.Age}</td>
+                    <td>22378482${voter.Age}</td>
+                    <td>Verified${voter.Age}</td>
+                </tr>
+                <tr>
+                    <td>Email ${voter.Age}</td>
+                    <td>22378@ga.com${voter.Age}</td>
+                    <td>Verified${voter.Age}</td>
+                </tr>
+                <tr>
+                    <td>Phone Number ${voter.Age}</td>
+                    <td>23422378482${voter.Age}</td>
+                    <td>Verified${voter.Age}</td>
+                </tr>
+                <tr>
+                    <td>Is Voter above 18 yeard? ${voter.Age}</td>
+                    <td>02/04/1994${voter.Age}</td>
+                    <td>Yes${voter.Age}</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    <div id="voteActions">
+        <select name="" id="">
+            <option value="approved">Approved</option>
+            <option value="underReview">Under Review</option>
+            <option value="rejected">Rejected</option>
+        </select>
+        <button>Update</button>
+    </div>
+    `;
     const modal = document.getElementsByClassName("modal")[0];                     
     modal.style.display = 'block';
 
@@ -173,16 +220,6 @@ function openModal(index) {
         modal.style.display = 'none';
     };
 }
-
-
-
-
-
-
-
-
-
-
 
 // VotersTab functionality
 function openVotersTab(e, tabTitle) {
