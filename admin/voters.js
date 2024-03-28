@@ -134,21 +134,44 @@ function openRejectedVotersTable() {
 };
 
 
+// // OPEN MODAL
+// function openModal(index) {
+//     console.log(index)
+//     // const voter = voters[index];
+//     // const modal = document.getElementById("modal");
+//     // const modalContent = document.getElementById("modalContent");
+
+//     // // Update the modal content with voter details
+//     // modalContent.innerHTML = `<strong>Surname:</strong> ${voter.Sname}<br>
+//     //                           <strong>Given Names:</strong> ${voter.Gnames}<br>
+//     //                           <strong>Age:</strong> ${voter.Age}<br>
+//     //                           <strong>Voting Progress:</strong> ${voter.VProgress}<br>
+//     //                           <strong>Participation Status:</strong> ${voter.PStatus}`;
+
+//     // modal.style.display = "block";
+// }
+
+
 // OPEN MODAL
 function openModal(index) {
-    console.log(index)
-    // const voter = voters[index];
-    // const modal = document.getElementById("modal");
-    // const modalContent = document.getElementById("modalContent");
+    const voter = voters[index];
+    const modalContent = document.getElementById("modal-content-voters");
+    // Update the modal content with vote details
+    modalContent.innerHTML = `<strong>VoteId:</strong> ${voter?.Age}<br>
+                              <strong>Given Names:</strong> ${voter?.GivenNames}<br>
+                              <strong>Age:</strong> ${voter?.Age}<br>
+                              <strong>Voting Progress:</strong> ${voter?.VerificationProgress}<br>
+                              <strong>Participation Status:</strong> ${voter?.ProfileStatus}
+                              <span class="close">&times;</span>
+                            `;
+    const modal = document.getElementsByClassName("modal")[0];                     
+    modal.style.display = 'block';
 
-    // // Update the modal content with voter details
-    // modalContent.innerHTML = `<strong>Surname:</strong> ${voter.Sname}<br>
-    //                           <strong>Given Names:</strong> ${voter.Gnames}<br>
-    //                           <strong>Age:</strong> ${voter.Age}<br>
-    //                           <strong>Voting Progress:</strong> ${voter.VProgress}<br>
-    //                           <strong>Participation Status:</strong> ${voter.PStatus}`;
-
-    // modal.style.display = "block";
+    // Close votes modal
+    document.getElementsByClassName("close")[0].onclick = function() {
+        const modal = document.getElementsByClassName("modal")[0];                     
+        modal.style.display = 'none';
+    };
 }
 
 

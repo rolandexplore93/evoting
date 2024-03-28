@@ -161,7 +161,7 @@ function openModal(index) {
                                         <div id="userVotingVideo">
                                             <h4>Voter's video recorded during voting</h4>
                                             <video width="320" height="240" controls>
-                                                <source src="movie.mp4" type="video/mp4">
+                                                <source src="" type="video/mp4">
                                             </video>
                                         </div>
                                     </div>
@@ -175,12 +175,12 @@ function openModal(index) {
                                     </div>
                                 </div>
                             `;
-    const modal = document.getElementsByClassName("modal")[0];                     
+    const modal = document.getElementsByClassName("modal")[1];                     
     modal.style.display = 'block';
 
     // Close votes modal
     document.getElementsByClassName("close")[0].onclick = function() {
-        const modal = document.getElementsByClassName("modal")[0];                     
+        const modal = document.getElementsByClassName("modal")[1];                     
         modal.style.display = 'none';
     };
 }
