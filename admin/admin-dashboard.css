@@ -135,4 +135,58 @@ button {
 #votersTable th, #votesTable th {
     background-color: #f2f2f2;
 }
+
 /* Approve vote tab */
+#voterTracking {
+    display: flex;
+}
+
+#userSelfie {
+    flex: 1;
+}
+
+#userVotingScreenshots {
+    flex: 4;
+}
+
+#userVotingVideo {
+    flex: 1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: #fff;
+    background-color: #fefefe;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 600px;
+}
+
+
+
+/* Modal content close icon */
+.close {
+    color: rgb(236, 91, 91);
+    float: right;
+    font-size: 38px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: red;
+    text-decoration: none;
+    cursor: pointer;
+  }

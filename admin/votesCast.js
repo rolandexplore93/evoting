@@ -1,8 +1,8 @@
 // Array dummy data to simulate fetched data from database
 const votes = [
-    { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
-    { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
-    { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
+    { VoteId: 1, NamesInitials: 'S. J. A', Age: 35, TimeVoted: '2023-05-12', Status: 'Rejected' },
+    { VoteId: 2, NamesInitials: 'J. L. B', Age: 42, TimeVoted: '2023-05-12', Status: 'Approved' },
+    { VoteId: 3, NamesInitials: 'J. D', Age: 22, TimeVoted: '2023-05-12', Status: 'Under Review' },
 ];
 
 // All votes list
@@ -11,7 +11,7 @@ function openAllVotesTable() {
     let tableHTML = `<table id='votesTable'>
                         <thead>
                             <tr>
-                                <th>Surname</th>
+                                <th>VoteId</th>
                                 <th>Given Names</th>
                                 <th>Age</th>
                                 <th>Verification Progress</th>
@@ -20,15 +20,15 @@ function openAllVotesTable() {
                             </tr>
                         </thead>
                         <tbody>`;
-    
+
     votes.forEach((vote, index) => {
         tableHTML += `<tr>
-                        <td>${vote.Surname}</td>
-                        <td>${vote.GivenNames}</td>
+                        <td>${vote.VoteId}</td>
+                        <td>${vote.NamesInitials}</td>
                         <td>${vote.Age}</td>
-                        <td>${vote.VerificationProgress}</td>
-                        <td>${vote.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td>${vote.TimeVoted}</td>
+                        <td>${vote.Status}</td>
+                        <td><button onclick="openModal(${index})">Preview</button></td>
                     </tr>`;
     });
 
@@ -42,7 +42,7 @@ function openApprovedVotesTable() {
     let tableHTML = `<table id='votesTable'>
                         <thead>
                             <tr>
-                                <th>Surname</th>
+                                <th>VoteId</th>
                                 <th>Given Names</th>
                                 <th>Age</th>
                                 <th>Verification Progress</th>
@@ -51,17 +51,17 @@ function openApprovedVotesTable() {
                             </tr>
                         </thead>
                         <tbody>`;
-    
+
     // Filter approvers votes list
-    const approvedVotes = votes.filter(vote => vote.ProfileStatus === 'Approved');
+    const approvedVotes = votes.filter(vote => vote.Status === 'Approved');
     approvedVotes.forEach((vote, index) => {
         tableHTML += `<tr>
-                        <td>${vote.Surname}</td>
-                        <td>${vote.GivenNames}</td>
+                        <td>${vote.VoteId}</td>
+                        <td>${vote.NamesInitials}</td>
                         <td>${vote.Age}</td>
-                        <td>${vote.VerificationProgress}</td>
-                        <td>${vote.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td>${vote.TimeVoted}</td>
+                        <td>${vote.Status}</td>
+                        <td><button onclick="openModal(${index})">Preview</button></td>
                     </tr>`;
     });
 
@@ -75,7 +75,7 @@ function openUnderReviewVotesTable() {
     let tableHTML = `<table id='votesTable'>
                         <thead>
                             <tr>
-                                <th>Surname</th>
+                                <th>VoteId</th>
                                 <th>Given Names</th>
                                 <th>Age</th>
                                 <th>Verification Progress</th>
@@ -84,17 +84,17 @@ function openUnderReviewVotesTable() {
                             </tr>
                         </thead>
                         <tbody>`;
-    
+
     // Filter under review votes list
-    const underReviewVotes = votes.filter(vote => vote.ProfileStatus === 'Under Review');
+    const underReviewVotes = votes.filter(vote => vote.Status === 'Under Review');
     underReviewVotes.forEach((vote, index) => {
         tableHTML += `<tr>
-                        <td>${vote.Surname}</td>
-                        <td>${vote.GivenNames}</td>
+                        <td>${vote.VoteId}</td>
+                        <td>${vote.NamesInitials}</td>
                         <td>${vote.Age}</td>
-                        <td>${vote.VerificationProgress}</td>
-                        <td>${vote.ProfileStatus}</td>
-                        <td><button onclick="openModal(${index})">View</button></td>
+                        <td>${vote.TimeVoted}</td>
+                        <td>${vote.Status}</td>
+                        <td><button onclick="openModal(${index})">Preview</button></td>
                     </tr>`;
     });
 
@@ -108,7 +108,7 @@ function openRejectedVotesTable() {
     let tableHTML = `<table id='votesTable'>
                         <thead>
                             <tr>
-                                <th>Surname</th>
+                                <th>VoteId</th>
                                 <th>Given Names</th>
                                 <th>Age</th>
                                 <th>Verification Progress</th>
@@ -116,16 +116,16 @@ function openRejectedVotesTable() {
                             </tr>
                         </thead>
                         <tbody>`;
-    
+
     // Filter under review votes list
-    const rejectedVotes = votes.filter(vote => vote.ProfileStatus === 'Rejected');
+    const rejectedVotes = votes.filter(vote => vote.Status === 'Rejected');
     rejectedVotes.forEach((vote, index) => {
         tableHTML += `<tr>
-                        <td>${vote.Surname}</td>
-                        <td>${vote.GivenNames}</td>
+                        <td>${vote.VoteId}</td>
+                        <td>${vote.NamesInitials}</td>
                         <td>${vote.Age}</td>
-                        <td>${vote.VerificationProgress}</td>
-                        <td>${vote.ProfileStatus}</td>
+                        <td>${vote.TimeVoted}</td>
+                        <td>${vote.Status}</td>
                     </tr>`;
     });
 
@@ -136,22 +136,54 @@ function openRejectedVotesTable() {
 
 // OPEN MODAL
 function openModal(index) {
-    console.log(index)
-    // const vote = votes[index];
-    // const modal = document.getElementById("modal");
-    // const modalContent = document.getElementById("modalContent");
+    const vote = votes[index];
+    const modalContent = document.getElementById("modal-content");
+    // Update the modal content with vote details
+    modalContent.innerHTML = `<strong>VoteId:</strong> ${vote?.VoteId}<br>
+                              <strong>Given Names:</strong> ${vote?.NamesInitials}<br>
+                              <strong>Age:</strong> ${vote?.Age}<br>
+                              <strong>Voting Progress:</strong> ${vote?.TimeVoted}<br>
+                              <strong>Participation Status:</strong> ${vote?.Status}
+                              <span class="close">&times;</span>
+                                <div class="modal-inner-content">
+                                    <div id="voterTracking">
+                                        <div id="userSelfie">
+                                            <h4>Profile Image</h4>
+                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                        </div>
+                                        <div id="userVotingScreenshots">
+                                            <h4>Voter's screenshots with timestamp during voting</h4>
+                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                        </div>
+                                        <div id="userVotingVideo">
+                                            <h4>Voter's video recorded during voting</h4>
+                                            <video width="320" height="240" controls>
+                                                <source src="movie.mp4" type="video/mp4">
+                                            </video>
+                                        </div>
+                                    </div>
+                                    <div id="voteActions">
+                                        <select name="" id="">
+                                            <option value="approved">Approved</option>
+                                            <option value="underReview">Under Review</option>
+                                            <option value="rejected">Rejected</option>
+                                        </select>
+                                        <button>Update</button>
+                                    </div>
+                                </div>
+                            `;
+    const modal = document.getElementsByClassName("modal")[0];                     
+    modal.style.display = 'block';
 
-    // // Update the modal content with vote details
-    // modalContent.innerHTML = `<strong>Surname:</strong> ${vote.Sname}<br>
-    //                           <strong>Given Names:</strong> ${vote.Gnames}<br>
-    //                           <strong>Age:</strong> ${vote.Age}<br>
-    //                           <strong>Voting Progress:</strong> ${vote.VProgress}<br>
-    //                           <strong>Participation Status:</strong> ${vote.PStatus}`;
-
-    // modal.style.display = "block";
+    // Close votes modal
+    document.getElementsByClassName("close")[0].onclick = function() {
+        const modal = document.getElementsByClassName("modal")[0];                     
+        modal.style.display = 'none';
+    };
 }
-
-
 
 
 // VotesTab functionality
@@ -171,7 +203,7 @@ function openVotesTab(e, tabTitle) {
     document.getElementById(tabTitle).style.display = 'block';
     e.currentTarget.className += " active";
 
-    if ( tabTitle == 'AllVotesTab') {
+    if (tabTitle == 'AllVotesTab') {
         openAllVotesTable();
     } else if (tabTitle == 'ApprovedVotes') {
         openApprovedVotesTable();
