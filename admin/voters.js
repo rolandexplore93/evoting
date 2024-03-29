@@ -160,7 +160,7 @@ function openVotersModal(index) {
             <p>NIN: ${voter.Age}</p>
         </div>
         <div class="topSectionIDPhoto">
-            <img src="/images/placeholder-image.jpeg" alt="" width="300px" height="300px">
+            <img src="/images/placeholder-image.jpeg" alt="" width="100%" height="300px">
             <button>Verify ID</button>
         </div>
     </div>

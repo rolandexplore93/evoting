@@ -179,7 +179,7 @@ function openModal(index) {
     modal.style.display = 'block';
 
     // Close votes modal
-    document.getElementsByClassName("close")[0].onclick = function() {
+    document.getElementsByClassName("close")[1].onclick = function() {
         const modal = document.getElementsByClassName("modal")[1];                     
         modal.style.display = 'none';
     };

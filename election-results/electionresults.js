@@ -17,9 +17,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const tab = document.createElement('li');
         tab.textContent = election;
         tab.setAttribute('data-election', election);
-        tab.addEventListener('click', () => showElectionData(election));
-        electionTabsContainer.appendChild(tab);
+        tab.addEventListener('click', (e) => {
 
+            // Remove the active class from all tabs
+            document.querySelectorAll('#eTabs li').forEach(tab => {
+                tab.classList.remove('active-tab')
+            });
+
+            // When a tab is clicked, add active class
+            e.target.classList.add('active-tab')
+
+            showElectionData(election)
+        });
+        electionTabsContainer.appendChild(tab);
+        
         // Display the result for the first election created
         if (index === 0) {
             tab.click();
@@ -35,8 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let tableHTML = `<table><caption>${electionType}</caption><tr><th>Party Name</th><th>Party Logo</th><th>Candidate Name</th><th>Candidate Logo</th><th>Total Votes Received</th></tr>`;
 
         let totalVotesCast = 0;
-
-        console.log(electionResultData)
 
         // electionResultData && 
         electionResultData.forEach(row => {
