@@ -6,6 +6,10 @@ const resetPasswordSucsess = document.getElementById('reset-password-success');
 const loginOrSignup = document.getElementById('login-or-signup');
 const form = document.getElementById('form');
 const loginFormDisplay = document.getElementById('login-form-display');
+const signupFormDisplay = document.getElementById('signup-form-display');
+
+loginFormDisplay.classList.add('activeDisplay')
+
 
 function showLoginForm() {
     signup.style.display = 'none';
@@ -13,8 +17,8 @@ function showLoginForm() {
     signupSuccess.style.display = 'none';
     resetPassword.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
-    // loginFormDisplay.style.backgroundColor = '#003366'
-    // loginFormDisplay.style.color = 'var(--primary-green)'
+    loginFormDisplay.classList.add('activeDisplay')
+    signupFormDisplay.classList.remove('activeDisplay')
 }
 
 function showSignupForm() {
@@ -23,6 +27,8 @@ function showSignupForm() {
     signupSuccess.style.display = 'none';
     resetPassword.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
+    loginFormDisplay.classList.remove('activeDisplay')
+    signupFormDisplay.classList.add('activeDisplay')
 }
 
 function showResetPassword () {
