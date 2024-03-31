@@ -5,6 +5,7 @@ const resetPassword = document.getElementById('reset-password');
 const resetPasswordSucsess = document.getElementById('reset-password-success');
 const loginOrSignup = document.getElementById('login-or-signup');
 const form = document.getElementById('form');
+const loginFormDisplay = document.getElementById('login-form-display');
 
 function showLoginForm() {
     signup.style.display = 'none';
@@ -12,6 +13,8 @@ function showLoginForm() {
     signupSuccess.style.display = 'none';
     resetPassword.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
+    // loginFormDisplay.style.backgroundColor = '#003366'
+    // loginFormDisplay.style.color = 'var(--primary-green)'
 }
 
 function showSignupForm() {
@@ -31,10 +34,22 @@ function showResetPassword () {
     resetPasswordSucsess.style.display = 'none';
 }
 
+// LOGIN logic
 document.getElementById('go-to-useraccount').onclick = function () {
     alert('Authenticating and redirecting to user profile...');
     window.location = '/user/user-dashboard.html';
 }
+
+// const loginForm = document.getElementById('login-form');
+// loginForm.addEventListener('submit', function(e) {
+//     e.preventDefault();
+
+//     // Get the form data
+//     const formData = new FormData(loginForm);
+//     const email = formData.get('email')
+//     console.log(email)
+
+// })
 
 function register() {
     // signup.style.display = 'none';
@@ -79,3 +94,6 @@ closeModal.onclick = function() {
     form.style.display = 'block';
     showLoginForm();
 }
+
+
+

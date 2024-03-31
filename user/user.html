@@ -14,37 +14,45 @@
         <div class="main">
             <div id="form">
                 <div id="login-or-signup">
-                    <button onclick="showLoginForm()">Login</button>
-                    <button onclick="showSignupForm()">Sign up</button>
+                    <button id="login-form-display" onclick="showLoginForm()">Login</button>
+                    <button id="signup-form-display" onclick="showSignupForm()">Sign up</button>
                 </div>
 
                 <div id="login">
-                    <input type="email" placeholder="Email">
-                    <input type="password" placeholder="Password">
-                    <button id="go-to-useraccount">Login</button>
-                    <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
-                    <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
+                    <form action="login-form">
+                        <input type="email" id="email" placeholder="Email">
+                        <input type="password" placeholder="Password">
+                        <button id="go-to-useraccount">Login</button>
+                        <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
+                        <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
+                    </form>
                 </div>
 
                 <div id="signup" style="display: none;">
-                    <input type="text" placeholder="Enter NIN number">
-                    <input type="text" placeholder="Surname">
-                    <input type="text" placeholder="Firstname">
-                    <input type="text" placeholder="Other names">
-                    <input type="date" name="dob" id="dob">
-                    <select id="state-dropdown" onchange="updateLGA()">
-                        <option value="">Select State</option>
-                    </select>
-                    <select id="lga-dropdown">
-                        <option value="">Select LGA</option>
-                    </select>
-                    <input type="email" placeholder="Email">
-                    <input type="password" placeholder="Password">
-                    <label for="uploadID">Upload ID card
-                        <input type="file" name="uploadID" id="uploadID" accept="image/*">
-                    </label>
-                    <button>Upload Selfie (plain background only)</button>
-                    <button onclick="register()">Register</button>
+                    <div>
+                        <input type="text" id="nin" placeholder="Enter your NIN number">
+                        <button id="validateNIN">Submit</button>
+                        <p id="error-nin"></p>
+                    </div>
+                    <div style="display: none;">
+                        <input type="text" placeholder="Surname">
+                        <input type="text" placeholder="Firstname">
+                        <input type="text" placeholder="Other names">
+                        <input type="date" name="dob" id="dob">
+                        <select id="state-dropdown" onchange="updateLGA()">
+                            <option value="">Select State</option>
+                        </select>
+                        <select id="lga-dropdown">
+                            <option value="">Select LGA</option>
+                        </select>
+                        <input type="email" placeholder="Email">
+                        <input type="password" placeholder="Password">
+                        <label for="uploadID">Upload ID card
+                            <input type="file" name="uploadID" id="uploadID" accept="image/*">
+                        </label>
+                        <button>Upload Selfie (plain background only)</button>
+                        <button onclick="register()">Register</button>
+                    </div>
                     <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>
                 </div>
 
