@@ -19,7 +19,7 @@
                 </div>
 
                 <div id="login">
-                    <form action="login-form">
+                    <form action="login">
                         <input type="email" id="email" placeholder="Email">
                         <input type="password" placeholder="Password">
                         <button id="go-to-useraccount">Login</button>
@@ -29,30 +29,34 @@
                 </div>
 
                 <div id="signup" style="display: none;">
-                    <div>
-                        <input type="text" id="nin" placeholder="Enter your NIN number">
-                        <button id="validateNIN">Submit</button>
-                        <p id="error-nin"></p>
-                    </div>
-                    <div style="display: none;">
-                        <input type="text" placeholder="Surname">
-                        <input type="text" placeholder="Firstname">
-                        <input type="text" placeholder="Other names">
-                        <input type="date" name="dob" id="dob">
-                        <select id="state-dropdown" onchange="updateLGA()">
-                            <option value="">Select State</option>
-                        </select>
-                        <select id="lga-dropdown">
-                            <option value="">Select LGA</option>
-                        </select>
-                        <input type="email" placeholder="Email">
-                        <input type="password" placeholder="Password">
-                        <label for="uploadID">Upload ID card
-                            <input type="file" name="uploadID" id="uploadID" accept="image/*">
-                        </label>
-                        <button>Upload Selfie (plain background only)</button>
-                        <button onclick="register()">Register</button>
-                    </div>
+                    <form action="singup" id="signup-form">
+                        <div>
+                            <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" placeholder="Enter 11-digit NIN number" required>
+                            <span id="validation"></span>
+                            <p id="guide-text">NIN must be numeric</p>
+                            <p id="error-nin"></p>
+                            <button id="validateNIN" disabled>Submit</button>
+                        </div>
+                        <div style="display: none;">
+                            <input type="text" placeholder="Surname">
+                            <input type="text" placeholder="Firstname">
+                            <input type="text" placeholder="Other names">
+                            <input type="date" name="dob" id="dob">
+                            <select id="state-dropdown" onchange="updateLGA()">
+                                <option value="">Select State</option>
+                            </select>
+                            <select id="lga-dropdown">
+                                <option value="">Select LGA</option>
+                            </select>
+                            <input type="email" placeholder="Email">
+                            <input type="password" placeholder="Password">
+                            <label for="uploadID">Upload ID card
+                                <input type="file" name="uploadID" id="uploadID" accept="image/*">
+                            </label>
+                            <button>Upload Selfie (plain background only)</button>
+                            <button onclick="register()">Register</button>
+                        </div>
+                    </form>
                     <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>
                 </div>
 

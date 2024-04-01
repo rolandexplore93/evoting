@@ -57,6 +57,20 @@ document.getElementById('go-to-useraccount').onclick = function () {
 
 // })
 
+// Check whether NIN input is valid or not. Then enable submission button if it's valid
+document.addEventListener('DOMContentLoaded', () => {
+    const signupForm = document.getElementById('signup-form');
+    const validateNIN = document.getElementById('validateNIN');
+
+    signupForm.addEventListener('input', () => {
+        if (signupForm.checkValidity()) {
+            validateNIN.removeAttribute('disabled')
+        } else {
+            validateNIN.setAttribute('disabled', 'disabled')
+        }
+    })
+})
+
 function register() {
     // signup.style.display = 'none';
     signupSuccess.style.display = 'block';

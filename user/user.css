@@ -30,18 +30,54 @@
 
 input[type="email"],
 input[type="password"],
+input[type="tel"],
 input[type="text"] {
-    display: block;
+    /* display: block; */
     width: 95%;
     margin: 10px auto;
-    padding: 10px;
+    padding: 5px;
+    padding-left: 0;
     border: 0;
     outline: 0;
     border-bottom: 1px solid black;
+    /* border: 1px solid red; */
+
+}
+
+form > div {
+    position: relative;
+} 
+
+input:invalid:not(:placeholder-shown) + span::after {
+    position: absolute;
+    content: '✖';
+    margin: 10px auto;
+    padding: 5px;
+    padding-left: 0px;
+    color: red;
+}
+
+input:valid:not(:placeholder-shown) + span::after {
+    position: absolute;
+    content: '✓';
+    margin: 10px auto;
+    padding: 5px;
+    padding-left: 0px;
+    color: green;
+    /* border: 1px solid red; */
+
+}
+
+
+#guide-text {
+    /* border: 1px solid red; */
+    margin: 0;
+    margin-top: -8px;
+    font-size: 10px;
 }
 
 button {
-    width: 95%;
+    width: 100%;
     padding: 10px;
     margin: 10px auto;
     display: block;
