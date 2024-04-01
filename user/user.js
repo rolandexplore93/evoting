@@ -133,10 +133,12 @@ const validateUserNIN = async () => {
         return
     }
 
-    await fetch('/backend/validate-nin', {
+    const ninData = { ninDigit: nin }
+
+    await fetch('http://127.0.0.1:3000/validatenin', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(nin)
+        body: JSON.stringify(ninData)
     })
     .then(response => response.json())
     .then(data => {
