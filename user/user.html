@@ -29,13 +29,13 @@
                 </div>
 
                 <div id="signup" style="display: none;">
-                    <form action="singup" id="signup-form">
+                    <form id="signup-form">
                         <div>
                             <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" placeholder="Enter 11-digit NIN number" required>
                             <span id="validation"></span>
                             <p id="guide-text">NIN must be numeric</p>
                             <p id="error-nin"></p>
-                            <button id="validateNIN" disabled>Submit</button>
+                            <button id="validateNIN" disabled onclick="validateUserNIN()">Submit</button>
                         </div>
                         <div style="display: none;">
                             <input type="text" placeholder="Surname">

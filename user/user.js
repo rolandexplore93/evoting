@@ -40,37 +40,6 @@ function showResetPassword () {
     resetPasswordSucsess.style.display = 'none';
 }
 
-// LOGIN logic
-document.getElementById('go-to-useraccount').onclick = function () {
-    alert('Authenticating and redirecting to user profile...');
-    window.location = '/user/user-dashboard.html';
-}
-
-// const loginForm = document.getElementById('login-form');
-// loginForm.addEventListener('submit', function(e) {
-//     e.preventDefault();
-
-//     // Get the form data
-//     const formData = new FormData(loginForm);
-//     const email = formData.get('email')
-//     console.log(email)
-
-// })
-
-// Check whether NIN input is valid or not. Then enable submission button if it's valid
-document.addEventListener('DOMContentLoaded', () => {
-    const signupForm = document.getElementById('signup-form');
-    const validateNIN = document.getElementById('validateNIN');
-
-    signupForm.addEventListener('input', () => {
-        if (signupForm.checkValidity()) {
-            validateNIN.removeAttribute('disabled')
-        } else {
-            validateNIN.setAttribute('disabled', 'disabled')
-        }
-    })
-})
-
 function register() {
     // signup.style.display = 'none';
     signupSuccess.style.display = 'block';
@@ -114,6 +83,71 @@ closeModal.onclick = function() {
     form.style.display = 'block';
     showLoginForm();
 }
+
+
+// LOGIN logic
+document.getElementById('go-to-useraccount').onclick = function () {
+    alert('Authenticating and redirecting to user profile...');
+    window.location = '/user/user-dashboard.html';
+}
+
+// const loginForm = document.getElementById('login-form');
+// loginForm.addEventListener('submit', function(e) {
+//     e.preventDefault();
+
+//     // Get the form data
+//     const formData = new FormData(loginForm);
+//     const email = formData.get('email')
+//     console.log(email)
+
+// })
+
+// SIGNUP LOGIC
+// Check whether NIN input is valid or not. Then enable submission button if it's valid
+document.addEventListener('DOMContentLoaded', () => {
+    const signupForm = document.getElementById('signup-form');
+    const validateNIN = document.getElementById('validateNIN');
+
+    signupForm.addEventListener('input', () => {
+        if (signupForm.checkValidity()) {
+            validateNIN.removeAttribute('disabled')
+        } else {
+            validateNIN.setAttribute('disabled', 'disabled')
+        }
+    })
+});
+
+const validateUserNIN = async () => {
+    const nin = document.getElementById('nin').value;
+    const guidedText = document.getElementById('guide-text');
+    
+    const ninFirst = nin[0]
+    if (ninFirst == 0 || ninFirst == 9) {
+        guidedText.textContent = 'NIN is not valid';
+        guidedText.style.color = 'red';
+
+        setTimeout(() => {
+            guidedText.textContent = 'NIN must be numeric';
+            guidedText.style.color = 'inherit';
+        }, 1000)
+        return
+    }
+
+    await fetch('/backend/validate-nin', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(nin)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => {
+        console.log(error)
+    })
+}
+
+
 
 
 
