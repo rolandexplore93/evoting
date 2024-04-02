@@ -19,7 +19,7 @@
                 </div>
 
                 <div id="login">
-                    <form action="login">
+                    <form>
                         <input type="email" id="email" placeholder="Email">
                         <input type="password" placeholder="Password">
                         <button id="go-to-useraccount">Login</button>
@@ -30,14 +30,15 @@
 
                 <div id="signup" style="display: none;">
                     <form id="signup-form">
-                        <div>
+                        <div id="form-section-1">
                             <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" placeholder="Enter 11-digit NIN number" required>
                             <span id="validation"></span>
                             <p id="guide-text">NIN must be numeric</p>
                             <p id="error-nin"></p>
-                            <button id="validateNIN" disabled onclick="validateUserNIN()">Submit</button>
+                            <button type="button" id="validateNIN" onclick="validateUserNIN()" disabled>Submit</button>
                         </div>
-                        <div style="display: none;">
+                        <!-- HTML TEMPLATE FOR SIGNUP SECTION -->
+                        <div style="display: none;" id="form-section-2">
                             <input type="text" placeholder="Surname">
                             <input type="text" placeholder="Firstname">
                             <input type="text" placeholder="Other names">

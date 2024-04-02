@@ -8,8 +8,7 @@ const form = document.getElementById('form');
 const loginFormDisplay = document.getElementById('login-form-display');
 const signupFormDisplay = document.getElementById('signup-form-display');
 
-loginFormDisplay.classList.add('activeDisplay')
-
+loginFormDisplay.classList.add('activeDisplay');
 
 function showLoginForm() {
     signup.style.display = 'none';
@@ -119,7 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const validateUserNIN = async () => {
     const nin = document.getElementById('nin').value;
+    const ninHTML = document.getElementById('nin');
     const guidedText = document.getElementById('guide-text');
+    const formSection2 = document.getElementById('form-section-2');
     
     const ninFirst = nin[0]
     if (ninFirst == 0 || ninFirst == 9) {
@@ -135,7 +136,7 @@ const validateUserNIN = async () => {
 
     const ninData = { ninDigit: nin }
 
-    await fetch('http://127.0.0.1:3000/validatenin', {
+    await fetch('http://localhost:3000/validatenin', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(ninData)
@@ -143,6 +144,45 @@ const validateUserNIN = async () => {
     .then(response => response.json())
     .then(data => {
         console.log(data)
+        if (data.status == false) {
+            guidedText.textContent = 'NIN already exist and linked to another user. Please enter your NIN';
+            guidedText.style.color = 'red';
+
+            setTimeout(() => {
+                guidedText.textContent = 'NIN must be numeric';
+                guidedText.style.color = 'inherit';
+            }, 1000)
+            return
+        }
+
+        guidedText.textContent = data.message;
+        guidedText.style.color = 'green';
+        document.getElementById('validateNIN').style.display = 'none';
+        ninHTML.textContent = data.userData;
+        ninHTML.setAttribute('disabled', 'disabled');
+        setTimeout(() => {
+            formSection2.style.display = 'block';
+            formSection2.innerHTML = `
+                <input type="text" placeholder="Surname" value='${data.userData.lastName}' disabled>
+                <input type="text" placeholder="Firstname" value='${data.userData.firstName}' disabled>
+                <input type="text" placeholder="Other names" value='${data.userData.username}' disabled>
+                <input type="date" name="dob" id="dob">
+                <select id="state-dropdown" onchange="updateLGA()">
+                    <option value="">Select State</option>
+                </select>
+                <select id="lga-dropdown">
+                    <option value="">Select LGA</option>
+                </select>
+                <input type="email" placeholder="Email">
+                <input type="password" placeholder="Password">
+                <label for="uploadID">Upload ID card
+                    <input type="file" name="uploadID" id="uploadID" accept="image/*">
+                </label>
+                <button>Upload Selfie (plain background only)</button>
+                <button onclick="register()">Register</button>
+            `
+
+        }, 1500)
     })
     .catch(error => {
         console.log(error)
