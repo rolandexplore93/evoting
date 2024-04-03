@@ -39,22 +39,36 @@
                         </div>
                         <!-- HTML TEMPLATE FOR SIGNUP SECTION -->
                         <div style="display: none;" id="form-section-2">
-                            <input type="text" placeholder="Surname">
-                            <input type="text" placeholder="Firstname">
-                            <input type="text" placeholder="Other names">
-                            <input type="date" name="dob" id="dob">
-                            <select id="state-dropdown" onchange="updateLGA()">
-                                <option value="">Select State</option>
-                            </select>
-                            <select id="lga-dropdown">
-                                <option value="">Select LGA</option>
-                            </select>
-                            <input type="email" placeholder="Email">
-                            <input type="password" placeholder="Password">
-                            <label for="uploadID">Upload ID card
-                                <input type="file" name="uploadID" id="uploadID" accept="image/*">
-                            </label>
-                            <button>Upload Selfie (plain background only)</button>
+                            <div class="entry-wrapper">Surname: 
+                                <input type="text" placeholder="Surname">
+                            </div>
+                            <div class="entry-wrapper">Firstname: 
+                                <input type="text" placeholder="Firstname">
+                            </div>
+                            <div class="entry-wrapper">Username:
+                                <input type="text" placeholder="Username">
+                            </div>
+                            <div class="entry-wrapper">DOB:
+                                <input type="date" name="dob" id="dob">
+                                <select id="state-dropdown" onchange="updateLGA()">
+                                    <option value="" selected>Select State</option>
+                                </select>
+                                <select id="lga-dropdown">
+                                    <option value="">Select LGA</option>
+                                </select>
+                            </div>
+                            <div class="entry-wrapper">Email:
+                                <input type="email" placeholder="Email">
+                            </div>
+                            <div class="entry-wrapper">Password:
+                                <input type="password" placeholder="Password">
+                            </div>
+                            <div class="entry-wrapper upload"><p>Upload ID card</p>
+                                    <input type="file" name="uploadID" id="uploadID" accept="image/*">
+                            </div>
+                            <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
+                                    <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*">
+                            </div>
                             <button onclick="register()">Register</button>
                         </div>
                     </form>

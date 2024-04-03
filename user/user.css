@@ -1,9 +1,20 @@
+* {
+    box-sizing: border-box;
+}
+
 #form {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     max-width: 450px;
     margin: auto;
     padding: 20px;
     background: #fff;
+    font-size: 14px;
+}
+
+.entry-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 #login-or-signup {
@@ -42,6 +53,16 @@ input[type="text"] {
     border-bottom: 1px solid black;
     /* border: 1px solid red; */
 
+}
+
+input[type="file"] {
+    margin: 3px auto;
+    outline: 0;
+    border-bottom: 1px solid black;
+}
+
+.upload > p{
+    flex: 1;
 }
 
 form > div {

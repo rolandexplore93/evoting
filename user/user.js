@@ -158,31 +158,55 @@ const validateUserNIN = async () => {
         guidedText.textContent = data.message;
         guidedText.style.color = 'green';
         document.getElementById('validateNIN').style.display = 'none';
-        ninHTML.textContent = data.userData;
+        ninHTML.textContent = data.userData.nin;
         ninHTML.setAttribute('disabled', 'disabled');
         setTimeout(() => {
             formSection2.style.display = 'block';
             formSection2.innerHTML = `
-                <input type="text" placeholder="Surname" value='${data.userData.lastName}' disabled>
-                <input type="text" placeholder="Firstname" value='${data.userData.firstName}' disabled>
-                <input type="text" placeholder="Other names" value='${data.userData.username}' disabled>
-                <input type="date" name="dob" id="dob">
-                <select id="state-dropdown" onchange="updateLGA()">
-                    <option value="">Select State</option>
-                </select>
-                <select id="lga-dropdown">
-                    <option value="">Select LGA</option>
-                </select>
-                <input type="email" placeholder="Email">
-                <input type="password" placeholder="Password">
-                <label for="uploadID">Upload ID card
-                    <input type="file" name="uploadID" id="uploadID" accept="image/*">
-                </label>
-                <button>Upload Selfie (plain background only)</button>
-                <button onclick="register()">Register</button>
+                <div class="entry-wrapper">Surname: 
+                    <input type="text" placeholder="Surname" value='${data.userData.lastName}' disabled required>
+                    </div>
+                    <div class="entry-wrapper">Firstname: 
+                        <input type="text" placeholder="Firstname" value='${data.userData.firstName}' disabled required>
+                    </div>
+                    <div class="entry-wrapper">Username:
+                        <input type="text" placeholder="Username" value='${data.userData.username}' disabled required>
+                    </div>
+                    <div class="entry-wrapper">Date of Birth:
+                        <input type="date" name="dob" id="dob">
+                    </div>
+                    <div class="entry-wrapper">
+                        <div>State:
+                            <select id="state-dropdown" onchange="updateLGA()" disabled>
+                                <option value="${data.userData.state}">${data.userData.state}</option>
+                            </select>
+                        </div>
+                        <div>LGA:
+                            <select id="lga-dropdown" disabled>
+                                <option value="${data.userData.lga}">${data.userData.lga}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="entry-wrapper">Email:
+                        <input type="email" placeholder="Email" value='${data.userData.email}' required>
+                    </div>
+                    <div class="entry-wrapper">Phone Number:
+                        <input type="text" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
+                    </div>
+                    <div class="entry-wrapper">Password:
+                        <input type="password" placeholder="Password" required>
+                    </div>
+                    <div class="entry-wrapper upload"><p>Upload ID card</p>
+                        <input type="file" name="uploadID" id="uploadID" accept="image/*" required>
+                    </div>
+                    <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
+                        <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*" required>
+                    </div>
+                    <button onclick="register()">Register</button>
+                </div>
             `
 
-        }, 1500)
+        }, 1500);
     })
     .catch(error => {
         console.log(error)
