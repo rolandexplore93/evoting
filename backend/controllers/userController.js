@@ -1,6 +1,7 @@
 var createError = require('http-errors');
 const naijaFaker = require("naija-faker");
 const { states, stateLGA } = require('../nigerianStates');
+const Users = require('../models/users');
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
@@ -10,6 +11,8 @@ exports.validateNIN = async (req, res, next) => {
         const lName = naijaPersonInfo[0].lName;
         const fName = naijaPersonInfo[0].fName;
         const state = naijaPersonInfo[0].state;
+        // const state = 'akwa ibom';
+        const userStateOfOrigin = state == 'fct - abuja' ? 'Abuja' : `${state[0].toUpperCase()}${state.slice(1)}`;
     
         const userData = {
             firstName: `${fName[0].toUpperCase()}${fName.slice(1)}`,
@@ -17,10 +20,11 @@ exports.validateNIN = async (req, res, next) => {
             username: `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}`,
             email: `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}@yopmail.com`,
             phoneNumber: `${naijaPersonInfo[0].phoneNumber}`,
-            state: state == 'fct - abuja' ? 'Abuja' : `${state[0].toUpperCase()}${state.slice(1)}`,
-            lga: assignLGAtoUser(state),
+            state: userStateOfOrigin,
+            lga: assignLGAtoUser(userStateOfOrigin),
             nin
         }
+        console.log(state)
         res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
         next(error)
@@ -35,7 +39,6 @@ assignLGAtoUser = (userState) => {
         .split(' ') // Split state string into array
         .map(eachWord => eachWord.charAt(0).toUpperCase() + eachWord.substring(1)) // Capitalize the first letter of each word
         .join(' ').trim()
-
         const lgas = stateLGA[formatStateString];
         if (!lgas) {
             console.log(`LGA not found for ${formatStateString}`);
@@ -50,6 +53,47 @@ assignLGAtoUser = (userState) => {
 }
 
 exports.signup = async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
+
+    try {
+        // Check for existing user with the same NIN, email, or phone number
+        const existingUser = await Users.findOne({
+            $or: [
+                { ninNumber: req.body.ninNumber },
+                { email: req.body.email },
+                { phonenumber: req.body.phonenumber }
+            ]
+        });
+
+        if (existingUser) {
+            // Send appropriate responses if the details exist
+            if (existingUser.ninNumber === req.body.ninNumber) {
+                return res.status(409).json({ message: "NIN already exists" });
+            } else if (existingUser.email === req.body.email) {
+                return res.status(409).json({ message: "Email already exists" });
+            } else if (existingUser.phoneNo === req.body.phonenumber) {
+                return res.status(409).json({ message: "Phone number already exists" });
+            }
+            return
+        }
+
+        // If no existing user, create new user
+        const newUser = new Users({
+            ...req.body,
+            // Assuming files are uploaded and stored locally in 'uploads' folder
+            // idCardImage: req.files['uploadID'] ? req.files['uploadID'][0].path : '',
+            // image: req.files['uploadSelfie'] ? req.files['uploadSelfie'][0].path : ''
+        });
+
+        // Save the new user to the database
+        await newUser.save();
+        console.log('user created')
+
+        // Respond with success message
+        res.status(201).json({ message: "User successfully registered" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "An error occurred during registration" });
+    }
 }
 
