@@ -2,7 +2,8 @@ var express = require('express')
 var cors = require('cors')
 var bodyParser = require('body-parser')
 var createError = require('http-errors')
-require('dotenv').config()
+require("dotenv").config(); // Enable access to environment variables
+require("./helpers/databaseConnection.js")
 var validator = require('validator');
 const userRouter = require('./routes/userRoutes')
 
