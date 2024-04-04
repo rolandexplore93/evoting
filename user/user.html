@@ -19,13 +19,13 @@
                 </div>
 
                 <div id="login">
-                    <form>
+                    <form id="login-form">
                         <input type="email" id="email" placeholder="Email">
-                        <input type="password" placeholder="Password">
-                        <button id="go-to-useraccount">Login</button>
-                        <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
-                        <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
+                        <input type="password" id="password" placeholder="Password">
+                        <button type="submit">Login</button>
                     </form>
+                    <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
+                    <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
                 </div>
 
                 <div id="signup" style="display: none;">
@@ -61,7 +61,7 @@
                                 <input type="email" placeholder="Email">
                             </div>
                             <div class="entry-wrapper">Password:
-                                <input type="password" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+                                <input type="password" id="passwordField" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
                             </div>
                             <div class="entry-wrapper upload"><p>Upload ID card</p>
                                 <input type="file" name="uploadID" id="uploadID" accept="image/*">
@@ -69,7 +69,7 @@
                             <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
                                 <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*">
                             </div>
-                            <button onclick="register()">Register</button>
+                            <button type="button">Register</button>
                         </div>
                     </form>
                     <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>

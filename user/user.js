@@ -80,21 +80,42 @@ closeModal.onclick = function() {
 
 
 // LOGIN logic
-document.getElementById('go-to-useraccount').onclick = function () {
-    alert('Authenticating and redirecting to user profile...');
-    window.location = '/user/user-dashboard.html';
-}
+// document.getElementById('go-to-useraccount').onclick = function () {
+//     alert('Authenticating and redirecting to user profile...');
+//     window.location = '/user/user-dashboard.html';
+// }
 
-// const loginForm = document.getElementById('login-form');
-// loginForm.addEventListener('submit', function(e) {
-//     e.preventDefault();
+const loginForm = document.getElementById('login-form');
+loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-//     // Get the form data
-//     const formData = new FormData(loginForm);
-//     const email = formData.get('email')
-//     console.log(email)
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    // window.location.href = `${window.location.origin}${data.path}`;
+    try {
+        const response = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-// })
+        const data = await response.json();
+        console.log(data)
+        if (data.success) {
+            // Redirect based on role
+            alert(data.message);
+            window.setTimeout(() => {
+                window.location.href = `${window.location.origin}${data.path}`;
+            }, 2000);
+        } else {
+            alert(data.message);
+        }
+    } catch (error) {
+        console.error('Login failed:', error);
+        alert('An error occurred during login. Please try again.');
+    }
+})
 
 // SIGNUP LOGIC
 // Check whether NIN input is valid or not. Then enable submission button if it's valid
@@ -271,7 +292,6 @@ const register = async () => {
     .catch(error => {
         console.error('Error:', error);
     });
-
     // showSignupSuccess();
 }
 
@@ -281,6 +301,8 @@ const register = async () => {
 
 
 
+// Frontend constructs full URL and redirects
+// window.location.href = `${window.location.origin}${data.path}`;
 
     // const ninNumber = nin.value;
     // const lastname = document.getElementById('lastname').value;
