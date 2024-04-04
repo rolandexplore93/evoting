@@ -37,16 +37,18 @@ const userSchema = new Schema({
     resetTokenExpiration: { type: Date, default: '' }
 }, {timestamps: true});
 
-userSchema.pre('save', async function(next){
-    try {
-        const salt = await bcrypt.genSalt();
-        const encryptPassword = await bcrypt.hash(this.password, salt);
-        this.password = encryptPassword;
-        next()
-    } catch (error) {
-        next(error)
-    }
-})
+// userSchema.pre('save', async function(next){
+//     try {
+//         const salt = await bcrypt.genSalt();
+//         console.log('Pass: ' + this.password)
+//         const encryptPassword = await bcrypt.hash(this.password, salt);
+//         this.password = encryptPassword;
+//         console.log('Pass2: ' + this.password)
+//         next()
+//     } catch (error) {
+//         next(error)
+//     }
+// })
 
 module.exports = mongoose.model('User', userSchema)
 

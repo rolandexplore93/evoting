@@ -97,20 +97,31 @@ exports.signup = async (req, res) => {
             return
         }
 
-        const dob = req.body.dateOfBirth
+        const dob = req.body.dateOfBirth;
+        const password = req.body.password.trim();
+
+        const salt = await bcrypt.genSalt();
+        const encryptedPassword = await bcrypt.hash(password, salt);
+
+        const result = await bcrypt.compare(password, encryptedPassword);
+        console.log('Hash:', encryptedPassword);
+        console.log('Comparison result:', result);
+
         const age = calculateAge(dob);
         // If no existing user, create new user
         const newUser = new Users({
             ...req.body,
             age,
+            password: encryptedPassword,
             uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
         });
+        // console.log(newUser)
 
         // Save the new user to the database
         await newUser.save();
 
-        res.status(201).json({ message: "User successfully registered" });
+        res.status(201).json({ message: "User successfully registered", newUser });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "An error occurred during registration" });
@@ -135,4 +146,37 @@ function calculateAge(dob) {
         age--;
     }
     return age;
+}
+
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const user = await Users.findOne({ email });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        const hash = user.password
+        const isPasswordMatch = await bcrypt.compare(password, hash)
+        
+        if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
+        
+        // Relative path for user redirection
+        const userDashboardUrl = `/user/user-dashboard.html`;
+        const adminDashboardUrl = `/admin/admin.html`;
+        const errorUrl = '/error.html';
+        // Convert userdata to plain object and 
+        //delete password field before sending the remaining data to user
+        const userInfoNoPassword = user.toObject();
+        delete userInfoNoPassword.password;
+
+        if (user.role === 5) {
+            return res.json({ success: true, path: userDashboardUrl, role: user.role, user: userInfoNoPassword, message: "Login successful. Redirecting to User dashboard" });
+        } else if (user.role === 4) {
+            return res.json({ success: true, path: adminDashboardUrl, role: user.role, user: userInfoNoPassword, message: "Login successful. Redirecting to Admin dashboard"  });
+        } else {
+            return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "An error occurred during login" });
+        
+    }
 }

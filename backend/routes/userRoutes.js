@@ -1,6 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
-const { validateNIN, signup } = require("../controllers/userController");
+const { validateNIN, signup, login } = require("../controllers/userController");
 const multer = require('multer');
 
 // MULTER: Filenames and storage location set up
@@ -15,7 +15,7 @@ const storage = multer.diskStorage({ // Configure custom file name
     }
   });
   
-const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
 
 userRouter.post('/validatenin', validateNIN);
 userRouter.post('/signup', 
@@ -31,5 +31,7 @@ userRouter.post('/signup',
         }
     }
 );
+userRouter.post('/login', login)
+
 
 module.exports = userRouter;
