@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
     ninNumber: { type: String, default: '' },
@@ -32,11 +33,20 @@ const userSchema = new Schema({
     verificationDate: { type: Date, default: null },
     // verifiedBy: { type: Schema.Types.ObjectId, ref: 'Staff', default: 1 },
     verifiedBy: { type: String, default: 'admin1' },
-    dateCreated: { type: Date },
-    dateUpdated: { type: Date },
     resetToken: { type: String, default: '' },
     resetTokenExpiration: { type: Date, default: '' }
-}, {timestamps: true})
+}, {timestamps: true});
+
+userSchema.pre('save', async function(next){
+    try {
+        const salt = await bcrypt.genSalt();
+        const encryptPassword = await bcrypt.hash(this.password, salt);
+        this.password = encryptPassword;
+        next()
+    } catch (error) {
+        next(error)
+    }
+})
 
 module.exports = mongoose.model('User', userSchema)
 

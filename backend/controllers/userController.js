@@ -2,14 +2,12 @@ var createError = require('http-errors');
 const naijaFaker = require("naija-faker");
 const { states, stateLGA } = require('../nigerianStates');
 const Users = require('../models/users');
-
-
+const bcrypt = require("bcrypt");
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
     const nin = req.body.ninDigit;
     try {
-
         // Check if NIN exists in the Users db
         const existingUserWithNIN = await Users.findOne({ ninNumber: nin });
         if (existingUserWithNIN) {
@@ -48,26 +46,6 @@ exports.validateNIN = async (req, res, next) => {
             }
             
         }
-        // console.log(state)
-
-        // const naijaPersonInfo = naijaFaker.getPersonList({ amt: 1 });
-        // const lName = naijaPersonInfo[0].lName;
-        // const fName = naijaPersonInfo[0].fName;
-        // const state = naijaPersonInfo[0].state;
-        // // const state = 'akwa ibom';
-        // const userStateOfOrigin = state == 'fct - abuja' ? 'Abuja' : `${state[0].toUpperCase()}${state.slice(1)}`;
-    
-        // const userData = {
-        //     firstName: `${fName[0].toUpperCase()}${fName.slice(1)}`,
-        //     lastName: `${lName[0].toUpperCase()}${lName.slice(1)}`,
-        //     username: `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}`,
-        //     email: `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}@yopmail.com`,
-        //     phoneNumber: `${naijaPersonInfo[0].phoneNumber}`,
-        //     state: userStateOfOrigin,
-        //     lga: assignLGAtoUser(userStateOfOrigin),
-        //     nin
-        // }
-
 
         res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
@@ -119,19 +97,19 @@ exports.signup = async (req, res) => {
             return
         }
 
+        const dob = req.body.dateOfBirth
+        const age = calculateAge(dob);
         // If no existing user, create new user
         const newUser = new Users({
             ...req.body,
-            // files are uploaded and stored locally in 'uploads' folder
+            age,
             uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
         });
 
         // Save the new user to the database
-        // await newUser.save();
+        await newUser.save();
 
-        // Respond with success message
-        // console.log(req.files["uploadID"][0],req.files["uploadID"][0].path,req.files["uploadID"], "User successfully registered", req.body )
         res.status(201).json({ message: "User successfully registered" });
     } catch (error) {
         console.error(error);
@@ -139,6 +117,22 @@ exports.signup = async (req, res) => {
     }
 }
 
+function calculateAge(dob) {
+    // if birthDate is a string, convert it to a Date object
+    if (typeof dob === 'string') {
+        dob = new Date(dob);
+    }
+    // Ensure dob is a Date object
+    if (!(dob instanceof Date) || isNaN(dob)) {
+        throw new Error('Invalid date');
+    }
+    const currentDate = new Date();
+    let age = currentDate.getFullYear() - dob.getFullYear();
+    const m = currentDate.getMonth() - dob.getMonth();
 
-
-
+    // If dob is yet to come in the current year, adjust the age
+    if (m < 0 || (m === 0 && currentDate.getDate() < dob.getDate())) {
+        age--;
+    }
+    return age;
+}
