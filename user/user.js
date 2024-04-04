@@ -7,6 +7,7 @@ const loginOrSignup = document.getElementById('login-or-signup');
 const form = document.getElementById('form');
 const loginFormDisplay = document.getElementById('login-form-display');
 const signupFormDisplay = document.getElementById('signup-form-display');
+const nin = document.getElementById('nin');
 
 loginFormDisplay.classList.add('activeDisplay');
 
@@ -39,12 +40,7 @@ function showResetPassword () {
     resetPasswordSucsess.style.display = 'none';
 }
 
-function register() {
-    // signup.style.display = 'none';
-    signupSuccess.style.display = 'block';
-    form.style.display = 'none';
-    // showSignupSuccess();
-}
+
 
 // function showSignupSuccess() {
 //     signupSuccess.style.display = 'block';
@@ -116,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
+// Verify NIN and populate user information to the signup form
 const validateUserNIN = async () => {
     const nin = document.getElementById('nin').value;
     const ninHTML = document.getElementById('nin');
@@ -143,75 +140,207 @@ const validateUserNIN = async () => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log(data)
-        if (data.status == false) {
-            guidedText.textContent = 'NIN already exist and linked to another user. Please enter your NIN';
+        if (data.success == false) {
+            guidedText.textContent = data.message;
             guidedText.style.color = 'red';
 
             setTimeout(() => {
                 guidedText.textContent = 'NIN must be numeric';
                 guidedText.style.color = 'inherit';
-            }, 1000)
+                document.getElementById('validateNIN').style.display = 'block';
+            }, 800)
             return
         }
 
         guidedText.textContent = data.message;
         guidedText.style.color = 'green';
         document.getElementById('validateNIN').style.display = 'none';
-        ninHTML.textContent = data.userData.nin;
+        ninHTML.textContent = data.userData.ninNumber;
         ninHTML.setAttribute('disabled', 'disabled');
         setTimeout(() => {
             formSection2.style.display = 'block';
             formSection2.innerHTML = `
-                <div class="entry-wrapper">Surname: 
-                    <input type="text" placeholder="Surname" value='${data.userData.lastName}' disabled required>
+                <div class="entry-wrapper">Lastname: 
+                    <input class="inputField" type="text" id="lastname" placeholder="Lastname" value='${data.userData.lastName}' disabled required>
+                </div>
+                <div class="entry-wrapper">Firstname: 
+                    <input class="inputField" type="text" id="firstname" placeholder="Firstname" value='${data.userData.firstName}' disabled required>
+                </div>
+                <div class="entry-wrapper">Username:
+                    <input class="inputField" type="text" id="username" placeholder="Username" value='${data.userData.username}' disabled required>
+                </div>
+                <div class="entry-wrapper">Date of Birth:
+                    <input class="inputField" type="date" name="dob" id="dob">
+                </div>
+                <div class="entry-wrapper">
+                    <div>State:
+                        <select id="state-dropdown" onchange="updateLGA()" disabled>
+                            <option id="state" value="${data.userData.state}">${data.userData.state}</option>
+                        </select>
                     </div>
-                    <div class="entry-wrapper">Firstname: 
-                        <input type="text" placeholder="Firstname" value='${data.userData.firstName}' disabled required>
+                    <div>LGA:
+                        <select id="lga-dropdown" disabled>
+                            <option id="lga" value="${data.userData.lga}">${data.userData.lga}</option>
+                        </select>
                     </div>
-                    <div class="entry-wrapper">Username:
-                        <input type="text" placeholder="Username" value='${data.userData.username}' disabled required>
+                    <div>Gender:
+                        <select id="gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="others">Others</option>
+                            <option value="ns">Not Specified</option>
+                        </select>
                     </div>
-                    <div class="entry-wrapper">Date of Birth:
-                        <input type="date" name="dob" id="dob">
-                    </div>
-                    <div class="entry-wrapper">
-                        <div>State:
-                            <select id="state-dropdown" onchange="updateLGA()" disabled>
-                                <option value="${data.userData.state}">${data.userData.state}</option>
-                            </select>
-                        </div>
-                        <div>LGA:
-                            <select id="lga-dropdown" disabled>
-                                <option value="${data.userData.lga}">${data.userData.lga}</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="entry-wrapper">Email:
-                        <input type="email" placeholder="Email" value='${data.userData.email}' required>
-                    </div>
-                    <div class="entry-wrapper">Phone Number:
-                        <input type="text" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
-                    </div>
-                    <div class="entry-wrapper">Password:
-                        <input type="password" placeholder="Password" required>
-                    </div>
-                    <div class="entry-wrapper upload"><p>Upload ID card</p>
-                        <input type="file" name="uploadID" id="uploadID" accept="image/*" required>
-                    </div>
-                    <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
-                        <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*" required>
-                    </div>
-                    <button onclick="register()">Register</button>
+                </div>
+                <div class="entry-wrapper">Email:
+                    <input class="inputField" type="email" id="userEmail" placeholder="Email" value='${data.userData.email}' required>
+                </div>
+                <div class="entry-wrapper">Phone Number:
+                    <input class="inputField" type="text" id="phonenumber" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
+                </div>
+                <div class="entry-wrapper">Password:
+                    <input class="inputField" type="password" id="password" placeholder="Password" required>
+                </div>
+                <div class="entry-wrapper upload"><p>Upload ID card</p>
+                    <input class="inputField" type="file" name="uploadID" id="uploadID" accept="image/*" required>
+                </div>
+                <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
+                    <input class="inputField" type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*" required>
+                </div>
+                    <button type="button" id="registerButton" onclick="register()" disabled>Register</button>
                 </div>
             `
-
-        }, 1500);
+            listenForClickOnRegisterForm();
+        }, 1000);
     })
     .catch(error => {
         console.log(error)
     })
+};
+
+// Enable register button when all fields are filled 
+const listenForClickOnRegisterForm = () => {
+    console.log("Working")
+    const inputs = document.querySelectorAll('.inputField');
+    const registerButton = document.getElementById('registerButton');
+    console.log(inputs)
+
+    const toggleButtonState = () => {
+        // Check if all inputs have a value
+        const allInputFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+        
+        // Enable or disable the register button based on the fields being filled
+        registerButton.disabled = !allInputFilled;
+    };
+
+    // Add event listeners to each input field
+    inputs.forEach(input => {
+        input.addEventListener('input', toggleButtonState);
+    });
 }
+
+const register = async () => {
+    // signup.style.display = 'none';
+    const formData = new FormData();
+    formData.append('ninNumber', document.getElementById('nin').value);
+    formData.append('lastname', document.getElementById('lastname').value);
+    formData.append('firstname', document.getElementById('firstname').value);
+    formData.append('username', document.getElementById('username').value);
+    formData.append('dateOfBirth', document.getElementById('dob').value);
+    formData.append('state', document.getElementById('state').value);
+    formData.append('lga', document.getElementById('lga').value);
+    formData.append('email', document.getElementById('userEmail').value);
+    formData.append('phonenumber', document.getElementById('phonenumber').value);
+    formData.append('gender', document.getElementById('gender').value);
+    formData.append('password', document.getElementById('password').value);
+
+    // Append files to formData
+    formData.append('uploadID', document.getElementById('uploadID').files[0]);
+    formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
+    console.log(formData)
+
+    await fetch('http://localhost:3000/signup', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Handle response data
+        console.log(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    signupSuccess.style.display = 'block';
+    form.style.display = 'none';
+    // showSignupSuccess();
+}
+
+
+
+
+
+
+
+
+    // const ninNumber = nin.value;
+    // const lastname = document.getElementById('lastname').value;
+    // const firstname = document.getElementById('firstname').value;
+    // formData.append('username', document.getElementById('username').value);
+    // formData.append('dateOfBirth', document.getElementById('dob').value);
+    // formData.append('state', document.getElementById('state').value);
+    // formData.append('lga', document.getElementById('lga').value);
+    // formData.append('email', document.getElementById('userEmail').value);
+    // formData.append('phonenumber', document.getElementById('phonenumber').value);
+    // formData.append('gender', document.getElementById('gender').value);
+    // formData.append('password', document.getElementById('password').value);
+    // formData.append('uploadID', document.getElementById('uploadID').files[0]);
+    // formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
+
+    // const userInformation = {
+    //     ninNumber,
+    //     lastname,
+    //     firstname,
+    //     username,
+    //     dateOfBirth,
+    //     state,
+    //     lga,
+    //     email,
+    //     phonenumber,
+    //     gender,
+    //     password,
+    //     uploadID,
+    //     uploadSelfie,
+    // }
+    
+    // console.log(ninNumber)
+    // console.log(lastname);
+    // console.log(firstname);
+    // console.log(username);
+    // console.log(dob);
+    // console.log(state);
+    // console.log(lga);
+    // console.log(email);
+    // console.log(phonenumber);
+    // console.log(gender);
+    // console.log(password);
+    // console.log(uploadID);
+    // console.log(uploadSelfie);
+
+    // await fetch('http://localhost:3000/signup1', {
+    //     method: 'POST',
+    //     headers: {'Content-Type': 'application/json'},
+    //     body: JSON.stringify(userInformation)
+    // })
+    // .then(response => response.json())
+    // .then(data => {})
+
+
+
+
+
+
 
 
 

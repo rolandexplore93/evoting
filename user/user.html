@@ -29,7 +29,7 @@
                 </div>
 
                 <div id="signup" style="display: none;">
-                    <form id="signup-form">
+                    <form id="signup-form" enctype="multipart/form-data">
                         <div id="form-section-1">
                             <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" placeholder="Enter 11-digit NIN number" required>
                             <span id="validation"></span>
@@ -39,8 +39,8 @@
                         </div>
                         <!-- HTML TEMPLATE FOR SIGNUP SECTION -->
                         <div style="display: none;" id="form-section-2">
-                            <div class="entry-wrapper">Surname: 
-                                <input type="text" placeholder="Surname">
+                            <div class="entry-wrapper">Lastname: 
+                                <input type="text" placeholder="Lastname">
                             </div>
                             <div class="entry-wrapper">Firstname: 
                                 <input type="text" placeholder="Firstname">
@@ -64,17 +64,17 @@
                                 <input type="password" placeholder="Password">
                             </div>
                             <div class="entry-wrapper upload"><p>Upload ID card</p>
-                                    <input type="file" name="uploadID" id="uploadID" accept="image/*">
+                                <input type="file" name="uploadID" id="uploadID" accept="image/*">
                             </div>
                             <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
-                                    <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*">
+                                <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*">
                             </div>
                             <button onclick="register()">Register</button>
                         </div>
                     </form>
                     <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>
-                </div>
-
+                </div> 
+                <!-- HTML TEMPLATE FOR RESET PASSWORD -->
                 <div id="reset-password" style="display: none;">
                     <p style="text-align: center; text-decoration: underline; color: #003366;">Reset Password</p>
                     <input type="email" placeholder="Email">
@@ -84,12 +84,13 @@
                     <p>If you know your login details, <a href="#" onclick="showLoginForm()">click here to Login</a></p>
                     <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
                 </div>
-
+                <!-- HTML TEMPLATE FOR RESET PASSWORD SUCCESS -->
                 <div id="reset-password-success" style="display: none;">
                     <p style="text-align: center; color: #003366;">Password reset link has been sent to your email/password.</p>
                     <button onclick="showLoginForm()">OK</button>
                 </div>
             </div>
+            <!-- HTML TEMPLATE FOR SIGNUP SUCCESS -->
             <div id="signup-success" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
