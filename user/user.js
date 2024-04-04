@@ -68,7 +68,6 @@ document.getElementById('go-to-login').onclick = function () {
 //     alert('Authenticating and redirecting to user profile...');
 // }
 const modal = document.getElementsByClassName('modal')[0];
-console.log(modal)
 const modalContent = document.getElementsByClassName('modal-content');
 
 const closeModal = document.getElementsByClassName('close')[0];
@@ -257,7 +256,6 @@ const register = async () => {
     // Append files to formData
     formData.append('uploadID', document.getElementById('uploadID').files[0]);
     formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
-    console.log(formData)
 
     await fetch('http://localhost:3000/signup', {
         method: 'POST',
@@ -267,13 +265,13 @@ const register = async () => {
     .then(data => {
         // Handle response data
         console.log(data);
+        signupSuccess.style.display = 'block';
+        form.style.display = 'none';
     })
     .catch(error => {
         console.error('Error:', error);
     });
 
-    signupSuccess.style.display = 'block';
-    form.style.display = 'none';
     // showSignupSuccess();
 }
 

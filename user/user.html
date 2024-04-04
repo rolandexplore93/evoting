@@ -61,7 +61,7 @@
                                 <input type="email" placeholder="Email">
                             </div>
                             <div class="entry-wrapper">Password:
-                                <input type="password" placeholder="Password">
+                                <input type="password" id="password" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
                             </div>
                             <div class="entry-wrapper upload"><p>Upload ID card</p>
                                 <input type="file" name="uploadID" id="uploadID" accept="image/*">
@@ -94,10 +94,9 @@
             <div id="signup-success" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
-                    <p>Account created successfully. Please login and verify your email and phone number.</p>
+                    <p>Account created successfully. Please login and verify your email.</p>
                     <p>Once your profile is verified and approved, your voting ID will be generated.</p>
                     <button class="mybutton" id="go-to-login" style="position: relative; right: 0;">Login</button>
-                    <!-- <button id="go-to-profile">Go to my profile</button> -->
                 </div>
             </div>
         </div>
