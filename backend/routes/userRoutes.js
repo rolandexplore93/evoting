@@ -31,7 +31,8 @@ userRouter.post('/signup',
         }
     }
 );
-userRouter.post('/login', login)
+userRouter.post('/login', login);
+// userRouter.post('/login', () => {}, 's');
 
 
 module.exports = userRouter;

@@ -3,6 +3,8 @@ const naijaFaker = require("naija-faker");
 const { states, stateLGA } = require('../nigerianStates');
 const Users = require('../models/users');
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config(); // Enable access to environment variables
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
@@ -153,7 +155,7 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
 
         const user = await Users.findOne({ email });
-        if (!user) return res.status(404).json({ success: false, message: "User not found" });
+        if (!user) return res.status(200).json({ success: false, message: "User not found" });
         const hash = user.password
         const isPasswordMatch = await bcrypt.compare(password, hash)
         
@@ -161,7 +163,7 @@ exports.login = async (req, res) => {
         
         // Relative path for user redirection
         const userDashboardUrl = `/user/user-dashboard.html`;
-        const adminDashboardUrl = `/admin/admin.html`;
+        const adminDashboardUrl = `/admin/admin-dashboard.html`;
         const errorUrl = '/error.html';
         // Convert userdata to plain object and 
         //delete password field before sending the remaining data to user
@@ -169,9 +171,12 @@ exports.login = async (req, res) => {
         delete userInfoNoPassword.password;
 
         if (user.role === 5) {
-            return res.json({ success: true, path: userDashboardUrl, role: user.role, user: userInfoNoPassword, message: "Login successful. Redirecting to User dashboard" });
+            // Email is valid, then generate a login token with jwt and save it to the cookie
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '1hr'});
+            res.cookie('token', token, { httpOnly: true });
+            return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
-            return res.json({ success: true, path: adminDashboardUrl, role: user.role, user: userInfoNoPassword, message: "Login successful. Redirecting to Admin dashboard"  });
+            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard"  });
         } else {
             return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
         }
