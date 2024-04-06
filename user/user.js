@@ -13,8 +13,9 @@ loginFormDisplay.classList.add('activeDisplay');
 
 function showLoginForm() {
     signup.style.display = 'none';
+    form.style.display = 'block';
     login.style.display = 'block';
-    signupSuccess.style.display = 'none';
+    signupSuccess.style.display = 'none'; 
     resetPassword.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
     loginFormDisplay.classList.add('activeDisplay')
@@ -97,7 +98,8 @@ loginForm.addEventListener('submit', async function(e) {
         const response = await fetch('http://localhost:3000/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password }),
+            credentials: 'include'
         });
 
         const data = await response.json();
@@ -110,10 +112,10 @@ loginForm.addEventListener('submit', async function(e) {
             }, 2000);
         } else {
             alert(data.message);
+            window.location.href = `${window.location.origin}${data.path}`;
         }
     } catch (error) {
-        console.error('Login failed:', error);
-        alert('An error occurred during login. Please try again.');
+        console.error('Login failed');
     }
 })
 

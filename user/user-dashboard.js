@@ -247,5 +247,49 @@ function showStep(stepId) {
     document.getElementById(stepId).style.display = 'block';
 }
 
+// Authorize voters to their page
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
 
+        const response = await fetch('http://localhost:3000/protected', {
+            method: 'GET',
+            credentials: 'include'
+        });
 
+        const data =  await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Authorization failed');
+        }
+        
+
+        if (!data.success) {
+            alert('Session has expired! Please login again')
+            window.location.href = '/user/user.html';
+            return
+        }
+        const userData = data.user
+        populateUserData(userData)
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Not Authorized to access this page! Please login')
+        window.location.href = '/user/user.html';
+    }
+});
+
+function populateUserData(userData) {
+    console.log(userData)
+}
+
+// try {
+//   const response = await fetch(`http://localhost:3000/user/${userId}`);
+//   if (!response.ok) {
+//     throw new Error('Could not fetch user data');
+//   }
+//   const userData = await response.json();
+
+//   // Step 5: Populate the HTML fields with the fetched data
+//   populateUserData(userData);
+// } catch (error) {
+//   console.error('Error:', error);
+// }
