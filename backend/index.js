@@ -6,7 +6,8 @@ require("dotenv").config(); // Enable access to environment variables
 require("./helpers/databaseConnection.js")
 var validator = require('validator');
 const userRouter = require('./routes/userRoutes')
-var expressjwt = require("express-jwt");
+var { expressjwt: jwt } = require("express-jwt");
+var cookieParser = require('cookie-parser');
 
 
 var app = express(); // Instantiate express application
@@ -14,8 +15,20 @@ const port = process.env.PORT || 3000; // Setup PORT for the backend
  
 // Middleware and cors
 app.use(bodyParser.json());
-app.use(cors());
-// app.use(expressjwt({ secret: process.env.JWT_SECRET, algorithms: ['HS256'], getToken: req => req.cookies.token }));
+app.use(cors({ origin: 'http://localhost:5500', credentials: true }));
+app.use(cookieParser())
+
+// Custom function to get the token from request cookies
+const getTokenFromCookie = (req) => {
+  return req.cookies.token;
+};
+
+// express-jwt middleware to validate the JWT and set req.auth
+app.use(jwt({
+  secret: process.env.SECRETJWT,
+  algorithms: [process.env.JWTalgorithms],
+  getToken: getTokenFromCookie
+}).unless({ path: ['/login'] }));
 
 app.get('/', (req, res, next) => {
     res.json({ message: 'This is the backend development for evoting application'})

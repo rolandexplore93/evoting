@@ -93,12 +93,11 @@ exports.signup = async (req, res) => {
                 return res.status(409).json({ message: "NIN already exists" });
             } else if (existingUser.email === req.body.email) {
                 return res.status(409).json({ message: "Email already exists" });
-            } else if (existingUser.phoneNo === req.body.phonenumber) {
+            } else if (existingUser.phonenumber === req.body.phonenumber) {
                 return res.status(409).json({ message: "Phone number already exists" });
             }
-            return
         }
-
+        
         const dob = req.body.dateOfBirth;
         const password = req.body.password.trim();
 
@@ -106,19 +105,22 @@ exports.signup = async (req, res) => {
         const encryptedPassword = await bcrypt.hash(password, salt);
 
         const result = await bcrypt.compare(password, encryptedPassword);
-        console.log('Hash:', encryptedPassword);
-        console.log('Comparison result:', result);
-
+        // console.log('Hash:', encryptedPassword);
+        // console.log('Comparison result:', result);
+        
         const age = calculateAge(dob);
+        firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
+        lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
         // If no existing user, create new user
         const newUser = new Users({
             ...req.body,
+            firstname,
+            lastname,
             age,
             password: encryptedPassword,
             uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
         });
-        // console.log(newUser)
 
         // Save the new user to the database
         await newUser.save();
@@ -172,10 +174,12 @@ exports.login = async (req, res) => {
 
         if (user.role === 5) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '1hr'});
-            res.cookie('token', token, { httpOnly: true });
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
+            res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
+            res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard"  });
         } else {
             return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
@@ -185,3 +189,16 @@ exports.login = async (req, res) => {
         
     }
 }
+
+exports.goToUserDashboard = async (req, res) => {
+    if (!req.auth) {
+        return res.status(401).json({ message: 'No authorization token was found' });
+    }
+
+    res.json({ user: req.auth, message: 'Access user dashboard', success: true })
+}
+
+
+// http://localhost:5500/user/user-dashboard.html
+
+
