@@ -5,6 +5,9 @@ const Users = require('../models/users');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config(); // Enable access to environment variables
+const nodemailer = require('nodemailer');
+
+
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
@@ -175,7 +178,7 @@ exports.login = async (req, res) => {
 
         if (user.role === 5) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '15m'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
@@ -200,6 +203,66 @@ exports.goToUserDashboard = async (req, res) => {
 }
 
 
-// http://localhost:5500/user/user-dashboard.html
+
+
+// Generate Random 6 digits for OTP
+function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+// OTP Expires in 15 mins
+function otpHasExpired(emailOtpCreatedAt) {
+    const expiryTime = 15 * 60 * 1000;
+    return Date.now() - new Date(emailOtpCreatedAt).getTime() > expiryTime;
+}
+
+// Configure the email transporter using the default SMTP transport
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GOOGLE_USER,
+      pass: process.env.GOOGLE_PASSWORD,
+    },
+  });
+  
+const emailSender = async (email, otp, firstname, lastname) => {
+    const mailOptions = {
+      from: 'NEVS Electoral Commission',
+      to: email,
+      subject: 'Email verification code',
+      html: `<b>Hello ${firstname} ${lastname}!</b>
+             <p>Your email verification code is: ${otp}.</p>
+             <p>It will expire in 15 minutes</p>
+             `,
+    };
+  
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Message sent: %s', info.messageId);
+    } catch (error) {
+      console.log(error);
+    }
+}
+
+// emailSender('roland.oguns@yopmail.com', '324562', 'NEVS', 'ELECTION')
+
+exports.emailOTP = async (req, res) => {
+    const  {_id, firstname, lastname, email } = req.body;
+    const user = await Users.findById(_id);
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    // if user has otp and it hasn't expired, remind user, otherwise, send new otp to user
+    if (user.emailOTP && user.emailOtpCreatedAt && !otpHasExpired(user.emailOtpCreatedAt)) {
+        return res.json({ message: 'You still have active OTP. Please check your email for the last OTP received.', success: false });
+    } else {
+        const otp = generateOTP(); // Generate otp code
+        await Users.updateOne({ _id }, { emailOTP: otp, emailOtpCreatedAt: new Date() }); // Save user otp and time  in the database
+        await emailSender(email, otp, firstname, lastname); // Send email with OTP to user's email address
+        return res.json({ message: 'Enter the verification code sent to your email.', success: true });
+    }
+}
+
+exports.verifyEmailOTP = () => {
+
+}
 
 

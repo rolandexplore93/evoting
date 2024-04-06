@@ -34,7 +34,9 @@ const userSchema = new Schema({
     // verifiedBy: { type: Schema.Types.ObjectId, ref: 'Staff', default: 1 },
     verifiedBy: { type: String, default: 'admin1' },
     resetToken: { type: String, default: '' },
-    resetTokenExpiration: { type: Date, default: '' }
+    resetTokenExpiration: { type: Date, default: '' },
+    emailOTP: { type: String, default: '' },
+    emailOtpCreatedAt: { type: Date, default: null }
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema)

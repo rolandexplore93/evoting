@@ -27,7 +27,7 @@ app.use(jwt({
   secret: process.env.SECRETJWT,
   algorithms: [process.env.JWTalgorithms],
   getToken: getTokenFromCookie
-}).unless({ path: ['/login', '/validatenin', '/signup'] }));
+}).unless({ path: ['/login', '/validatenin', '/signup', '/emailOTP', 'verifyEmailOTP'] }));
 
 // Serve static images and files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -1,6 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
-const { validateNIN, signup, login, goToUserDashboard } = require("../controllers/userController");
+const { validateNIN, signup, login, goToUserDashboard, emailOTP, verifyEmailOTP } = require("../controllers/userController");
 const multer = require('multer');
 
 
@@ -34,5 +34,7 @@ userRouter.post('/signup',
 );
 userRouter.post('/login', login);
 userRouter.get("/protected", goToUserDashboard);
+userRouter.post('/emailOTP', emailOTP);
+userRouter.post('/verifyEmailOTP', verifyEmailOTP)
 
 module.exports = userRouter;
