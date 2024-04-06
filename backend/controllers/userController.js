@@ -242,7 +242,6 @@ const emailSender = async (email, otp, firstname, lastname) => {
       console.log(error);
     }
 }
-
 // emailSender('roland.oguns@yopmail.com', '324562', 'NEVS', 'ELECTION')
 
 exports.emailOTP = async (req, res) => {
@@ -261,8 +260,22 @@ exports.emailOTP = async (req, res) => {
     }
 }
 
-exports.verifyEmailOTP = () => {
+exports.verifyEmailOTP = async (req, res) => {
+    const { _id, otp, email } = req.body;
+    const user = await Users.findById(_id);
+    if (!user) return res.status(404).json({ message: 'User not found.', success: false });
 
+    if (otpHasExpired(user.emailOtpCreatedAt)) {
+        await Users.updateOne({ _id }, { emailOTP: '', emailOtpCreatedAt: null });
+        return res.status(410).json({ message: 'OTP has expired. Please request a new one.', success: false, nextStep: 'expired' });
+    }
+
+    if (user.emailOTP === otp && user.email === email) {
+        await Users.updateOne({ _id }, { isEmailVerified: true, emailOTP: '', emailOtpCreatedAt: null });
+        res.json({ success: true, message: 'Email verified successfully', nextStep: 'correct' });
+    } else {
+        res.json({ success: false, message: 'Email verification code is incorrect', nextStep: 'incorrect' });
+    }
 }
 
 
