@@ -26,12 +26,10 @@ input[type="text"] {
     color: green;
 }
 
-.not-verified {
-    color: red;
-}
-
-.pending {
-    color: orange;
+.disable-verification-button {
+    background-color: #e6e4e4;
+    border: 0;
+    outline: o;
 }
 
 .modal {

@@ -9,30 +9,16 @@ const verifyPhonenoError = document.getElementById('verify-phoneno-error');
 const verifyEmailOTP = document.getElementById('verify-email-otp');
 const verifyPhoneOTP = document.getElementById('verify-phone-otp');
 
-function verifyEmail() {
-    modal.style.display = 'block';
-    verifyEmailContent.style.display = 'block';
-}
+let globalUserData;
 
-// emailotp enter code
-verifyEmailOTP.onclick = function () {
-    modal.style.display = 'block';
-    verifyEmailContent.style.display = 'none';
-    verifyEmailSuccess.style.display = 'block';
-}
 
-//emailotp error
-verifyEmailOTP.onclick = function () {
-    modal.style.display = 'block';
-    verifyEmailContent.style.display = 'none';
-    verifyEmailError.style.display = 'block';
-}
-
-//emailotp success done
+// verifying emailotp success done
 document.getElementById('otp-email-success').onclick = function () {
     modal.style.display = 'none';
     verifyEmailContent.style.display = 'none';
     verifyEmailSuccess.style.display = 'none';
+
+
 }
 
 //emailotp error try again
@@ -269,7 +255,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.location.href = '/user/user.html';
             return
         }
-        const userData = data.user
+        const userData = data.user;
+        globalUserData = userData;
         userDashboard.style.display = 'flex'
         populateUserData(userData)
     } catch (error) {
@@ -298,7 +285,7 @@ function populateUserData(userData) {
     <div>
         <p>ID CARD</p>
         <img src="http://localhost:3000/${userData.uploadSelfie}" alt="selfie-image" width="90%" height="150px">
-        <span class="pending">${userData.isIdVerified ? '&#10004' : '&#8987'}</span>
+        <span class="verified">${userData.isIdVerified ? '&#10004' : '&#8987'}</span>
     </div>
     <div class="user-details">
         <p>NIN: <input type="text" name="" id="" value="${userData.ninNumber}" disabled> <span
@@ -320,18 +307,18 @@ function populateUserData(userData) {
             <p>LGA: <input type="text" name="" id="" value="${userData.lga}" disabled></p>
         </div>
         <div style="display: flex;">
-            <p>Email: <input type="email" name="" id="" value="${userData.email}" disabled> <span
-                    class="not-verified">${userData.isEmailVerified ? '&#10004' : '&#8987'}</span></p>
-            <button class="mybutton" onclick="verifyEmail()" ${userData.isEmailVerified ? 'disabled' : ''}>${userData.isEmailVerified ? 'Verified' : 'Verify Email'}</button>
+            <p>Email: <input type="email" name="" id="" value="${userData.email}" disabled> 
+            <span class="verified">${userData.isEmailVerified ? '&#10004' : '&#8987'}</span></p>
+            <button class="${userData.isEmailVerified ? 'disable-verification-button' : 'mybutton'}" id="verifyEmailButton" ${userData.isEmailVerified ? 'disabled' : ''}>${userData.isEmailVerified ? 'Verified' : 'Verify Email'}</button>
         </div>
         <div style="display: flex;">
-            <p>Phone: <input type="text" name="" id="" value="${userData.phonenumber}" disabled> <span
-                    class="pending">${userData.isphonenumberVerified ? '&#10004' : '&#8987'}</span></p>
-            <button class="mybutton" onclick="verifyPhoneNumber()" ${userData.isphonenumberVerified && 'disabled'}>${userData.isphonenumberVerified ? 'Verified' : 'Verify Phone No'}</button>
+            <p>Phone: <input type="text" name="" id="" value="${userData.phonenumber}" disabled> 
+            <span class="verified">${userData.isphonenumberVerified ? '&#10004' : '&#8987'}</span></p>
+            <button class="${userData.isphonenumberVerified ? 'disable-verification-button' : 'mybutton'}" onclick="verifyPhoneNumber()" ${userData.isphonenumberVerified && 'disabled'}>${userData.isphonenumberVerified ? 'Verified' : 'Verify Phone No'}</button>
         </div>
     </div>
     <button class="mybutton">Edit Profile</button>
-    `
+    `;
     votingIdTable.innerHTML = `
     <tr>
         <th>Title</th>
@@ -345,11 +332,65 @@ function populateUserData(userData) {
             <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')" ${userData.votingID === '' ? 'disabled' : ''}>Copy Voting Id</button>
         </td>
     </tr>
-    `
+    `;
 
+    // Select verify email button to send otp to user email address
+    const verifyEmailButton = document.getElementById('verifyEmailButton');
+    verifyEmailButton.addEventListener('click', () => {
+        verifyEmail(userData._id, userData.firstname, userData.lastname, userData.email);
+    })
 }
+
+// Grab verify-email-content card
+const verifyEmail = async (_id, firstname, lastname, email) => {
+    const userData = {_id, firstname, lastname, email }
+    modal.style.display = 'block';
+    verifyEmailContent.style.display = 'block';
+    try {
+        const response = await fetch('http://localhost:3000/emailOTP', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData),
+            // credentials: 'include'
+        });
+        const data = await response.json();
+        document.getElementById('verify-email-content-text').textContent = data.message;
+    } catch (error) {
+        console.error('Error sending verification code');
+    }
+}
+
+verifyEmailOTP.addEventListener('click', async () => {
+    modal.style.display = 'block';
+    verifyEmailContent.style.display = 'none';
+    const otp = document.getElementById('otp-code').value;
+    const userData = {_id: globalUserData._id, email: globalUserData.email, otp }
+    try {
+        const response = await fetch('http://localhost:3000/verifyEmailOTP', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userData),
+            // credentials: 'include'
+        });
+        const data = await response.json();
+        console.log(data);
+
+        if (data.nextStep === 'correct' || data.nextStep === 'expired') {
+            verifyEmailSuccess.style.display = 'block';
+        } else {
+            verifyEmailError.style.display = 'block';
+        }
+
+    } catch (error) {
+        console.error('Error sending verification code');
+    }
+
+})
+
+
 
 
 // verified &#10004
 // pending &#8987
 // non-verified &#10008
+// http://localhost:5500/user/user-dashboard.html

@@ -15,7 +15,7 @@
         <div class="main" id="main">
             <!-- Sidebar content tab -->
             <div class="sidebar" id="sidebar">
-                <!-- Render sidebar content dynamically -->
+                <!-- Sidebar content is render dynamically from the DOM -->
                 <!-- <div>
                     <p>Profile photo</p>
                     <img src="../images/placeholder-image.jpeg" alt="selfie-image" width="300px" height="160px">
@@ -23,7 +23,7 @@
                 <div>
                     <p>ID CARD</p>
                     <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px">
-                    <span class="pending">&#8987</span>
+                    <span class="verified">&#8987</span>
                 </div>
                 <div class="user-details">
                     <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span
@@ -46,12 +46,12 @@
                     </div>
                     <div style="display: flex;">
                         <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span
-                                class="not-verified">&#10008</span></p>
+                                class="verified">&#10008</span></p>
                         <button class="mybutton" onclick="verifyEmail()">Verify Email</button>
                     </div>
                     <div style="display: flex;">
                         <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span
-                                class="pending">&#8987</span></p>
+                                class="verified">&#8987</span></p>
                         <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone No</button>
                     </div>
                 </div>
@@ -75,6 +75,7 @@
                 <div class="tabcontent-wrapper">
                     <div class="tabcontent" id="Dashboard">
                         <table id="votingIdTable">
+                            <!-- Sidebar content is render dynamically from the DOM -->
                             <!-- <tr>
                                 <th>Title</th>
                                 <th>Value</th>
@@ -251,32 +252,32 @@
         <!-- Modal layouts -->
         <div id="verification-modal" class="modal">
             <div id="verify-email-content" class="modal-content">
-                <p>Enter the verification code sent to your email</p>
-                <input type="text" name="" id=""></p>
-                <button id="verify-email-otp">Verify</button>
+                <p id="verify-email-content-text">Enter the verification code sent to your email</p>
+                <input type="text" name="otp-code" id="otp-code"></p>
+                <button type="button" id="verify-email-otp">Verify</button>
             </div>
             <div id="verify-email-success" class="modal-content">
                 <p>Email verified successfully</p>
-                <button id="otp-email-success">Done</button>
+                <button type="button" id="otp-email-success">Done</button>
             </div>
             <div id="verify-email-error" class="modal-content">
                 <p>Email verification code is incorrect</p>
-                <button id="otp-email-error">Try again</button>
-                <button id="go-to-dashboard">Cancel</button>
+                <button type="button" id="otp-email-error">Try again</button>
+                <button type="button" id="go-to-dashboard">Cancel</button>
             </div>
             <div id="verify-phone-content" class="modal-content">
                 <p>Enter the verification code sent to your phone number</p>
                 <input type="text" name="" id=""></p>
-                <button id="verify-phone-otp">Verify</button>
+                <button type="button" id="verify-phone-otp">Verify</button>
             </div>
             <div id="verify-phoneno-success" class="modal-content">
                 <p>Phone number verified successfully</p>
-                <button id="otp-phone-success">Done</button>
+                <button type="button" id="otp-phone-success">Done</button>
             </div>
             <div id="verify-phoneno-error" class="modal-content">
                 <p>Phone number verification code is incorrect</p>
-                <button id="otp-phone-error">Try again</button>
-                <button id="go-to-dashboard-now">Cancel</button>
+                <button type="button" id="otp-phone-error">Try again</button>
+                <button type="button" id="go-to-dashboard-now">Cancel</button>
             </div>
         </div>
         <page-footer></page-footer>
