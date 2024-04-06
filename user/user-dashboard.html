@@ -11,11 +11,12 @@
 </head>
 
 <body>
-    <div class="container">
+    <div class="container" id="user-dashboard">
         <div class="main" id="main">
             <!-- Sidebar content tab -->
-            <div class="sidebar">
-                <div>
+            <div class="sidebar" id="sidebar">
+                <!-- Render sidebar content dynamically -->
+                <!-- <div>
                     <p>Profile photo</p>
                     <img src="../images/placeholder-image.jpeg" alt="selfie-image" width="300px" height="160px">
                 </div>
@@ -54,7 +55,7 @@
                         <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone No</button>
                     </div>
                 </div>
-                <button class="mybutton">Edit Profile</button>
+                <button class="mybutton">Edit Profile</button> -->
             </div>
             <!-- Main content tab -->
             <div class="main-content" id="main-content">
@@ -73,8 +74,8 @@
                 <!-- Tab contents -->
                 <div class="tabcontent-wrapper">
                     <div class="tabcontent" id="Dashboard">
-                        <table>
-                            <tr>
+                        <table id="votingIdTable">
+                            <!-- <tr>
                                 <th>Title</th>
                                 <th>Value</th>
                                 <th>Action</th>
@@ -85,7 +86,7 @@
                                 <td>
                                     <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')">Copy Voting Id</button>
                                 </td>
-                            </tr>
+                            </tr> -->
                         </table>
                     </div>
                     <div class="tabcontent" id="Election">

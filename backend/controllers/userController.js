@@ -9,6 +9,7 @@ require("dotenv").config(); // Enable access to environment variables
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
     const nin = req.body.ninDigit;
+    console.log(nin)
     try {
         // Check if NIN exists in the Users db
         const existingUserWithNIN = await Users.findOne({ ninNumber: nin });

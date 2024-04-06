@@ -249,6 +249,7 @@ function showStep(stepId) {
 
 // Authorize voters to their page
 document.addEventListener('DOMContentLoaded', async () => {
+    const userDashboard = document.getElementById('user-dashboard');
     try {
 
         const response = await fetch('http://localhost:3000/protected', {
@@ -269,6 +270,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return
         }
         const userData = data.user
+        userDashboard.style.display = 'flex'
         populateUserData(userData)
     } catch (error) {
         console.error('Error:', error);
@@ -279,17 +281,75 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function populateUserData(userData) {
     console.log(userData)
+    function convertISOdateToHtmlFormat(isoDateString) {
+        const date = new Date(isoDateString);
+        return date.toISOString().split('T')[0];
+    }
+    const dob = userData.dateOfBirth 
+    const formatedDOB = convertISOdateToHtmlFormat(dob)
+    const userSiderbar = document.getElementById('sidebar');
+    const votingIdTable = document.getElementById('votingIdTable');
+    userSiderbar.innerHTML = `
+    <p>Welcome ${userData.firstname}</p>
+    <div>
+        <p>Profile photo</p>
+        <img src="http://localhost:3000/${userData.uploadID}" alt="selfie-image" width="200px" height="200px">
+    </div>
+    <div>
+        <p>ID CARD</p>
+        <img src="http://localhost:3000/${userData.uploadSelfie}" alt="selfie-image" width="90%" height="150px">
+        <span class="pending">${userData.isIdVerified ? '&#10004' : '&#8987'}</span>
+    </div>
+    <div class="user-details">
+        <p>NIN: <input type="text" name="" id="" value="${userData.ninNumber}" disabled> <span
+                class="verified">${userData.isNINVerified ? '&#10004' : '&#8987'}</span></p>
+        <div>
+            <p>Surname: <input type="text" name="" id="" value="${userData.lastname}" disabled></p>
+            <p>Firstname: <input type="text" name="" id="" value="${userData.firstname}" disabled></p>
+        </div>
+        <div>
+            <p>Username: <input type="text" name="" id="" value="${userData.username}" disabled></p>
+            <p>Gender: <input type="text" name="" id="" value="${userData.gender}" disabled></p>
+        </div>
+        <div>
+            <p>Date of Birth: <input type="date" name="" id="" value="${formatedDOB}" disabled></p>
+            <p>Age: <input type="number" name="" id="" value="${userData.age}" disabled></p>
+        </div>
+        <div>
+            <p>State: <input type="text" name="" id="" value="${userData.state}" disabled></p>
+            <p>LGA: <input type="text" name="" id="" value="${userData.lga}" disabled></p>
+        </div>
+        <div style="display: flex;">
+            <p>Email: <input type="email" name="" id="" value="${userData.email}" disabled> <span
+                    class="not-verified">${userData.isEmailVerified ? '&#10004' : '&#8987'}</span></p>
+            <button class="mybutton" onclick="verifyEmail()" ${userData.isEmailVerified ? 'disabled' : ''}>${userData.isEmailVerified ? 'Verified' : 'Verify Email'}</button>
+        </div>
+        <div style="display: flex;">
+            <p>Phone: <input type="text" name="" id="" value="${userData.phonenumber}" disabled> <span
+                    class="pending">${userData.isphonenumberVerified ? '&#10004' : '&#8987'}</span></p>
+            <button class="mybutton" onclick="verifyPhoneNumber()" ${userData.isphonenumberVerified && 'disabled'}>${userData.isphonenumberVerified ? 'Verified' : 'Verify Phone No'}</button>
+        </div>
+    </div>
+    <button class="mybutton">Edit Profile</button>
+    `
+    votingIdTable.innerHTML = `
+    <tr>
+        <th>Title</th>
+        <th>Value</th>
+        <th>Action</th>
+    </tr>
+    <tr>
+        <td>VOTING ID</td>
+        <td id="voting-id">${userData.votingID ? userData.votingID : '...'}</td>
+        <td>
+            <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')" ${userData.votingID === '' ? 'disabled' : ''}>Copy Voting Id</button>
+        </td>
+    </tr>
+    `
+
 }
 
-// try {
-//   const response = await fetch(`http://localhost:3000/user/${userId}`);
-//   if (!response.ok) {
-//     throw new Error('Could not fetch user data');
-//   }
-//   const userData = await response.json();
 
-//   // Step 5: Populate the HTML fields with the fetched data
-//   populateUserData(userData);
-// } catch (error) {
-//   console.error('Error:', error);
-// }
+// verified &#10004
+// pending &#8987
+// non-verified &#10008
