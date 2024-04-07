@@ -1,4 +1,4 @@
-// Tab functionality
+// Tab functionality on admin page
 function openTab(e, tabTitle) {
     var index, tabContent, tabLinks;
 
@@ -16,7 +16,60 @@ function openTab(e, tabTitle) {
     e.currentTarget.className += " active";
 }
 
-document.getElementById('defaultPage').click()
+document.getElementById('defaultPage').click();
+
+
+// Authorize admin to their page and fetch admin data from the db
+document.addEventListener('DOMContentLoaded', async () => {
+    getUserData();
+});
+
+// Get user data from the database
+const getUserData = async () => {
+    // const userDashboard = document.getElementById('user-dashboard');
+    try {
+
+        const response = await fetch('http://localhost:3000/adminDashboard', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data =  await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Authorization failed');
+        }
+
+        if (data.error === "No authorization token was found") {
+            alert('Unauthorized! Please login to access this page')
+            window.location.href = '/admin/admin.html';
+            return
+        }
+
+        if (data.error === "jwt expired") {
+            alert('Session expired! Please login again')
+            window.location.href = '/admin/admin.html';
+            return
+        }
+
+        const userData = data.userInfo;
+        globalUserData = userData;
+        // userDashboard.style.display = 'flex'
+        populateUserData(userData)
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Not Authorized to access this page! Please login')
+        window.location.href = '/admin/admin.html';
+    }
+}
+
+function populateUserData(userData) {
+    console.log(userData)
+    const dashboardWelcome = document.getElementById('dashboard-welcome');
+    dashboardWelcome.textContent = `Welcome ${userData.firstname} ${userData.lastname}`
+
+}
+
 
 // ADD PARTY LOGIC
 // Display add party form
@@ -159,4 +212,5 @@ function resetAddCandidate() {
     document.getElementById('candidateName').value = '';
     document.getElementById('candidatePhoto').value = '';
     document.getElementById('candidateAddedSuccess').style.display = 'none';
-}
+};
+

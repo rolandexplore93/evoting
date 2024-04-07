@@ -1,7 +1,57 @@
-function goToAdminAccount() {
-    alert('Authenticating and redirecting to Admin profile...');
-    window.location = '/admin/admin-dashboard.html';
-}
+const loginToAdminPageButton = document.getElementById('loginToAdminPageButton');
+const loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', async(e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value;
+    const pin = document.getElementById('pin').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('http://localhost:3000/adminLogin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, pin, password }),
+            credentials: 'include'
+        });
+        const data = await response.json();
+        if (data.success) {
+            // Redirect based on role
+            alert(data.message);
+            window.setTimeout(() => {
+                window.location.href = `${window.location.origin}${data.path}`;
+            }, 1000);
+        } else {
+            alert(data.message);
+            window.location.href = `${window.location.origin}${data.path}`;
+        }
+    } catch (error) {
+        console.error('Login failed');
+    }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

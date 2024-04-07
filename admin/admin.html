@@ -14,14 +14,14 @@
     <div class="container">
         <page-header></page-header>
         <div class="main">
-            <div id="form">
+            <div id="form-wrapper">
                 <h1>Admin login</h1>
-                <div id="login">
-                    <input type="text" placeholder="Username">
-                    <input type="password" placeholder="Access PIN">
-                    <input type="password" placeholder="Password">
-                    <button id="go-to-adminAccount" onclick="goToAdminAccount()">Login</button>
-                </div>
+                <form id="loginForm">
+                    <input type="text" id="username" placeholder="Username" required>
+                    <input type="password" id="pin" placeholder="Access PIN" required>
+                    <input type="password" id="password" placeholder="Password" required>
+                    <button id="loginToAdminPageButton">Login</button>
+                </form>
             </div>
         </div>
     </div>

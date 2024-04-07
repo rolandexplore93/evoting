@@ -10,7 +10,7 @@ const verifyEmailOTP = document.getElementById('verify-email-otp');
 const verifyPhoneOTP = document.getElementById('verify-phone-otp');
 
 let globalUserData;
-console.log('globalUserData: ' + globalUserData)
+// console.log('globalUserData: ' + globalUserData)
 
 
 // verifying emailotp success done
@@ -252,8 +252,6 @@ const getUserData = async () => {
             throw new Error(data.error || 'Authorization failed');
         }
 
-        console.log(data)
-
         if (data.error === "No authorization token was found") {
             alert('Unauthorized! Please login to access this page')
             window.location.href = '/user/user.html';
@@ -280,7 +278,6 @@ const getUserData = async () => {
 
 
 function populateUserData(userData) {
-    console.log(userData)
     function convertISOdateToHtmlFormat(isoDateString) {
         const date = new Date(isoDateString);
         return date.toISOString().split('T')[0];
@@ -353,10 +350,10 @@ function populateUserData(userData) {
         verifyEmail(userData._id, userData.firstname, userData.lastname, userData.email);
     })
 
-    const editProfileButton = document.getElementById('editProfile');
-    editProfileButton.addEventListener('click', () => {
-        editProfile()
-    })
+    // const editProfileButton = document.getElementById('editProfile');
+    // editProfileButton.addEventListener('click', () => {
+    //     editProfile()
+    // })
 }
 
 // Grab verify-email-content card

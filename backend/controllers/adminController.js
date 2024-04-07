@@ -43,25 +43,23 @@ adminRegistration = async (firstname, lastname, username, password, pin, role, e
 // role = 4 is admin. Uncomment next line when you need to create an admin account
 // adminRegistration('Roland', 'Ogundipe', 'roland.ogundipe', 'Password123!', '123456', 4, 'roland.ogundipe@yopmail.com' )
 
+// Admin login api
 exports.adminLogin = async (req, res) => {
     try {
         const { username, password, pin } = req.body;
-
         const user = await Users.findOne({ username });
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
         const getEncryptedPassword = user.password
         const getEncryptedPin = user.pin
         const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword)
         const isPinMatch = await bcrypt.compare(pin, getEncryptedPin)
-        
-        if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
         if (!isPinMatch) return res.status(409).json({ success: false, message: "PIN is not correct" });
+        if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
         
         // Relative path for user redirection
         const adminDashboardUrl = `/admin/admin-dashboard.html`;
         const errorUrl = '/error.html';
-        // Convert userdata to plain object and 
-        //delete password and pin field before sending the data to admin user
+        // Convert userdata to plain object and delete password and pin field before sending the data to admin user
         const userInfoNoPasswordAndPin = user.toObject();
         delete userInfoNoPasswordAndPin.password;
         delete userInfoNoPasswordAndPin.pin;
@@ -80,7 +78,22 @@ exports.adminLogin = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ success: false, message: "An error occurred during login" });
-        
     }
+}
 
+// Authorize admin to their page
+exports.goToAdminDashboard = async (req, res) => {
+    if (!req.auth) {
+        return res.status(401).json({ message: 'No authorization token found' });
+    }
+    // console.log(req.auth)
+    const userId = req.auth._id;
+    
+    const user = await Users.findById(userId);
+    const userInfoNoPasswordAndPin = user.toObject();
+    delete userInfoNoPasswordAndPin.password;
+    delete userInfoNoPasswordAndPin.pin;
+    if (!user) return res.status(404).json({ message: 'User not found.', success: false });
+
+    res.json({ userInfo: userInfoNoPasswordAndPin, message: 'Accessing user dashboard', success: true })
 }
