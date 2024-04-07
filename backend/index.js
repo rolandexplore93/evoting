@@ -8,6 +8,7 @@ const userRouter = require('./routes/userRoutes')
 var { expressjwt: jwt } = require("express-jwt");
 var cookieParser = require('cookie-parser');
 const path = require('path');
+const adminRouter = require('./routes/adminRoutes.js');
 
 var app = express(); // Instantiate express application
 const port = process.env.PORT || 3000; // Setup PORT for the backend
@@ -29,7 +30,8 @@ app.use(jwt({
   secret: process.env.SECRETJWT,
   algorithms: [process.env.JWTalgorithms],
   getToken: getTokenFromCookie
-}).unless({ path: ['/login', '/validatenin', '/signup', '/emailOTP', '/verifyEmailOTP', '/logout'] }));
+}).unless({ path: ['/login', '/validatenin', '/signup', '/emailOTP', '/verifyEmailOTP', '/logout',
+'/adminLogin'] }));
 
 // Serve static images and files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -40,6 +42,7 @@ app.get('/', (req, res, next) => {
 
 // Initialize routes
 app.use('/', userRouter)
+app.use('/', adminRouter)
 
 app.use(async(req, res, next) => {
     next(createError.NotFound('This page does not exist'))

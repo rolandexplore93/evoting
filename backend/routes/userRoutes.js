@@ -1,8 +1,7 @@
 const express = require('express');
 const userRouter = express.Router();
-const { validateNIN, signup, login, goToUserDashboard, emailOTP, verifyEmailOTP, logout, goToUserDashboard2 } = require("../controllers/userController");
+const { validateNIN, signup, login, goToUserDashboard, emailOTP, verifyEmailOTP, logout } = require("../controllers/userController");
 const multer = require('multer');
-
 
 // MULTER: Filenames and storage location set up
 // const upload = multer({ dest: 'uploads/' })
@@ -35,7 +34,6 @@ userRouter.post('/signup',
 
 userRouter.post('/login', login);
 userRouter.get("/userDashboard", goToUserDashboard);
-// userRouter.get("/protected", goToUserDashboard2);
 userRouter.post('/emailOTP', emailOTP);
 userRouter.post('/verifyEmailOTP', verifyEmailOTP)
 userRouter.get('/logout', logout)

@@ -10,6 +10,7 @@ const userSchema = new Schema({
     username: { type: String, default: '' },
     email: { type: String, required: true, unique: true},
     password: { type: String, required: true},
+    pin: { type: String, default: null },
     phonenumber: { type: String, unique: true, default: '' },
     gender: { type: String, enum: ['male', 'female', 'others', 'ns'], default: 'ns'  },
     country: { type: String, default: 'Nigeria' },

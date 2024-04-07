@@ -208,10 +208,6 @@ exports.goToUserDashboard = async (req, res) => {
 }
 
 
-
-
-
-
 // Generate Random 6 digits for OTP
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -290,5 +286,8 @@ exports.logout = (req, res) => {
     // res.redirect('/user/user.html')
     res.json({ message: "Logged out successfully", success: true })
 }
+
+
+
 
 
