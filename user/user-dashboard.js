@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const userDashboard = document.getElementById('user-dashboard');
     try {
 
-        const response = await fetch('http://localhost:3000/protected', {
+        const response = await fetch('http://localhost:3000/userDashboard', {
             method: 'GET',
             credentials: 'include'
         });
@@ -385,6 +385,31 @@ verifyEmailOTP.addEventListener('click', async () => {
         console.error('Error sending verification code');
     }
 
+})
+
+// Logout
+const logout = document.getElementById('logout');
+logout.addEventListener('click', async () => {
+    try {
+        const response = await fetch('http://localhost:3000/logout', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            
+            console.log(response.redirected)
+            console.log(response.url)
+            if (response.redirected) {
+                alert('Signing out...');
+                window.location.href = response.url;
+            } else {
+                const data = await response.json();
+                alert(data.message);
+                window.location.href = "/user/user.html";
+            }
+        
+    } catch (error) {
+        console.error('Logout failed...' + error.message);
+    }
 })
 
 

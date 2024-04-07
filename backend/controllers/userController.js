@@ -278,4 +278,10 @@ exports.verifyEmailOTP = async (req, res) => {
     }
 }
 
+exports.logout = (req, res) => {
+    res.clearCookie('token'); // Clear authentication cookie
+    // res.redirect('/user/user.html')
+    res.json({ message: "Logged out successfully", success: true })
+}
+
 
