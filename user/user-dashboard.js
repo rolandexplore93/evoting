@@ -10,6 +10,7 @@ const verifyEmailOTP = document.getElementById('verify-email-otp');
 const verifyPhoneOTP = document.getElementById('verify-phone-otp');
 
 let globalUserData;
+console.log('globalUserData: ' + globalUserData)
 
 
 // verifying emailotp success done
@@ -17,8 +18,6 @@ document.getElementById('otp-email-success').onclick = function () {
     modal.style.display = 'none';
     verifyEmailContent.style.display = 'none';
     verifyEmailSuccess.style.display = 'none';
-
-
 }
 
 //emailotp error try again
@@ -235,6 +234,10 @@ function showStep(stepId) {
 
 // Authorize voters to their page
 document.addEventListener('DOMContentLoaded', async () => {
+    getUserData();
+});
+
+const getUserData = async () => {
     const userDashboard = document.getElementById('user-dashboard');
     try {
 
@@ -248,14 +251,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (!response.ok) {
             throw new Error(data.error || 'Authorization failed');
         }
-        
 
-        if (!data.success) {
-            alert('Session has expired! Please login again')
+        console.log(data)
+
+        if (data.error === "No authorization token was found") {
+            alert('Unauthorized! Please login to access this page')
             window.location.href = '/user/user.html';
             return
         }
-        const userData = data.user;
+
+        if (data.error === "jwt expired") {
+            alert('Session expired! Please login again')
+            window.location.href = '/user/user.html';
+            return
+        }
+
+        const userData = data.userInfo;
         globalUserData = userData;
         userDashboard.style.display = 'flex'
         populateUserData(userData)
@@ -264,7 +275,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('Not Authorized to access this page! Please login')
         window.location.href = '/user/user.html';
     }
-});
+}
+
+
 
 function populateUserData(userData) {
     console.log(userData)
@@ -317,7 +330,7 @@ function populateUserData(userData) {
             <button class="${userData.isphonenumberVerified ? 'disable-verification-button' : 'mybutton'}" onclick="verifyPhoneNumber()" ${userData.isphonenumberVerified && 'disabled'}>${userData.isphonenumberVerified ? 'Verified' : 'Verify Phone No'}</button>
         </div>
     </div>
-    <button class="mybutton">Edit Profile</button>
+    <button class="mybutton" id="editProfile">Edit Profile</button>
     `;
     votingIdTable.innerHTML = `
     <tr>
@@ -338,6 +351,11 @@ function populateUserData(userData) {
     const verifyEmailButton = document.getElementById('verifyEmailButton');
     verifyEmailButton.addEventListener('click', () => {
         verifyEmail(userData._id, userData.firstname, userData.lastname, userData.email);
+    })
+
+    const editProfileButton = document.getElementById('editProfile');
+    editProfileButton.addEventListener('click', () => {
+        editProfile()
     })
 }
 
@@ -364,6 +382,7 @@ verifyEmailOTP.addEventListener('click', async () => {
     modal.style.display = 'block';
     verifyEmailContent.style.display = 'none';
     const otp = document.getElementById('otp-code').value;
+    console.log(globalUserData)
     const userData = {_id: globalUserData._id, email: globalUserData.email, otp }
     try {
         const response = await fetch('http://localhost:3000/verifyEmailOTP', {
@@ -377,15 +396,16 @@ verifyEmailOTP.addEventListener('click', async () => {
 
         if (data.nextStep === 'correct' || data.nextStep === 'expired') {
             verifyEmailSuccess.style.display = 'block';
+            getUserData();
         } else {
             verifyEmailError.style.display = 'block';
         }
-
     } catch (error) {
         console.error('Error sending verification code');
     }
 
 })
+
 
 // Logout
 const logout = document.getElementById('logout');
@@ -411,6 +431,11 @@ logout.addEventListener('click', async () => {
         console.error('Logout failed...' + error.message);
     }
 })
+
+// const editProfile = () => {
+    
+// }
+
 
 
 

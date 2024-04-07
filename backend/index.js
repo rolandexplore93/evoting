@@ -19,6 +19,8 @@ app.use(cookieParser())
 
 // Custom function to get the token from request cookies
 const getTokenFromCookie = (req) => {
+    // console.log('every')
+    // console.log('token: ' + req.cookies.token)
   return req.cookies.token;
 };
 

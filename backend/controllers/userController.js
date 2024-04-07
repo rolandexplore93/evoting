@@ -178,7 +178,7 @@ exports.login = async (req, res) => {
 
         if (user.role === 5) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '15m'});
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
@@ -196,11 +196,18 @@ exports.login = async (req, res) => {
 
 exports.goToUserDashboard = async (req, res) => {
     if (!req.auth) {
-        return res.status(401).json({ message: 'No authorization token was found' });
+        return res.status(401).json({ message: 'No authorization token found' });
     }
+    // console.log(req.auth)
+    const userId = req.auth._id;
 
-    res.json({ user: req.auth, message: 'Access user dashboard', success: true })
+    const user = await Users.findById(userId);
+    if (!user) return res.status(404).json({ message: 'User not found.', success: false });
+
+    res.json({ userInfo: user, message: 'Accessing user dashboard', success: true })
 }
+
+
 
 
 
@@ -247,7 +254,7 @@ const emailSender = async (email, otp, firstname, lastname) => {
 exports.emailOTP = async (req, res) => {
     const  {_id, firstname, lastname, email } = req.body;
     const user = await Users.findById(_id);
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: 'User not found', success: false });
 
     // if user has otp and it hasn't expired, remind user, otherwise, send new otp to user
     if (user.emailOTP && user.emailOtpCreatedAt && !otpHasExpired(user.emailOtpCreatedAt)) {
