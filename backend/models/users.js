@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
-const bcrypt = require("bcrypt");
 
 const userSchema = new Schema({
     ninNumber: { type: String, default: '' },
@@ -32,8 +31,8 @@ const userSchema = new Schema({
     isProfileVerified: { type: Boolean, default: false },
     isVoted: { type: Boolean, default: false },
     verificationDate: { type: Date, default: null },
-    // verifiedBy: { type: Schema.Types.ObjectId, ref: 'Staff', default: 1 },
-    verifiedBy: { type: String, default: 'admin1' },
+    // verifiedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
+    verifiedBy: { type: String, default: '' },
     resetToken: { type: String, default: '' },
     resetTokenExpiration: { type: Date, default: '' },
     emailOTP: { type: String, default: '' },

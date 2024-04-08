@@ -26,9 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Get user data from the database
 const getUserData = async () => {
-    // const userDashboard = document.getElementById('user-dashboard');
     try {
-
         const response = await fetch('http://localhost:3000/adminDashboard', {
             method: 'GET',
             credentials: 'include'
@@ -54,7 +52,6 @@ const getUserData = async () => {
 
         const userData = data.userInfo;
         globalUserData = userData;
-        // userDashboard.style.display = 'flex'
         populateUserData(userData)
     } catch (error) {
         console.error('Error:', error);
@@ -64,7 +61,6 @@ const getUserData = async () => {
 }
 
 function populateUserData(userData) {
-    console.log(userData)
     const dashboardWelcome = document.getElementById('dashboard-welcome');
     dashboardWelcome.textContent = `Welcome ${userData.firstname} ${userData.lastname}`
 
@@ -214,3 +210,24 @@ function resetAddCandidate() {
     document.getElementById('candidateAddedSuccess').style.display = 'none';
 };
 
+
+// Admin Logout
+const logout = document.getElementById('logout');
+logout.addEventListener('click', async () => {
+    try {
+        const response = await fetch('http://localhost:3000/logout', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            if (response.redirected) {
+                alert('Signing out...');
+                window.location.href = "/admin/admin.html";
+            } else {
+                const data = await response.json();
+                alert(data.message);
+                window.location.href = "/admin/admin.html";
+            }
+    } catch (error) {
+        console.error('Logout failed...' + error.message);
+    }
+})
