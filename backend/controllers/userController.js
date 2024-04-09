@@ -12,7 +12,6 @@ const nodemailer = require('nodemailer');
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
     const nin = req.body.ninDigit;
-    console.log(nin)
     try {
         // Check if NIN exists in the Users db
         const existingUserWithNIN = await Users.findOne({ ninNumber: nin });
@@ -52,7 +51,6 @@ exports.validateNIN = async (req, res, next) => {
             }
             
         }
-
         res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
         next(error)
@@ -83,56 +81,56 @@ assignLGAtoUser = (userState) => {
 exports.signup = async (req, res) => {
     try {
         // Check for existing user with the same NIN, email, or phone number
-        const existingUser = await Users.findOne({
-            $or: [
-                { ninNumber: req.body.ninNumber },
-                { email: req.body.email },
-                { phonenumber: req.body.phonenumber }
-            ]
-        });
+        // const existingUser = await Users.findOne({
+        //     $or: [
+        //         { ninNumber: req.body.ninNumber },
+        //         { email: req.body.email },
+        //         { phonenumber: req.body.phonenumber }
+        //     ]
+        // });
 
-        if (existingUser) {
-            // Send responses to user if the details already exist
-            if (existingUser.ninNumber === req.body.ninNumber) {
-                return res.status(409).json({ message: "NIN already exists" });
-            } else if (existingUser.email === req.body.email) {
-                return res.status(409).json({ message: "Email already exists" });
-            } else if (existingUser.phonenumber === req.body.phonenumber) {
-                return res.status(409).json({ message: "Phone number already exists" });
-            }
-        }
+        // if (existingUser) {
+        //     // Send responses to user if the details already exist
+        //     if (existingUser.ninNumber === req.body.ninNumber) {
+        //         return res.status(409).json({ message: "NIN already exists", success: false });
+        //     } else if (existingUser.email === req.body.email) {
+        //         return res.status(409).json({ message: "Email already exists", success: false });
+        //     } else if (existingUser.phonenumber === req.body.phonenumber) {
+        //         return res.status(409).json({ message: "Phone number already exists", success: false });
+        //     }
+        // }
         
-        const dob = req.body.dateOfBirth;
-        const password = req.body.password.trim();
-
-        const salt = await bcrypt.genSalt();
-        const encryptedPassword = await bcrypt.hash(password, salt);
-
-        const result = await bcrypt.compare(password, encryptedPassword);
-        // console.log('Hash:', encryptedPassword);
+        // const dob = req.body.dateOfBirth;
+        // const password = req.body.password;
+        // console.log('Pw:' + password)
+        // const salt = await bcrypt.genSalt();
+        // const encryptedPassword = await bcrypt.hash(password, salt);
+        // console.log(encryptedPassword)
+        // const result = await bcrypt.compare(password, encryptedPassword);
+        // // console.log('Hash:', encryptedPassword);
         // console.log('Comparison result:', result);
         
-        const age = calculateAge(dob);
-        firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
-        lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
-        // If no existing user, create new user
-        const newUser = new Users({
-            ...req.body,
-            firstname,
-            lastname,
-            age,
-            password: encryptedPassword,
-            uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
-            uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
-        });
+        // const age = calculateAge(dob);
+        // firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
+        // lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
+        // // If no existing user, create new user
+        // const newUser = new Users({
+        //     ...req.body,
+        //     firstname,
+        //     lastname,
+        //     age,
+        //     password: encryptedPassword,
+        //     uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
+        //     uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
+        // });
 
         // Save the new user to the database
-        await newUser.save();
+        // await newUser.save();
 
-        res.status(201).json({ message: "User successfully registered", newUser });
+        res.status(201).json({ message: "User successfully registered", a: 'newUser', success: true });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "An error occurred during registration" });
+        res.status(500).json({ message: "An error occurred during registration", success: false });
     }
 }
 
@@ -159,12 +157,13 @@ function calculateAge(dob) {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log(password)
         const user = await Users.findOne({ email });
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
-        const hash = user.password
-        const isPasswordMatch = await bcrypt.compare(password, hash)
-        
+        const hash = user.password;
+        console.log(hash)
+        const isPasswordMatch = await bcrypt.compare(password, hash);
+        console.log(isPasswordMatch)
         if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
         
         // Relative path for user redirection

@@ -1,10 +1,51 @@
-// Array dummy data to simulate fetched data from database
-const voters = [
-    { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
-    { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
-    { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
-];
+let voters;
 
+// document.addEventListener('DOMContentLoaded', async () => {
+    
+// })
+const votersTabHeader = document.getElementById('votersTabHeader');
+votersTabHeader.addEventListener('click', async () => {
+    try {
+        const response = await fetch('http://localhost:3000/allVoterUsers', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data =  await response.json();
+        console.log(data)
+        if (!response.ok) {
+            throw new Error(data.error || 'Authorization failed');
+        }
+
+        if (data.error === "No authorization token was found") {
+            alert('Unauthorized! Please login to access this page')
+            window.location.href = '/admin/admin.html';
+            return
+        }
+
+        if (data.error === "jwt expired") {
+            alert('Session expired! Please login again')
+            window.location.href = '/admin/admin.html';
+            return
+        }
+
+        const userData = data.userInfo;
+        voters = userData;
+        console.log(voters)
+        // populateUserData(userData)
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Not Authorized to access this page! Please login')
+        window.location.href = '/admin/admin.html';
+    }
+})
+
+// Array dummy data to simulate fetched data from database
+// const voters = [
+//     { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
+//     { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
+//     { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
+// ];
 // All Voters list
 function openAllVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[0];
@@ -14,24 +55,23 @@ function openAllVotersTable() {
                                 <th>Surname</th>
                                 <th>Given Names</th>
                                 <th>Age</th>
-                                <th>Verification Progress</th>
+                                <th>User Role</th>
                                 <th>Profile Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>`;
     
-    voters.forEach((voter, index) => {
+    voters?.forEach((voter, index) => {
         tableHTML += `<tr>
-                        <td>${voter.Surname}</td>
-                        <td>${voter.GivenNames}</td>
-                        <td>${voter.Age}</td>
-                        <td>${voter.VerificationProgress}</td>
-                        <td>${voter.ProfileStatus}</td>
+                        <td>${voter.lastname}</td>
+                        <td>${voter.firstname}</td>
+                        <td>${voter.age}</td>
+                        <td>${voter.role}</td>
+                        <td>${voter.isProfileVerified}</td>
                         <td><button onclick="openVotersModal(${index})">View</button></td>
                     </tr>`;
     });
-
     tableHTML += `</tbody></table>`;
     container.innerHTML = tableHTML;
 }

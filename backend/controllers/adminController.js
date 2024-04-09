@@ -96,4 +96,18 @@ exports.goToAdminDashboard = async (req, res) => {
     if (!user) return res.status(404).json({ message: 'User not found.', success: false });
 
     res.json({ userInfo: userInfoNoPasswordAndPin, message: 'Accessing user dashboard', success: true })
+};
+
+// Get all registered users with role equal to 5
+exports.getAllUsersWithRole5 = async (req, res) => {
+    try {
+        const users = await Users.find({ role: 5 });
+        if (!users || users.length === 0) return res.status(200).json({ message: 'User not found.', success: false });
+
+        res.json({ usersInfo: users, message: 'Users retrieved successfully', succes: true });
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).send('Server error');
+      }
+
 }

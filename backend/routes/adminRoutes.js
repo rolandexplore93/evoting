@@ -1,7 +1,7 @@
 const express = require('express');
 const adminRouter = express.Router();
 const multer = require('multer');
-const { adminLogin, goToAdminDashboard } = require('../controllers/adminController');
+const { adminLogin, goToAdminDashboard, getAllUsersWithRole5 } = require('../controllers/adminController');
 
 // MULTER: Filenames and storage location set up
 // const upload = multer({ dest: 'uploads/' })
@@ -19,7 +19,7 @@ const upload = multer({ storage: storage });
 
 adminRouter.post('/adminLogin', adminLogin);
 adminRouter.get('/adminDashboard', goToAdminDashboard);
-// adminRouter.post('/adminRegistration', adminRegistration)
+adminRouter.get('/allVoterUsers', getAllUsersWithRole5)
 
 
 

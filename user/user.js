@@ -221,7 +221,7 @@ const validateUserNIN = async () => {
                     <input class="inputField" type="text" id="phonenumber" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
                 </div>
                 <div class="entry-wrapper">Password:
-                    <input class="inputField" type="password" id="password" placeholder="Password" required>
+                    <input class="inputField" type="password" id="userPassword" placeholder="Password" required>
                 </div>
                 <div class="entry-wrapper upload"><p>Upload ID card</p>
                     <input class="inputField" type="file" name="uploadID" id="uploadID" accept="image/*" required>
@@ -229,7 +229,7 @@ const validateUserNIN = async () => {
                 <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
                     <input class="inputField" type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*" required>
                 </div>
-                    <button type="button" id="registerButton" onclick="register()" disabled>Register</button>
+                    <button type="submit" id="registerButton" disabled>Register</button>
                 </div>
             `
             listenForClickOnRegisterForm();
@@ -261,7 +261,15 @@ const listenForClickOnRegisterForm = () => {
     });
 }
 
-const register = async () => {
+// const signupForm = document.getElementById('signup-form').addEventListener('submit', (e) => {
+//     e.preventDefault()
+//     console.log('ssssss')
+// })
+
+// const register = async () => {
+const signupForm = document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault()
+        console.log('ssssss')
     // signup.style.display = 'none';
     const formData = new FormData();
     formData.append('ninNumber', document.getElementById('nin').value);
@@ -274,9 +282,9 @@ const register = async () => {
     formData.append('email', document.getElementById('userEmail').value);
     formData.append('phonenumber', document.getElementById('phonenumber').value);
     formData.append('gender', document.getElementById('gender').value);
-    formData.append('password', document.getElementById('password').value);
+    formData.append('password', document.getElementById('userPassword').value);
 
-    // Append files to formData
+    // // Append files to formData
     formData.append('uploadID', document.getElementById('uploadID').files[0]);
     formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
 
@@ -288,14 +296,28 @@ const register = async () => {
     .then(data => {
         // Handle response data
         console.log(data);
-        signupSuccess.style.display = 'block';
+
+        if (!data.success) {
+            alert(data.message);
+            window.location.href = '/user/user.html';
+        }
+
+        // alert('Account creation is successful');
+        alert(data.message);
         form.style.display = 'none';
+        signupSuccess.style.display = 'block';
     })
     .catch(error => {
         console.error('Error:', error);
     });
     // showSignupSuccess();
-}
+
+
+    // alert('Account creation is successful');
+    // form.style.display = 'none';
+    // signupSuccess.style.display = 'block';
+// }
+})
 
 
 
@@ -309,38 +331,22 @@ const register = async () => {
     // const ninNumber = nin.value;
     // const lastname = document.getElementById('lastname').value;
     // const firstname = document.getElementById('firstname').value;
-    // formData.append('username', document.getElementById('username').value);
-    // formData.append('dateOfBirth', document.getElementById('dob').value);
-    // formData.append('state', document.getElementById('state').value);
-    // formData.append('lga', document.getElementById('lga').value);
-    // formData.append('email', document.getElementById('userEmail').value);
-    // formData.append('phonenumber', document.getElementById('phonenumber').value);
-    // formData.append('gender', document.getElementById('gender').value);
-    // formData.append('password', document.getElementById('password').value);
-    // formData.append('uploadID', document.getElementById('uploadID').files[0]);
-    // formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
+    // const username = document.getElementById('username').value;
+    // const dateOfBirth = document.getElementById('dob').value;
+    // const state = document.getElementById('state').value;
+    // const lga = document.getElementById('lga').value;
+    // const email = document.getElementById('userEmail').value;
+    // const phonenumber = document.getElementById('phonenumber').value;
+    // const gender = document.getElementById('gender').value;
+    // const password = document.getElementById('userPassword').value;
+    // const uploadID = document.getElementById('uploadID').files[0];
+    // const uploadSelfie = document.getElementById('uploadSelfie').files[0];
 
-    // const userInformation = {
-    //     ninNumber,
-    //     lastname,
-    //     firstname,
-    //     username,
-    //     dateOfBirth,
-    //     state,
-    //     lga,
-    //     email,
-    //     phonenumber,
-    //     gender,
-    //     password,
-    //     uploadID,
-    //     uploadSelfie,
-    // }
-    
     // console.log(ninNumber)
     // console.log(lastname);
     // console.log(firstname);
     // console.log(username);
-    // console.log(dob);
+    // console.log(dateOfBirth);
     // console.log(state);
     // console.log(lga);
     // console.log(email);
@@ -349,14 +355,6 @@ const register = async () => {
     // console.log(password);
     // console.log(uploadID);
     // console.log(uploadSelfie);
-
-    // await fetch('http://localhost:3000/signup1', {
-    //     method: 'POST',
-    //     headers: {'Content-Type': 'application/json'},
-    //     body: JSON.stringify(userInformation)
-    // })
-    // .then(response => response.json())
-    // .then(data => {})
 
 
 

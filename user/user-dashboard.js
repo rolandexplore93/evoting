@@ -143,6 +143,7 @@ function enterVotingId() {
 // Validate Voting ID
 function validateVotingId() {
     var enteredVotingId = document.getElementById('votingID').value;
+    console.log(enteredVotingId)
 
     if (enteredVotingId == voter.votingId) {
         showStep('nevs-election-conditions')
