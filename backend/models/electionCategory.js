@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+// const mongoose = require("mongoose");
+// const { Schema } = mongoose;
 
-const electionCategorySchema = new Schema({
-    name: { type: String, default: '' }
-}, {timestamps: true});
+// const electionCategorySchema = new Schema({
+//     name: { type: String, default: '' }
+// }, {timestamps: true});
 
-module.exports = mongoose.model('ElectionCategory', electionCategorySchema)
+// module.exports = mongoose.model('ElectionCategory', electionCategorySchema)
