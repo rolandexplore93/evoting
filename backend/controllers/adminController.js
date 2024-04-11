@@ -66,11 +66,11 @@ exports.adminLogin = async (req, res) => {
 
         if (user.role === 4) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '30m'});
+            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard" });
         } else if (user.role === 3) {
-            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '30m'});
+            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard"  });
         } else {

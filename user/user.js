@@ -242,7 +242,6 @@ const validateUserNIN = async () => {
 
 // Enable register button when all fields are filled 
 const listenForClickOnRegisterForm = () => {
-    console.log("Working")
     const inputs = document.querySelectorAll('.inputField');
     const registerButton = document.getElementById('registerButton');
     console.log(inputs)

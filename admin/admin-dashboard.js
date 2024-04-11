@@ -68,23 +68,62 @@ function populateUserData(userData) {
 
 
 // ADD PARTY LOGIC
-// Display add party form
+// Display add party form and enable add party button when all fields are filled 
 function showAddPartyForm() {
+    document.getElementById('openAddPartyForm').style.display = 'none';
     document.getElementById('addPartyForm').style.display = 'block';
+    document.getElementById('openAddPartyTitle').style.display = 'block';
+
+    // Select the form and the button
+    const addPartyForm = document.getElementById('addPartyForm');
+    const addPartyButton = document.getElementById('addPartyButton');
+    
+    // Function to check if all fields are filled
+    const toggleButtonState = () => {
+        const inputs = document.querySelectorAll('.addPartyInputField');
+        // Check if all the form inputs have a value
+        const allInputFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+        // Enable or disable the addPartyButton based on the form fields being filled
+        addPartyButton.disabled = !allInputFilled;
+    };
+    
+    // Add event listeners to each input field
+    const inputs = document.querySelectorAll('.addPartyInputField');
+    inputs.forEach(input => {
+        input.addEventListener('input', toggleButtonState);
+    });
+
+    // Handle form submission
+    addPartyForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        console.log('Form submitted');
+        // You can handle form submission here 
+        document.getElementById('openAddPartyForm').style.display = 'none';
+        document.getElementById('openAddPartyTitle').style.display = 'none';
+        document.getElementById('addPartyForm').style.display = 'none';
+        document.getElementById('partyAddedSuccess').style.display = 'block';
+        document.getElementById('addPartyButton').style.display = 'none';
+    });
+
+    // Initial check in case the form is pre-filled
+    toggleButtonState();
 }
 
 // Display party added successfully
-function addParty() {
-    document.getElementById('addPartyForm').style.display = 'none';
-    document.getElementById('partyAddedSuccess').style.display = 'block';
-    document.getElementById('addPartyButton').style.display = 'none';
-}
+// function addParty() {
+//     document.getElementById('addPartyForm').style.display = 'none';
+//     document.getElementById('partyAddedSuccess').style.display = 'block';
+//     document.getElementById('addPartyButton').style.display = 'none';
+// }
 
 // When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
 function goToAddParty() {
-    document.getElementById('partyName').value = ''; // Reset partyName field
-    document.getElementById('partyAcronym').value = ''; // Reset partyAcronym field
-    document.getElementById('partyLogo').value = ''; // Reset logo  
+    addPartyForm.reset(); // Reset partyName, partyAcronym and logo fields
+    // document.getElementById('partyName').value = ''; // Reset partyName field
+    // document.getElementById('partyAcronym').value = ''; // Reset partyAcronym field
+    // document.getElementById('partyLogo').value = ''; // Reset logo  
+    document.getElementById('openAddPartyForm').style.display = 'block';
+    document.getElementById('openAddPartyTitle').style.display = 'none';
     document.getElementById('addPartyButton').style.display = 'block';
     document.getElementById('addPartyForm').style.display = 'none';
     document.getElementById('partyAddedSuccess').style.display = 'none';

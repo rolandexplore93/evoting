@@ -53,21 +53,23 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Add party section -->
                     <div class="tabcontent" id="Add-Party">
-                        <div>
-                            <button onclick="showAddPartyForm()" id="addPartyButton">Add Party</button>
-                            <div id="addPartyForm" style="display:none;">
-                                <input type="text" id="partyName" placeholder="Party Name">
-                                <input type="text" id="partyAcronym" placeholder="Party Acronym">
-                                <small style="color: black; text-decoration: underline;"> Party Logo</small>
-                                <input type="file" id="partyLogo">
-                                <button onclick="addParty()">Add</button>
-                            </div>
+                        <!-- <div> -->
+                            <button onclick="showAddPartyForm()" id="openAddPartyForm">Add Party</button>
+                            <h3 id="openAddPartyTitle" style="display: none; text-decoration: underline;">Please complete this party form</h3>
+                            <form id="addPartyForm" style="display:none;" enctype="multipart/form-data">
+                                <input type="text" class="addPartyInputField" id="partyName" placeholder="Party Name">
+                                <input type="text" class="addPartyInputField" id="partyAcronym" placeholder="Party Acronym">
+                                <small style="color: black; text-decoration: underline;">Upload Party Logo</small>
+                                <input type="file" class="addPartyInputField" id="partyLogo">
+                                <button type="submit" id="addPartyButton" disabled>Add</button>
+                            </form>
                             <div id="partyAddedSuccess" style="display:none;">
                                 <p>Party added successfully!</p>
                                 <button onclick="goToAddParty()">OK</button>
                             </div>
-                        </div>
+                        <!-- </div> -->
                     </div>
                     <!-- Create Election -->
                     <div class="tabcontent" id="Create-Election">
