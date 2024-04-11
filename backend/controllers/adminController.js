@@ -1,7 +1,11 @@
 const Users = require('../models/users');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Party = require('../models/party');
 require("dotenv").config(); // Enable access to environment variables
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
 // Manually create admin account from the server
 adminRegistration = async (firstname, lastname, username, password, pin, role, email) => {
@@ -109,5 +113,88 @@ exports.getAllUsersWithRole5 = async (req, res) => {
         console.error('Error fetching users:', error);
         res.status(500).send('Server error');
       }
-
 }
+
+
+
+// MULTER configuration for file storage
+// Helper function to sanitize file name
+function sanitizeFileName(filename) {
+    // This removes non-word characters (anything except numbers and letters) and replace spaces with hyphens.
+    return filename.replace(/\s/g, '-').replace(/[^\w.-]+/g, '');
+}
+
+let uploadedFiles = []; // Empty variable to store each file path for potential deletion when data is not stored in the database
+const storage = multer.diskStorage({ // Configure custom file name
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/partyLogo')
+    },
+    filename: function (req, file, cb) {
+    const ext = path.extname(file.originalname); // Path.extname to get the original file extension
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1000);
+    const filename = sanitizeFileName(file.originalname.replace(ext, '')) + file.fieldname + '-' + uniqueSuffix;
+    uploadedFiles.push(`uploads/partyLogo/${filename}`); // Store each file path for potential deletion when data is not stored in the database
+    cb(null, filename)
+    }
+});
+  
+const upload = multer({ storage: storage }).fields([{ name: 'partyLogo', maxCount: 1 }, { name: 'partyLogo', maxCount: 1 }]);
+
+// Add Party logic
+exports.addParty = async (req, res, next) => {
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ message: 'File upload failed', success: false });
+        }
+        // Validate form fields
+        if (!req.body.partyName || !req.body.partyAcronym || !req.files || !req.files.partyLogo) {
+            uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
+                fs.unlink(filePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error(`File ${filePath} not saved!`);
+                    }
+                });
+            });
+            return res.status(400).json({ message: 'All fields are required', success: false });
+        };
+        try {
+            // Create new party entry using the PartySchema model
+            const newParty = new Party({
+                name: req.body.partyName,
+                partyAcronym: req.body.partyAcronym,
+                partyLogo: req.files["partyLogo"] ? req.files["partyLogo"][0].path : ''
+            });
+            // Save to the database
+            await newParty.save();
+            return res.status(201).json({ message: "Party successfully registered", success: true, newParty });
+        } catch (error) {
+            uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
+                fs.unlink(filePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error(`File ${filePath} not saved!`);
+                    }
+                });
+            });
+            let errorMessage;
+            if (error.code == 11000) {
+                errorMessage = "Party Name or Party Acronyms already exist!"
+                return res.status(500).json({ message: errorMessage, succes: false });
+            } else {
+                return res.status(500).json({ message: 'Error saving party! Please try again', succes: false });
+            }
+        }
+    })
+}
+
+
+
+
+// if (error.code === 11000) {
+//     res.status(400).json({ 
+//         success: false, 
+//         message: `A party with the acronym "${error.keyValue.partyAcronym}" already exists.` 
+//     });
+// } else {
+//     console.error('Error saving party:', error);
+//     res.status(500).json({ success: false, message: 'Error saving party' });
+// }

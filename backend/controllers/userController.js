@@ -81,51 +81,51 @@ assignLGAtoUser = (userState) => {
 exports.signup = async (req, res) => {
     try {
         // Check for existing user with the same NIN, email, or phone number
-        // const existingUser = await Users.findOne({
-        //     $or: [
-        //         { ninNumber: req.body.ninNumber },
-        //         { email: req.body.email },
-        //         { phonenumber: req.body.phonenumber }
-        //     ]
-        // });
+        const existingUser = await Users.findOne({
+            $or: [
+                { ninNumber: req.body.ninNumber },
+                { email: req.body.email },
+                { phonenumber: req.body.phonenumber }
+            ]
+        });
 
-        // if (existingUser) {
-        //     // Send responses to user if the details already exist
-        //     if (existingUser.ninNumber === req.body.ninNumber) {
-        //         return res.status(409).json({ message: "NIN already exists", success: false });
-        //     } else if (existingUser.email === req.body.email) {
-        //         return res.status(409).json({ message: "Email already exists", success: false });
-        //     } else if (existingUser.phonenumber === req.body.phonenumber) {
-        //         return res.status(409).json({ message: "Phone number already exists", success: false });
-        //     }
-        // }
+        if (existingUser) {
+            // Send responses to user if the details already exist
+            if (existingUser.ninNumber === req.body.ninNumber) {
+                return res.status(409).json({ message: "NIN already exists", success: false });
+            } else if (existingUser.email === req.body.email) {
+                return res.status(409).json({ message: "Email already exists", success: false });
+            } else if (existingUser.phonenumber === req.body.phonenumber) {
+                return res.status(409).json({ message: "Phone number already exists", success: false });
+            }
+        }
         
-        // const dob = req.body.dateOfBirth;
-        // const password = req.body.password;
-        // console.log('Pw:' + password)
-        // const salt = await bcrypt.genSalt();
-        // const encryptedPassword = await bcrypt.hash(password, salt);
-        // console.log(encryptedPassword)
-        // const result = await bcrypt.compare(password, encryptedPassword);
-        // // console.log('Hash:', encryptedPassword);
-        // console.log('Comparison result:', result);
+        const dob = req.body.dateOfBirth;
+        const password = req.body.password;
+        console.log('Pw:' + password)
+        const salt = await bcrypt.genSalt();
+        const encryptedPassword = await bcrypt.hash(password, salt);
+        console.log(encryptedPassword)
+        const result = await bcrypt.compare(password, encryptedPassword);
+        // console.log('Hash:', encryptedPassword);
+        console.log('Comparison result:', result);
         
-        // const age = calculateAge(dob);
-        // firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
-        // lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
-        // // If no existing user, create new user
-        // const newUser = new Users({
-        //     ...req.body,
-        //     firstname,
-        //     lastname,
-        //     age,
-        //     password: encryptedPassword,
-        //     uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
-        //     uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
-        // });
+        const age = calculateAge(dob);
+        firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
+        lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
+        // If no existing user, create new user
+        const newUser = new Users({
+            ...req.body,
+            firstname,
+            lastname,
+            age,
+            password: encryptedPassword,
+            uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
+            uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
+        });
 
         // Save the new user to the database
-        // await newUser.save();
+        await newUser.save();
 
         res.status(201).json({ message: "User successfully registered", a: 'newUser', success: true });
     } catch (error) {
