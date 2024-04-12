@@ -108,7 +108,7 @@ exports.getAllUsersWithRole5 = async (req, res) => {
         const users = await Users.find({ role: 5 });
         if (!users || users.length === 0) return res.status(200).json({ message: 'User not found.', success: false });
 
-        res.json({ usersInfo: users, message: 'Users retrieved successfully', succes: true });
+        res.json({ usersInfo: users, message: 'Users retrieved successfully', success: true });
       } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send('Server error');
@@ -140,14 +140,16 @@ const storage = multer.diskStorage({ // Configure custom file name
   
 const upload = multer({ storage: storage }).fields([{ name: 'partyLogo', maxCount: 1 }, { name: 'partyLogo', maxCount: 1 }]);
 
-// Add Party logic
+// Add Party to the database logic
 exports.addParty = async (req, res, next) => {
+        // Multer library to add or remove file depending on if party is added successfully to db
     upload(req, res, async (err) => {
         if (err) {
             return res.status(500).json({ message: 'File upload failed', success: false });
         }
+        // console.log(uploadedFiles)
         // Validate form fields
-        if (!req.body.partyName || !req.body.partyAcronym || !req.files || !req.files.partyLogo) {
+        if (!req.body.partyName || !req.body.partyAcronym || !req.files) {
             uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
                 fs.unlink(filePath, unlinkErr => {
                     if (unlinkErr) {
@@ -155,17 +157,18 @@ exports.addParty = async (req, res, next) => {
                     }
                 });
             });
-            return res.status(400).json({ message: 'All fields are required', success: false });
+            uploadedFiles = [];  // Clear uploadedFiles array after handling error
+            return res.status(409).json({ message: 'All fields are required', success: false });
         };
         try {
-            // Create new party entry using the PartySchema model
+            // Create new party entry using the Party model
             const newParty = new Party({
                 name: req.body.partyName,
                 partyAcronym: req.body.partyAcronym,
                 partyLogo: req.files["partyLogo"] ? req.files["partyLogo"][0].path : ''
             });
-            // Save to the database
-            await newParty.save();
+            await newParty.save(); // Save to the database
+            uploadedFiles = []; // Clear uploadedFiles array after saving to the database
             return res.status(201).json({ message: "Party successfully registered", success: true, newParty });
         } catch (error) {
             uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
@@ -175,26 +178,14 @@ exports.addParty = async (req, res, next) => {
                     }
                 });
             });
+            uploadedFiles = [];  // Clear uploadedFiles array after handling error
             let errorMessage;
             if (error.code == 11000) {
                 errorMessage = "Party Name or Party Acronyms already exist!"
-                return res.status(500).json({ message: errorMessage, succes: false });
+                return res.status(409).json({ message: errorMessage, success: false });
             } else {
-                return res.status(500).json({ message: 'Error saving party! Please try again', succes: false });
+                return res.status(500).json({ message: 'Error saving party! Please try again', success: false });
             }
         }
     })
 }
-
-
-
-
-// if (error.code === 11000) {
-//     res.status(400).json({ 
-//         success: false, 
-//         message: `A party with the acronym "${error.keyValue.partyAcronym}" already exists.` 
-//     });
-// } else {
-//     console.error('Error saving party:', error);
-//     res.status(500).json({ success: false, message: 'Error saving party' });
-// }

@@ -267,8 +267,7 @@ const listenForClickOnRegisterForm = () => {
 
 // const register = async () => {
 const signupForm = document.getElementById('signup-form').addEventListener('submit', async (e) => {
-        e.preventDefault()
-        console.log('ssssss')
+    e.preventDefault()
     // signup.style.display = 'none';
     const formData = new FormData();
     formData.append('ninNumber', document.getElementById('nin').value);

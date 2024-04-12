@@ -33,23 +33,21 @@ const getUserData = async () => {
         });
 
         const data =  await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Authorization failed');
-        }
+        if (!response.ok)  throw new Error(data.error || 'Authorization failed');
 
         if (data.error === "No authorization token was found") {
+            document.getElementById('admin-dashboard-container').style.display = 'none'; // Don't show page if user is not authorized
             alert('Unauthorized! Please login to access this page')
             window.location.href = '/admin/admin.html';
             return
         }
 
         if (data.error === "jwt expired") {
+            document.getElementById('admin-dashboard-container').style.display = 'none'; // Don't show page if user session has expired
             alert('Session expired! Please login again')
             window.location.href = '/admin/admin.html';
             return
         }
-
         const userData = data.userInfo;
         globalUserData = userData;
         populateUserData(userData)
@@ -68,66 +66,76 @@ function populateUserData(userData) {
 
 
 // ADD PARTY LOGIC
-// Display add party form and enable add party button when all fields are filled 
-function showAddPartyForm() {
+const openAddPartyForm = document.getElementById('openAddPartyForm');
+openAddPartyForm.addEventListener('click', () => {
+    console.log('openAddPartyForm')
     document.getElementById('openAddPartyForm').style.display = 'none';
+    document.getElementById('addPartyFormTitle').style.display = 'block';
     document.getElementById('addPartyForm').style.display = 'block';
-    document.getElementById('openAddPartyTitle').style.display = 'block';
+})
 
-    // Select the form and the button
-    const addPartyForm = document.getElementById('addPartyForm');
+// AddPartyForm: Display add party form and only enable add party button when all the form fields are filled 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded - openAddPartyForm')
     const addPartyButton = document.getElementById('addPartyButton');
-    
     // Function to check if all fields are filled
     const toggleButtonState = () => {
         const inputs = document.querySelectorAll('.addPartyInputField');
-        // Check if all the form inputs have a value
+        // Check whether all form inputs have a value
         const allInputFilled = Array.from(inputs).every(input => input.value.trim() !== '');
         // Enable or disable the addPartyButton based on the form fields being filled
         addPartyButton.disabled = !allInputFilled;
     };
-    
     // Add event listeners to each input field
     const inputs = document.querySelectorAll('.addPartyInputField');
     inputs.forEach(input => {
         input.addEventListener('input', toggleButtonState);
     });
-
-    // Handle form submission
-    addPartyForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log('Form submitted');
-        // You can handle form submission here 
-        document.getElementById('openAddPartyForm').style.display = 'none';
-        document.getElementById('openAddPartyTitle').style.display = 'none';
-        document.getElementById('addPartyForm').style.display = 'none';
-        document.getElementById('partyAddedSuccess').style.display = 'block';
-        document.getElementById('addPartyButton').style.display = 'none';
-    });
-
     // Initial check in case the form is pre-filled
     toggleButtonState();
-}
+});
 
-// Display party added successfully
-// function addParty() {
-//     document.getElementById('addPartyForm').style.display = 'none';
-//     document.getElementById('partyAddedSuccess').style.display = 'block';
-//     document.getElementById('addPartyButton').style.display = 'none';
-// }
+const addPartyForm = document.getElementById('addPartyForm');
+addPartyForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('partyName', document.getElementById('partyName').value);
+        formData.append('partyAcronym', document.getElementById('partyAcronym').value);
+        formData.append('partyLogo', document.getElementById('partyLogo').files[0]);
+    
+        try {
+            const response = await fetch('http://localhost:3000/addParty', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            })
+            const data = await response.json();
+            if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+            document.getElementById('partyAddedSuccess').style.display = 'block';
+            document.getElementById('openAddPartyForm').style.display = 'none';
+            document.getElementById('addPartyFormTitle').style.display = 'none';
+            document.getElementById('addPartyForm').style.display = 'none';
+            document.getElementById('addPartyButton').style.display = 'none';
+            document.getElementById('partyAddedSuccessFeedback').textContent = data.message;
+            alert(data.message)
+        } catch (error) {
+            // console.error('Error:', error);
+            alert('Error occured adding Party!' + error.message);
+        }
+})
 
-// When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
-function goToAddParty() {
-    addPartyForm.reset(); // Reset partyName, partyAcronym and logo fields
-    // document.getElementById('partyName').value = ''; // Reset partyName field
-    // document.getElementById('partyAcronym').value = ''; // Reset partyAcronym field
-    // document.getElementById('partyLogo').value = ''; // Reset logo  
+// Party added successful popup: When 'Ok' is clicked, reset the form and go back to add party page
+const goToAddParty = document.getElementById('goToAddParty');
+goToAddParty.addEventListener('click', () => {
+    const handleAddPartyFormReset = document.getElementById('addPartyForm'); // Reset partyName, partyAcronym and logo fields
+    handleAddPartyFormReset.reset(); 
     document.getElementById('openAddPartyForm').style.display = 'block';
-    document.getElementById('openAddPartyTitle').style.display = 'none';
-    document.getElementById('addPartyButton').style.display = 'block';
+    document.getElementById('addPartyFormTitle').style.display = 'none';
     document.getElementById('addPartyForm').style.display = 'none';
     document.getElementById('partyAddedSuccess').style.display = 'none';
-}
+    document.getElementById('addPartyButton').style.display = 'block';
+})
+
 
 // CREATE ELECTION LOGIC
 // Display create election form

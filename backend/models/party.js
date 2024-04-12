@@ -10,4 +10,4 @@ const partySchema = new Schema({
     // electionId: { type: Schema.Types.ObjectId, ref: 'Election', default: null },
 }, {timestamps: true});
 
-module.exports = mongoose.model('Party', partySchema)
+module.exports = mongoose.model('Party', partySchema);

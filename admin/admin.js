@@ -14,6 +14,7 @@ loginForm.addEventListener('submit', async(e) => {
             credentials: 'include'
         });
         const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
         if (data.success) {
             // Redirect based on role
             alert(data.message);
@@ -21,11 +22,12 @@ loginForm.addEventListener('submit', async(e) => {
                 window.location.href = `${window.location.origin}${data.path}`;
             }, 1000);
         } else {
-            alert(data.message);
+            alert(data.message)
             window.location.href = `${window.location.origin}${data.path}`;
         }
     } catch (error) {
-        console.error('Login failed');
+        alert('Login Failed! ' + error.message);
+        // console.error('Login Failed! ' + error.message);
     }
 })
 
