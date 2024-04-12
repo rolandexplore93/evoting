@@ -22,7 +22,7 @@
                             <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a>
                             </li>
                             <li><a class="tablinks" onclick="openTab(event, 'Add-Party')">Create Party</a></li>
-                            <li><a class="tablinks" onclick="openTab(event, 'Create-Election')">Create Election</a>
+                            <li><a class="tablinks" onclick="openTab(event, 'Create-Election')" id="ce">Create Election</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Add-Candidates')">Add Candidates</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Voters')" id="votersTabHeader">Voters</a>
                             <li><a class="tablinks" onclick="openTab(event, 'Approve-Votes')">Approve Votes</a>
@@ -71,14 +71,14 @@
                     <!-- Create Election -->
                     <div class="tabcontent" id="Create-Election">
                         <div>
-                            <button onclick="showCreateElectionForm()" id="createElectionTag">Create Election</button>
-                            <div id="createElectionForm" style="display:none;">
-                                <select id="electionCategory" class="electionCategory">
-                                    <option value="GeneralElections">General Elections</option>
-                                    <option value="StatesElections">States Elections</option>
-                                    <option value="LgaElections">LGA Elections</option>
+                            <button id="createElectionTag">Create Election</button>
+                            <form method="post" id="createElectionForm" style="display:none;">
+                                <select id="electionCategoryCE" class="electionCategory CEInputField">
+                                    <option value="GeneralElections">General Elections 2024</option>
+                                    <option value="StatesElections">States Elections 2024</option>
+                                    <option value="LgaElections">LGA Elections 2024</option>
                                 </select>
-                                <select id="electionType" class="electionType">
+                                <select id="electionTypeCE" class="electionType CEInputField">
                                     <option value="President">President</option>
                                     <option value="Senate">Senate</option>
                                     <option value="HOR">HOR</option>
@@ -90,13 +90,13 @@
                                 <option value="NNPP">NNPP</option>
                                 <option value="PDP">PDP</option>
                                 </select> -->
-                                <input type="datetime-local" id="openDateTime">
-                                <input type="datetime-local" id="closeDateTime">
-                                <button onclick="createElection()">Create</button>
-                            </div>
+                                <input type="datetime-local" id="openDateTime" class="CEInputField">
+                                <input type="datetime-local" id="closeDateTime" class="CEInputField">
+                                <button type="submit" id="createElectionButton">Create</button>
+                            </form>
                             <div id="electionCreatedSuccess" style="display:none;">
                                 <p>Election created successfully!</p>
-                                <button onclick="goToCreateElection()">OK</button>
+                                <button id="electionCreatedSuccessButton">OK</button>
                             </div>
                         </div>
                         <br><hr>
