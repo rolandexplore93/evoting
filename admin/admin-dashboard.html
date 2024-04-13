@@ -79,9 +79,9 @@
                                     <option value="Lga Elections 2024">LGA Elections 2024</option>
                                 </select>
                                 <select id="electionTypeCE" class="electionType CEInputField">
-                                    <option value="President">President</option>
+                                    <!-- <option value="President">President</option>
                                     <option value="Senate">Senate</option>
-                                    <option value="HOR">HOR</option>
+                                    <option value="HOR">HOR</option> -->
                                 </select>
                                 <!-- <select id="selectParty" class="selectParty">
                                 <option value="ADC">ADC</option>
@@ -104,10 +104,10 @@
                         <div>
                             <button onclick="ShowAddPartyToElectionForm()" id="addPartyToElectionTag">Add Parties to Election</button>
                             <div id="addPartyToElectionForm" style="display: none;">
-                                <select id="electionCategory" class="electionCategory">
-                                    <option value="GeneralElections">General Elections - ${President}</option>
+                                <select id="electionCategoryAP2E" class="electionCategory">
+                                    <!-- <option value="GeneralElections">General Elections - ${President}</option>
                                     <option value="StatesElections">States Elections - ${Governor}</option></option>
-                                    <option value="LgaElections">LGA Elections - ${Chairman}</option></option>
+                                    <option value="LgaElections">LGA Elections - ${Chairman}</option></option> -->
                                     <!-- Map all elections created dynamically taking the election category and type -->
                                 </select>
                                 <!-- <select id="electionType" class="electionType">
@@ -117,19 +117,20 @@
                                 </select> -->
                                 <br>
                                 <select id="selectParties" class="selectParties" multiple>
-                                    <option value="" disabled>Select Parties</option>
+                                    <!-- <option value="" disabled>Select Parties</option>
                                     <option value="ADC">ADC</option>
                                     <option value="APC">APC</option>
                                     <option value="LP">LP</option>
                                     <option value="NNPP">NNPP</option>
-                                    <option value="PDP">PDP</option>
+                                    <option value="PDP">PDP</option> -->
                                 </select>
-                                <button onclick="addPartiesToElection()">Create</button>
+                                <button id="addPartiesToElectionButton" onclick="addPartiesToElection()" disabled>Create</button>
                             </div>
                             <div id="addPartyToElectionSuccess" style="display:none;">
                                 <p>Parties successfully added to Election</p>
                                 <button onclick="goToShowAddPartyToElectionForm()">OK</button>
                             </div>
+                            <div id="noElectionsMessage" style="display:none;">No elections available yet</div>
                         </div>
                     </div>
                     <!-- Add Candidates -->

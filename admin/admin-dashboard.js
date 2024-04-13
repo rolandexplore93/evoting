@@ -156,8 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
         electionClosingDate.min = electionOpenDate.value;
         electionClosingDate.disabled = false;
     })
-    console.log('DOMContentLoaded - createElectionButton')
+
     // Function to check if create election form fields are filled
+    console.log('DOMContentLoaded - createElectionButton')
     const createElectionButton = document.getElementById('createElectionButton');
     const toggleButtonState = () => {
         const inputs = document.querySelectorAll('.CEInputField');
@@ -175,10 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleButtonState();
 
     updateCategoryOptions(); // Call updateCategoryOptions to first populate election categories and types
-
     const updateCECategories = document.getElementById('electionCategoryCE');
     updateCECategories.addEventListener('change', updateCategoryOptions); // Attach event listener to handle changes when user selects an option
 
+    // getAllElectionsAndParties() //getAllElectionsAndParties
 });
 
 // CE - CreateElection
@@ -186,9 +187,9 @@ function updateCategoryOptions() {
     const category = document.getElementsByClassName('electionCategory')[0].value;
     const selectElectionType = document.getElementsByClassName('electionType')[0];
     selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
-    console.log(category)
-    console.log(selectElectionType)
-    console.log(electionCategories[category])
+    // console.log(category)
+    // console.log(selectElectionType)
+    // console.log(electionCategories[category])
     if (category && electionCategories[category]) {
         electionCategories[category].forEach(type => {
             const option = new Option(type, type);
@@ -246,16 +247,70 @@ goToCreateElection.addEventListener('click', async () => {
 // When the page loads, check for the query parameter and open the "Create-Election" tab
 document.addEventListener('DOMContentLoaded', function(event) {
     var urlParams = new URLSearchParams(window.location.search);
-    console.log(urlParams)
+    // console.log(urlParams)
     var tabToOpen = urlParams.get('tab');
     if (tabToOpen === 'Create-Election') {
         openTab(event, 'Create-Election'); // You will need to pass the appropriate event or element here
     }
 });
 
-// Create AddPartyToElectionForm logic
-function ShowAddPartyToElectionForm() {
-    document.getElementById('addPartyToElectionForm').style.display = 'block';
+// ADD PARTIES TO ELECTION: Create AddPartyToElectionForm logic
+const getAllElectionsAndParties = async () => {
+    console.log('getAllElectionsAndParties')
+    try {
+        const response = await fetch('http://localhost:3000/getAllElectionsAndParties', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        return data
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message)
+    }
+}
+// Show ShowAddPartyToElectionForm
+async function ShowAddPartyToElectionForm() {
+    const noElectionsMessage = document.getElementById('noElectionsMessage'); // Get noElectionsMessage html
+    const addPartyToElectionForm = document.getElementById('addPartyToElectionForm'); // Get addPartyToElectionForm html
+    const electionCategoryAP2E = document.getElementById('electionCategoryAP2E'); // Get electionCategoryAP2E dropdown html
+    const selectParties = document.getElementById('selectParties'); // Get selectParties dropdown html
+    const addPartiesToElectionButton = document.getElementById('addPartiesToElectionButton'); // addPartiesToElectionButton
+    
+    addPartyToElectionForm.style.display = 'block';
+    const data = await getAllElectionsAndParties()
+    if (data.elections.length === 0) { // if no election, display no election available
+        noElectionsMessage.style.display = 'block';
+        addPartyToElectionForm.style.display = 'none';
+    } else {
+        document.getElementById('addPartyToElectionTag').style.display = 'none'; // disabled add election tag
+        // Populate elections dropdown
+        data.elections.forEach(election => {
+        const option = new Option(`${election.electionCategory} - ${election.electionName}`, election._id);
+        electionCategoryAP2E.add(option);
+        });
+        // Populate parties dropdown
+        data.parties.forEach(party => {
+        const option = new Option(`${party.partyAcronym} - ${party.name}`, party._id);
+        selectParties.add(option);
+        });
+    }
+
+
+    // Listener for selections
+    electionCategoryAP2E.addEventListener('change', toggleCreateButton);
+    selectParties.addEventListener('change', toggleCreateButton);
+
+    // Function to enable or disable the create button
+    function toggleCreateButton() {
+        const selectedElection = electionCategoryAP2E.value;
+        console.log(selectedElection)
+        const selectedParties = Array.from(selectParties.selectedOptions).map(option => option.value);
+        console.log(selectedParties)
+        addPartiesToElectionButton.disabled = !(selectedElection && selectedParties.length > 0);
+    }
 }
 
 // Display party added to election
@@ -267,12 +322,16 @@ function addPartiesToElection() {
 
 // When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
 function goToShowAddPartyToElectionForm() {
-    document.getElementById('electionCategory').selectedIndex = 0;
-    document.getElementById('electionType').selectedIndex = 0;
-    document.getElementById('selectParties').selectedIndex = 0;
-    document.getElementById('addPartyToElectionForm').style.display = 'none';
-    document.getElementById('addPartyToElectionSuccess').style.display = 'none';
-    document.getElementById('addPartyToElectionTag').style.display = 'block';
+    // document.getElementById('electionCategoryAP2E').selectedIndex = 0;
+    // document.getElementById('electionType').selectedIndex = 0;
+    // document.getElementById('selectParties').selectedIndex = 0;
+    // document.getElementById('addPartyToElectionForm').style.display = 'none';
+    // document.getElementById('addPartyToElectionSuccess').style.display = 'none';
+    // document.getElementById('addPartyToElectionTag').style.display = 'block';
+    
+    // Reload and open Create Election tab
+    window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
+    openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
 }
 
 
