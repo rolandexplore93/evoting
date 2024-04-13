@@ -120,6 +120,9 @@ addPartyForm.addEventListener('submit', async (event) => {
         document.getElementById('addPartyButton').style.display = 'none';
         document.getElementById('partyAddedSuccessFeedback').textContent = data.message;
         alert(data.message)
+        // Reload and open Add-Party tab
+        // window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Party';
+        // openTab(null, 'Add-Party'); // Since no event is target, null is passed in as the first argument
     } catch (error) {
         // console.error('Error:', error);
         alert('Error occured: ' + error.message);
@@ -254,7 +257,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
 });
 
-// ADD PARTIES TO ELECTION: Create AddPartyToElectionForm logic
+// ADD PARTIES TO ELECTION
+// Create AddPartyToElectionForm logic
 const getAllElectionsAndParties = async () => {
     console.log('getAllElectionsAndParties')
     try {
@@ -306,18 +310,39 @@ async function ShowAddPartyToElectionForm() {
     // Function to enable or disable the create button
     function toggleCreateButton() {
         const selectedElection = electionCategoryAP2E.value;
-        console.log(selectedElection)
+        // console.log(selectedElection)
         const selectedParties = Array.from(selectParties.selectedOptions).map(option => option.value);
-        console.log(selectedParties)
+        // console.log(selectedParties)
         addPartiesToElectionButton.disabled = !(selectedElection && selectedParties.length > 0);
     }
 }
 
 // Display party added to election
-function addPartiesToElection() {
-    document.getElementById('addPartyToElectionForm').style.display = 'none';
-    document.getElementById('addPartyToElectionSuccess').style.display = 'block';
-    document.getElementById('addPartyToElectionTag').style.display = 'none';
+async function addPartiesToElection() {
+
+    const electionId = document.getElementById('electionCategoryAP2E').value; // Get the value (id) of electionCategoryAP2E dropdown html
+    const selectParties = Array.from(document.getElementById('selectParties').selectedOptions); // Get the array list of each party selected from selectParties dropdown html
+    const selectedPartiesIds = selectParties.map(party => party.value) // Map over each selected parties array to get their value (id)
+
+    try {
+        const response = await fetch('http://localhost:3000/addPartiesToElection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({electionId, selectedPartiesIds}),
+            credentials: 'include'
+        })
+        console.log(response)
+        const data = await response.json();
+        console.log(data)
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        // Display addPartyToElectionSuccess card
+        document.getElementById('addPartyToElectionForm').style.display = 'none';
+        document.getElementById('addPartyToElectionTag').style.display = 'none';
+        document.getElementById('addPartyToElectionSuccess').style.display = 'block';
+        document.getElementById('addPartyToElectionSuccessText').textContent = data.message;
+    } catch (error) {
+        alert(error.message);
+    }
 }
 
 // When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
@@ -328,7 +353,7 @@ function goToShowAddPartyToElectionForm() {
     // document.getElementById('addPartyToElectionForm').style.display = 'none';
     // document.getElementById('addPartyToElectionSuccess').style.display = 'none';
     // document.getElementById('addPartyToElectionTag').style.display = 'block';
-    
+
     // Reload and open Create Election tab
     window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
     openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
@@ -382,9 +407,9 @@ function updateElectionTypes() {
     const category = document.getElementsByClassName('electionCategory')[2].value;
     const selectElectionType = document.getElementsByClassName('electionType')[1];
     selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
-    console.log(category)
-    console.log(selectElectionType)
-    console.log(electionData[category])
+    // console.log(category)
+    // console.log(selectElectionType)
+    // console.log(electionData[category])
     if (category && electionData[category]) {
         electionData[category].forEach(type => {
             const option = new Option(type, type);
