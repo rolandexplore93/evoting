@@ -6,7 +6,8 @@ const electionSchema = new Schema({
     electionCategory: { type: String, default: null },
     openDate: { type: Date, default: null },
     closingDate: { type: Date, default: null },
-    createdBy: { type: String, default: null },
+    // createdBy: { type: String, default: null },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', default: null }
 }, {timestamps: true});
 
 module.exports = mongoose.model('Election', electionSchema)

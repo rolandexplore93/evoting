@@ -2,6 +2,7 @@ const Users = require('../models/users');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Party = require('../models/party');
+const Election = require('../models/elections');
 require("dotenv").config(); // Enable access to environment variables
 const multer = require('multer');
 const path = require('path');
@@ -59,7 +60,7 @@ exports.adminLogin = async (req, res) => {
         const isPinMatch = await bcrypt.compare(pin, getEncryptedPin)
         if (!isPinMatch) return res.status(409).json({ success: false, message: "PIN is not correct" });
         if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
-        
+
         // Relative path for user redirection
         const adminDashboardUrl = `/admin/admin-dashboard.html`;
         const errorUrl = '/error.html';
@@ -70,13 +71,13 @@ exports.adminLogin = async (req, res) => {
 
         if (user.role === 4) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h'});
+            const token = await jwt.sign(userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h' });
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard" });
         } else if (user.role === 3) {
-            const token = await jwt.sign( userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h'});
+            const token = await jwt.sign(userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h' });
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
-            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard"  });
+            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard" });
         } else {
             return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
         }
@@ -92,7 +93,7 @@ exports.goToAdminDashboard = async (req, res) => {
     }
     // console.log(req.auth)
     const userId = req.auth._id;
-    
+
     const user = await Users.findById(userId);
     const userInfoNoPasswordAndPin = user.toObject();
     delete userInfoNoPasswordAndPin.password;
@@ -109,10 +110,10 @@ exports.getAllUsersWithRole5 = async (req, res) => {
         if (!users || users.length === 0) return res.status(200).json({ message: 'User not found.', success: false });
 
         res.json({ usersInfo: users, message: 'Users retrieved successfully', success: true });
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send('Server error');
-      }
+    }
 }
 
 
@@ -127,22 +128,22 @@ function sanitizeFileName(filename) {
 let uploadedFiles = []; // Empty variable to store each file path for potential deletion when data is not stored in the database
 const storage = multer.diskStorage({ // Configure custom file name
     destination: function (req, file, cb) {
-      cb(null, 'uploads/partyLogo')
+        cb(null, 'uploads/partyLogo')
     },
     filename: function (req, file, cb) {
-    const ext = path.extname(file.originalname); // Path.extname to get the original file extension
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1000);
-    const filename = sanitizeFileName(file.originalname.replace(ext, '')) + file.fieldname + '-' + uniqueSuffix;
-    uploadedFiles.push(`uploads/partyLogo/${filename}`); // Store each file path for potential deletion when data is not stored in the database
-    cb(null, filename)
+        const ext = path.extname(file.originalname); // Path.extname to get the original file extension
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1000);
+        const filename = sanitizeFileName(file.originalname.replace(ext, '')) + file.fieldname + '-' + uniqueSuffix;
+        uploadedFiles.push(`uploads/partyLogo/${filename}`); // Store each file path for potential deletion when data is not stored in the database
+        cb(null, filename)
     }
 });
-  
+
 const upload = multer({ storage: storage }).fields([{ name: 'partyLogo', maxCount: 1 }, { name: 'partyLogo', maxCount: 1 }]);
 
 // Add Party to the database logic
 exports.addParty = async (req, res, next) => {
-        // Multer library to add or remove file depending on if party is added successfully to db
+    // Multer library to add or remove file depending on if party is added successfully to db
     upload(req, res, async (err) => {
         if (err) {
             return res.status(500).json({ message: 'File upload failed', success: false });
@@ -188,4 +189,63 @@ exports.addParty = async (req, res, next) => {
             }
         }
     })
+}
+
+
+// CREATE ELECTION API
+exports.createElection = async (req, res) => {
+    const { electionName, electionCategory, openDate, closingDate } = req.body;
+
+    // Check that election form fields are not empty
+    if (!electionName || !electionCategory || !openDate || !closingDate) {
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required."
+        });
+    }
+
+    // Validate that closingDate is not before openDate
+    if (new Date(closingDate) < new Date(openDate)) {
+        return res.status(400).json({
+            success: false,
+            message: "Closing date must be after the opening date."
+        });
+    }
+
+    try {
+        // Check for an existing election with the same election name and category
+        const existingElection = await Election.findOne({
+            electionName,
+            electionCategory
+        });
+
+        if (existingElection) {
+            return res.status(409).json({
+                success: false,
+                message: "An election with the same name and category already exists."
+            });
+        }
+
+        // Create a new election if there's no conflict
+        const newElection = new Election({
+            electionName,
+            electionCategory,
+            openDate,
+            closingDate
+        });
+
+        await newElection.save();
+
+        return res.status(201).json({
+            success: true,
+            message: "Election created successfully."
+        });
+
+    } catch (error) {
+        console.error("Error setting up the election:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error while setting up the election."
+        });
+    }
 }
