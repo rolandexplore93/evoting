@@ -248,3 +248,14 @@ exports.createElection = async (req, res) => {
         });
     }
 }
+
+// Get all elections and parties created
+exports.getAllElectionsAndParties = async (req, res) => {
+    try {
+      const elections = await Election.find();
+      const parties = await Party.find();
+      res.status(200).json({ elections, parties, success: true });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching data', error: error.message });
+    }
+};
