@@ -259,3 +259,26 @@ exports.getAllElectionsAndParties = async (req, res) => {
       res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
+
+// addPartiesToElection
+exports.addPartiesToElection = async (req, res) => {
+    const { electionId, selectedPartiesIds } = req.body;
+    if (!electionId || !selectedPartiesIds) {
+        return res.status(400).json({ success: false, message: 'Election ID and Party IDs are required.' });
+    }
+
+    try {
+        for (const partyId of selectedPartiesIds) { // Loop through each party ID
+            const party = await Party.findById(partyId); // Find each party by ID
+            // If the party does not have an electionId already, update it with the new electionId
+            if (party && !party.electionIds.includes(electionId)) {
+                party.electionIds.push(electionId); // Add new electionId to the array of election ids
+                await party.save();
+            }
+        }
+        return res.status(200).json({ success: true, message: 'Parties added to election successfully.' });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+};
