@@ -1,3 +1,4 @@
+let globalUserData; // uninitialized variable to hold admin data after login
 // Tab functionality on admin page
 function openTab(e, tabTitle) {
     var index, tabContent, tabLinks;
@@ -49,7 +50,7 @@ const getUserData = async () => {
             return
         }
         const userData = data.userInfo;
-        globalUserData = userData;
+        globalUserData = userData; // Save admin data inside globalUserData
         populateUserData(userData)
     } catch (error) {
         console.error('Error:', error);
@@ -205,17 +206,19 @@ createElectionForm.addEventListener('submit', async (event) => {
     const electionCategory = document.getElementById('electionCategoryCE').value;
     const openDate = document.getElementById('openDateTime').value;
     const closingDate = document.getElementById('closeDateTime').value;
+    const createdByUserId = globalUserData._id;
 
-    console.log(electionName)
-    console.log(electionCategory)
-    console.log(openDate)
-    console.log(closingDate)
-
+    // console.log(electionName)
+    // console.log(electionCategory)
+    // console.log(openDate)
+    // console.log(closingDate)
+    // console.log(createdByUserId)
+    
     try {
         const response = await fetch('http://localhost:3000/createElection', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({electionName, electionCategory, openDate, closingDate}),
+            body: JSON.stringify({electionName, electionCategory, openDate, closingDate, createdByUserId}),
             credentials: 'include'
         })
         console.log(response)
@@ -248,11 +251,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     if (tabToOpen === 'Create-Election') {
         openTab(event, 'Create-Election'); // You will need to pass the appropriate event or element here
     }
-
-    
 });
-
-
 
 // Create AddPartyToElectionForm logic
 function ShowAddPartyToElectionForm() {

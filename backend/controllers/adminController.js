@@ -194,7 +194,7 @@ exports.addParty = async (req, res, next) => {
 
 // CREATE ELECTION API
 exports.createElection = async (req, res) => {
-    const { electionName, electionCategory, openDate, closingDate } = req.body;
+    const { electionName, electionCategory, openDate, closingDate, createdByUserId } = req.body;
 
     // Check that election form fields are not empty
     if (!electionName || !electionCategory || !openDate || !closingDate) {
@@ -202,8 +202,7 @@ exports.createElection = async (req, res) => {
             success: false,
             message: "All fields are required."
         });
-    }
-
+    };
     // Validate that closingDate is not before openDate
     if (new Date(closingDate) < new Date(openDate)) {
         return res.status(400).json({
@@ -222,7 +221,7 @@ exports.createElection = async (req, res) => {
         if (existingElection) {
             return res.status(409).json({
                 success: false,
-                message: "An election with the same name and category already exists."
+                message: "An election with the same election category and type already exists."
             });
         }
 
@@ -231,10 +230,11 @@ exports.createElection = async (req, res) => {
             electionName,
             electionCategory,
             openDate,
-            closingDate
+            closingDate,
+            createdBy: createdByUserId
         });
 
-        await newElection.save();
+        await newElection.save(); // Save election to the database
 
         return res.status(201).json({
             success: true,
@@ -242,7 +242,6 @@ exports.createElection = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Error setting up the election:", error);
         return res.status(500).json({
             success: false,
             message: "Server error while setting up the election."
