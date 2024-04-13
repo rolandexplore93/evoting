@@ -74,9 +74,9 @@
                             <button id="createElectionTag">Create Election</button>
                             <form method="post" id="createElectionForm" style="display:none;">
                                 <select id="electionCategoryCE" class="electionCategory CEInputField">
-                                    <option value="GeneralElections">General Elections 2024</option>
-                                    <option value="StatesElections">States Elections 2024</option>
-                                    <option value="LgaElections">LGA Elections 2024</option>
+                                    <option value="General Elections 2024">General Elections 2024</option>
+                                    <option value="States Elections 2024">States Elections 2024</option>
+                                    <option value="Lga Elections 2024">LGA Elections 2024</option>
                                 </select>
                                 <select id="electionTypeCE" class="electionType CEInputField">
                                     <option value="President">President</option>
@@ -91,7 +91,7 @@
                                 <option value="PDP">PDP</option>
                                 </select> -->
                                 <input type="datetime-local" id="openDateTime" class="CEInputField">
-                                <input type="datetime-local" id="closeDateTime" class="CEInputField">
+                                <input type="datetime-local" id="closeDateTime" class="CEInputField" disabled>
                                 <button type="submit" id="createElectionButton">Create</button>
                             </form>
                             <div id="electionCreatedSuccess" style="display:none;">

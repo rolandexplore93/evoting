@@ -121,7 +121,7 @@ addPartyForm.addEventListener('submit', async (event) => {
         alert(data.message)
     } catch (error) {
         // console.error('Error:', error);
-        alert('Error occured adding Party!' + error.message);
+        alert('Error occured: ' + error.message);
     }
 })
 
@@ -146,11 +146,18 @@ openCreateElectionForm.addEventListener('click', () => {
 });
 
 
-// AddPartyForm: Display add party form and only enable add party button when all the form fields are filled 
+// Create Election: Display create election form and only enable add election button when all the form fields are filled 
 document.addEventListener('DOMContentLoaded', () => {
+    // Configure election opening and closing date such that closing date cannot be before opening date
+    const electionOpenDate = document.getElementById('openDateTime');
+    const electionClosingDate = document.getElementById('closeDateTime');
+    electionOpenDate.addEventListener('change', () => {
+        electionClosingDate.min = electionOpenDate.value;
+        electionClosingDate.disabled = false;
+    })
     console.log('DOMContentLoaded - createElectionButton')
+    // Function to check if create election form fields are filled
     const createElectionButton = document.getElementById('createElectionButton');
-    // Function to check if all fields are filled
     const toggleButtonState = () => {
         const inputs = document.querySelectorAll('.CEInputField');
         // Check whether all form inputs have a value
@@ -180,9 +187,9 @@ function updateCategoryOptions() {
     selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
     console.log(category)
     console.log(selectElectionType)
-    console.log(electionData[category])
-    if (category && electionData[category]) {
-        electionData[category].forEach(type => {
+    console.log(electionCategories[category])
+    if (category && electionCategories[category]) {
+        electionCategories[category].forEach(type => {
             const option = new Option(type, type);
             selectElectionType.add(option)
         });
@@ -198,51 +205,33 @@ createElectionForm.addEventListener('submit', async (event) => {
     const electionCategory = document.getElementById('electionCategoryCE').value;
     const openDate = document.getElementById('openDateTime').value;
     const closingDate = document.getElementById('closeDateTime').value;
+
     console.log(electionName)
     console.log(electionCategory)
     console.log(openDate)
     console.log(closingDate)
 
-
-    // Election successful card
-    document.getElementById('createElectionForm').style.display = 'none';
-    document.getElementById('electionCreatedSuccess').style.display = 'block';
-    document.getElementById('createElectionTag').style.display = 'none';
-
-
-    // const formData = new FormData();
-    // formData.append('partyName', document.getElementById('partyName').value);
-    // formData.append('partyAcronym', document.getElementById('partyAcronym').value);
-    // formData.append('partyLogo', document.getElementById('partyLogo').files[0]);
-
-    // try {
-    //     const response = await fetch('http://localhost:3000/addParty', {
-    //         method: 'POST',
-    //         body: formData,
-    //         credentials: 'include'
-    //     })
-    //     const data = await response.json();
-    //     if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
-    //     document.getElementById('partyAddedSuccess').style.display = 'block';
-    //     document.getElementById('openAddPartyForm').style.display = 'none';
-    //     document.getElementById('addPartyFormTitle').style.display = 'none';
-    //     document.getElementById('addPartyForm').style.display = 'none';
-    //     document.getElementById('addPartyButton').style.display = 'none';
-    //     document.getElementById('partyAddedSuccessFeedback').textContent = data.message;
-    //     alert(data.message)
-    // } catch (error) {
-    //     // console.error('Error:', error);
-    //     alert('Error occured adding Party!' + error.message);
-    // }
+    try {
+        const response = await fetch('http://localhost:3000/createElection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({electionName, electionCategory, openDate, closingDate}),
+            credentials: 'include'
+        })
+        console.log(response)
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+            // Display Election successful card
+            console.log(data)
+            console.log(data.message)
+            document.getElementById('createElectionForm').style.display = 'none';
+            document.getElementById('electionCreatedSuccess').style.display = 'block';
+            document.getElementById('createElectionTag').style.display = 'none';
+            // alert(data.message)
+    } catch (error) {
+        alert(error.message);
+    }
 })
-
-// Display creation election successful
-// function createElection(e) {
-//     e.preventDefault()
-//     document.getElementById('createElectionForm').style.display = 'none';
-//     document.getElementById('electionCreatedSuccess').style.display = 'block';
-//     document.getElementById('createElectionTag').style.display = 'none';
-// }
 
 // When 'Ok' is clicked on create election successful card, reset the form and go back to add party page
 const goToCreateElection = document.getElementById('electionCreatedSuccessButton');
@@ -259,6 +248,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
     if (tabToOpen === 'Create-Election') {
         openTab(event, 'Create-Election'); // You will need to pass the appropriate event or element here
     }
+
+    
 });
 
 
@@ -299,12 +290,12 @@ const electionData = {
 };
 
 const electionCategories = {
-    "GeneralElections": ["President", "Senate", "MHA"],
-    "StatesElections": ["Governor", "HOR"],
-    "LgaElections": ["Chairman", "Deputy"]
+    "General Elections 2024": ["President", "Senate", "MHA"],
+    "States Elections 2024": ["Governor", "HOR"],
+    "Lga Elections 2024": ["Chairman", "Deputy"]
 };
 
-const electionNamaAndParties =  {
+const electionTypeAndParties =  {
     "President": ["ADC", "APC", "LP", "NNPP", "PDP"],
     "Senate": ["ADC", "APC", "LP", "NNPP", "PDP"],
     "MHA": ["ADC", "APC", "LP", "NNPP", "PDP"],
