@@ -1,9 +1,10 @@
-const Users = require('../models/users');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config(); // Enable access to environment variables
+const Users = require('../models/users');
 const Party = require('../models/party');
 const Election = require('../models/elections');
-require("dotenv").config(); // Enable access to environment variables
+const Candidates = require("../models/candidates");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -139,7 +140,21 @@ const storage = multer.diskStorage({ // Configure custom file name
     }
 });
 
+const candidatePhotoStorage = multer.diskStorage({ // Configure custom file name
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/candidateImage')
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname); // Path.extname to get the original file extension
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1000);
+        const filename = sanitizeFileName(file.originalname.replace(ext, '')) + file.fieldname + '-' + uniqueSuffix;
+        uploadedFiles.push(`uploads/candidateImage/${filename}`); // Store each file path for potential deletion when data is not stored in the database
+        cb(null, filename)
+    }
+});
+
 const upload = multer({ storage: storage }).fields([{ name: 'partyLogo', maxCount: 1 }, { name: 'partyLogo', maxCount: 1 }]);
+const candidateUpload = multer({ storage: candidatePhotoStorage }).fields([{ name: 'candidateImage', maxCount: 1 }, { name: 'candidateImage', maxCount: 1 }]);
 
 // Add Party to the database logic
 exports.addParty = async (req, res, next) => {
@@ -283,6 +298,7 @@ exports.addPartiesToElection = async (req, res) => {
     }
 };
 
+// getElectionsAndParticipatingParties
 exports.getElectionsAndParticipatingParties = async (req, res) => {
     try {
         const electionInfo = await Election.aggregate([
@@ -324,13 +340,59 @@ exports.getElectionsAndParticipatingParties = async (req, res) => {
             }
         ])
         return res.status(200).json({ success: true, message: 'Election information retrieved successfully.', electionInfo });
-        //   .then(results => {
-        //     console.log(JSON.stringify(results, null, 1)); // Log results with elections, createdBy and and associated parties in a JSON format
-        //   }).catch(err => {
-        //     console.error('Aggregation failed:', err);
-        //   });
     } catch (error) {
         console.error('Error:', error);
         return res.status(500).json({ success: false, message: 'Could not retrieve elections!', error: error.message });
     }
+}
+
+// addCandidateToElectionAndParty
+exports.addCandidateToElectionAndParty = async (req, res) => {
+    // Multer library to add or remove file depending on if candidate is added successfully to db
+    candidateUpload(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ message: 'File upload failed', success: false });
+        }
+        // Validate form fields
+        if (!req.body.electionId || !req.body.partyId || !req.body.candidateName || !req.body.uniqueTag || !req.files) {
+            uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
+                fs.unlink(filePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error(`File ${filePath} not saved!`);
+                    }
+                });
+            });
+            uploadedFiles = [];  // Clear uploadedFiles array after handling error
+            return res.status(409).json({ message: 'All fields are required', success: false });
+        };
+        try {
+            // Create new candidate
+            const newCandidate = new Candidates({
+                candidateName: req.body.candidateName,
+                uniqueTag: req.body.uniqueTag,
+                partyId: req.body.partyId,
+                electionId: req.body.electionId,
+                candidateImage: req.files["candidateImage"] ? req.files["candidateImage"][0].path : ''
+            });
+            await newCandidate.save(); // Save to the database
+            uploadedFiles = []; // Clear uploadedFiles array after saving to the database
+            return res.status(201).json({ message: "Candidate successfully registered", success: true, newCandidate });
+        } catch (error) {
+            uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/candidateImage directory
+                fs.unlink(filePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error(`File ${filePath} not saved!`);
+                    }
+                });
+            });
+            uploadedFiles = [];  // Clear uploadedFiles array after handling error
+            let errorMessage;
+            if (error.code == 11000) {
+                errorMessage = "Candidate Tag already exist!"
+                return res.status(409).json({ message: errorMessage, success: false });
+            } else {
+                return res.status(500).json({ message: 'Error saving candidate! Please try again', success: false });
+            }
+        }
+    })
 }
