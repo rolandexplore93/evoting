@@ -80,7 +80,7 @@ openAddPartyForm.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded - openAddPartyForm')
     const addPartyButton = document.getElementById('addPartyButton');
-    // Function to check if all fields are filled
+    // Function to check if All Party form fields are filled
     const toggleButtonState = () => {
         const inputs = document.querySelectorAll('.addPartyInputField');
         // Check whether all form inputs have a value
@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial check in case the form is pre-filled
     toggleButtonState();
 });
+
 // AddPartyForm submission call to the database
 const addPartyForm = document.getElementById('addPartyForm');
 addPartyForm.addEventListener('submit', async (event) => {
@@ -121,8 +122,8 @@ addPartyForm.addEventListener('submit', async (event) => {
         document.getElementById('partyAddedSuccessFeedback').textContent = data.message;
         alert(data.message)
         // Reload and open Add-Party tab
-        // window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Party';
-        // openTab(null, 'Add-Party'); // Since no event is target, null is passed in as the first argument
+        window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Party';
+        openTab(null, 'Add-Party');
     } catch (error) {
         // console.error('Error:', error);
         alert('Error occured: ' + error.message);
@@ -247,13 +248,17 @@ goToCreateElection.addEventListener('click', async () => {
     openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
 })
 
-// When the page loads, check for the query parameter and open the "Create-Election" tab
+// When the page loads, check for tab query parameter and open the tab
 document.addEventListener('DOMContentLoaded', function(event) {
     var urlParams = new URLSearchParams(window.location.search);
     // console.log(urlParams)
     var tabToOpen = urlParams.get('tab');
     if (tabToOpen === 'Create-Election') {
-        openTab(event, 'Create-Election'); // You will need to pass the appropriate event or element here
+        openTab(event, 'Create-Election'); // open Create-Election Tab
+    } else if (tabToOpen == 'Add-Candidates') {
+        openTab(event, 'Add-Candidates')
+    } else if (tabToOpen == 'Add-Party') {
+        openTab(event, 'Add-Party')
     }
 });
 
@@ -347,6 +352,10 @@ async function addPartiesToElection() {
 
 // When 'Ok' is clicked on party added successful card, reset the form and go back to add party page
 function goToShowAddPartyToElectionForm() {
+    // Reload and open Create Election tab
+    window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
+    openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
+    
     // document.getElementById('electionCategoryAP2E').selectedIndex = 0;
     // document.getElementById('electionType').selectedIndex = 0;
     // document.getElementById('selectParties').selectedIndex = 0;
@@ -354,15 +363,11 @@ function goToShowAddPartyToElectionForm() {
     // document.getElementById('addPartyToElectionSuccess').style.display = 'none';
     // document.getElementById('addPartyToElectionTag').style.display = 'block';
 
-    // Reload and open Create Election tab
-    window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
-    openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
 }
 
 
 // ADD CANDIDATE TO ELECTION AND PARTY LOGIC
-// Hard coded data form elections and parties
-
+// Hard coded data for elections and parties
 const electionData = {
     "GeneralElections": ["President", "Senate", "MHA"],
     "StatesElections": ["Governor", "HOR"],
@@ -395,11 +400,6 @@ const partyData = {
     "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
 };
 
-// Display add candidate page logic
-function showAddCandidateForm() {
-    document.getElementById('addCandidateForm').style.display = 'block';
-}
-
 // Retrieve created elections with participating parties
 const getElectionsAndParticipatingParties = async () => {
     console.log('getElectionsAndParticipatingParties')
@@ -418,50 +418,122 @@ const getElectionsAndParticipatingParties = async () => {
         alert(error.message)
     }
 }
-// getElectionsAndParticipatingParties()
+// Display add candidate page logic
+const showAddCandidateForm = async () => {
+    const addCandidateFormTag = document.getElementById('addCandidateFormTag')
+    const addCandidateFormTitle = document.getElementById('addCandidateFormTitle')
 
-function updateElectionTypes() {
-    const category = document.getElementsByClassName('electionCategory')[2].value;
-    const selectElectionType = document.getElementsByClassName('electionType')[1];
-    selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
-    // console.log(category)
-    // console.log(selectElectionType)
-    // console.log(electionData[category])
-    if (category && electionData[category]) {
-        electionData[category].forEach(type => {
-            const option = new Option(type, type);
-            selectElectionType.add(option)
-        });
+    const addCandidateForm = document.getElementById('addCandidateForm'); // Get addCandidateForm html
+    const noElectionsInfoMessage = document.getElementById('noElectionsInfoMessage'); // Get noElectionsInfoMessage html
+
+    const data = await getElectionsAndParticipatingParties();
+    if (data.electionInfo.length === 0) { // if no election, display no election available
+        noElectionsInfoMessage.style.display = 'block';
+        addCandidateForm.style.display = 'none';
+        addCandidateFormTag.style.display = 'none';
+    } else {
+        addCandidateFormTitle.style.display = 'block';
+        addCandidateFormTag.style.display = 'none'; // disabled add candidate tag
+        addCandidateForm.style.display = 'block';
+        populateElectionCategories(data.electionInfo)
+    }
+
+
+    // Function to check if Add Candidate form fields are filled
+    const addCandidateButton = document.getElementById('addCandidateButton');
+    const toggleAddCandidateButtonState = () => {
+        const inputs = document.querySelectorAll('.AC2EPInputField');
+        // Check whether all form inputs have a value
+        const allInputFilled = Array.from(inputs).every(input => input.value.trim() !== '');
+        // Enable or disable the addCandidateButton based on the form fields being filled
+        addCandidateButton.disabled = !allInputFilled;
     };
-    updateParties();
-}
-function updateParties() {
-    const selectElection = document.getElementsByClassName('electionType')[1].value;
-    const selectParty = document.getElementsByClassName('selectParty')[0];
-    selectParty.innerHTML = `<option value="">Select Party</option>`;
-
-    console.log(selectElection)
-    console.log(selectParty)
-    console.log(partyData[selectElection])
-    if (selectElection && partyData[selectElection]) {
-        partyData[selectElection].forEach(party => {
-            const option = new Option(party, party);
-            selectParty.add(option)
-        });
-    };
+    // Add event listeners to each input field
+    const addCandidateinputs = document.querySelectorAll('.AC2EPInputField');
+    addCandidateinputs.forEach(input => {
+        input.addEventListener('input', toggleAddCandidateButtonState);
+    });
+    // Initial check in case the form is pre-filled
+    toggleAddCandidateButtonState();
 }
 
-function addCandidate() {
-    document.getElementById('addCandidateForm').style.display = 'none';
-    document.getElementById('candidateAddedSuccess').style.display = 'block';
+// Function to populate election categories
+function populateElectionCategories(electionInfo) {
+    const electionCategorySelect = document.getElementById('electionCategoryAC2EP');
+    // Populate election categories
+    electionInfo.forEach(election => {
+        console.log(election)
+      const option = document.createElement('option');
+      option.value = election._id;
+      option.textContent = `${election.electionCategory} - ${election.electionName}`;
+      electionCategorySelect.appendChild(option);
+    });
+  
+    // Listen for changes to populate participating parties
+    electionCategorySelect.addEventListener('change', (event) => {
+      const selectedElection = electionInfo.find(election => election._id === event.target.value);
+      populateParticipatingParties(selectedElection.participatingParties);
+    });
+};
+
+// Function to populate parties based on selected type
+function populateParticipatingParties(parties) {
+    const selectParty = document.getElementById('selectParty');
+    selectParty.innerHTML = '<option value="">Select Party</option>'; // Clear current options in HTML
+    if (parties.length === 0) {
+      const noPartyOption = document.createElement('option');
+      noPartyOption.textContent = 'No parties added yet, please add parties';
+      selectParty.appendChild(noPartyOption);
+    } else {
+      parties.forEach(party => {
+        const option = document.createElement('option');
+        option.value = party._id;
+        option.textContent = `${party.partyAcronym} - ${party.name}`;
+        selectParty.appendChild(option);
+      });
+    }
+}
+
+async function addCandidate() {
+    // HANDLE FORM DATA
+    const electionInput = document.getElementById('electionCategoryAC2EP').value;
+    const partyInput = document.getElementById('selectParty').value;
+    const candidateName = document.getElementById('candidateName').value;
+    const uniqueTag = document.getElementById('uniqueTag').value;
+    const candidateImage = document.getElementById('candidateImage').files[0];
+
+    const formData = new FormData();
+    formData.append('electionId', electionInput);
+    formData.append('partyId', partyInput);
+    formData.append('candidateName', candidateName);
+    formData.append('candidateImage', candidateImage);
+    formData.append('uniqueTag', uniqueTag);
+
+    try {
+        const response = await fetch('http://localhost:3000/addCandidateToElectionAndParty', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+        })
+        const data = await response.json();
+        console.log(response)
+        console.log(data)
+        if (!response.ok) throw new Error(`${data.message} statusCode: ${response.status}`);
+        document.getElementById('addCandidateForm').style.display = 'none';
+        document.getElementById('candidateAddedSuccess').style.display = 'block';
+        document.getElementById('addCandidateFormTitle').style.display = 'none';
+        document.getElementById('candidateAddedSuccessFeedback').textContent = data.message;
+        alert(data.message)
+    } catch (error) {
+        // console.error('Error:', error);
+        alert('Error occured: ' + error.message);
+    }
 }
 
 function resetAddCandidate() {
-    document.getElementsByClassName('electionCategory')[1].selectedIndex = 0;
-    updateElectionTypes(); // Reset the parties
-    document.getElementById('candidateName').value = '';
-    document.getElementById('candidatePhoto').value = '';
-    document.getElementById('candidateAddedSuccess').style.display = 'none';
+    document.getElementById('addCandidateForm').reset();
+    window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Candidates';
+    openTab(null, 'Add-Candidates'); // Since no event is target, null is passed in as the first argument
 };
 
 

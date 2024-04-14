@@ -105,24 +105,11 @@
                             <button onclick="ShowAddPartyToElectionForm()" id="addPartyToElectionTag">Add Parties to Election</button>
                             <div id="addPartyToElectionForm" style="display: none;">
                                 <select id="electionCategoryAP2E" class="electionCategory">
-                                    <!-- <option value="GeneralElections">General Elections - ${President}</option>
-                                    <option value="StatesElections">States Elections - ${Governor}</option></option>
-                                    <option value="LgaElections">LGA Elections - ${Chairman}</option></option> -->
-                                    <!-- Map all elections created dynamically taking the election category and type -->
+                                    <!-- Election list will be populated from the database -->
                                 </select>
-                                <!-- <select id="electionType" class="electionType">
-                                    <option value="President">President</option>
-                                    <option value="Senate">Senate</option>
-                                    <option value="HOR">HOR</option>
-                                </select> -->
                                 <br>
                                 <select id="selectParties" class="selectParties" multiple>
-                                    <!-- <option value="" disabled>Select Parties</option>
-                                    <option value="ADC">ADC</option>
-                                    <option value="APC">APC</option>
-                                    <option value="LP">LP</option>
-                                    <option value="NNPP">NNPP</option>
-                                    <option value="PDP">PDP</option> -->
+                                    <!-- Parties list will be populated from the database -->
                                 </select>
                                 <button id="addPartiesToElectionButton" onclick="addPartiesToElection()" disabled>Add Parties</button>
                             </div>
@@ -135,30 +122,27 @@
                     </div>
                     <!-- Add Candidates -->
                     <div class="tabcontent" id="Add-Candidates">
-                        <button onclick="showAddCandidateForm()">Add Candidate</button>
-                        <div id="addCandidateForm" style="display:none;">
-                            <select id="electionCategory" class="electionCategory" onchange="updateElectionTypes()">
+                        <button id="addCandidateFormTag" onclick="showAddCandidateForm()">Add Candidate</button>
+                        <h3 id="addCandidateFormTitle" style="display: none; text-decoration: underline;">Add Candidates To Election and Party</h3>
+                        <form id="addCandidateForm" style="display:none;" enctype="multipart/form-data">
+                            <select id="electionCategoryAC2EP" class="electionCategory AC2EPInputField">
                                 <option value="">Select Election Category</option>
-                                <option value="GeneralElections">General Elections</option>
-                                <option value="StatesElections">States Elections</option>
-                                <option value="LgaElections">LGA Elections</option>
-                            </select>
-                            <select id="electionType" class="electionType" onchange="updateParties()">
-                                <option value="">Select Election Type</option>
                                 <!-- Options will be added dynamically -->
                             </select>
-                            <select id="selectParty" class="selectParty">
-                                <option value="">Select Party</option>
+                            <select id="selectParty" class="selectParty AC2EPInputField">
+                                <!-- <option value="">Select Party</option> -->
                                 <!-- Options will be added dynamically -->
                             </select>
-                            <input type="text" id="candidateName" placeholder="Candidate Name">
-                            <input type="file" id="candidatePhoto">
-                            <button onclick="addCandidate()">Add</button>
-                        </div>
+                            <input type="text" id="candidateName" class="AC2EPInputField" placeholder="Candidate Name">
+                            <input type="text" id="uniqueTag" class="AC2EPInputField" placeholder="Unique Tag (E.g President, Senate)">
+                            <input type="file" id="candidateImage" class="AC2EPInputField" placeholder="Upload Candidate Photo">
+                            <button type="button" id="addCandidateButton" onclick="addCandidate()" disabled>Add</button>
+                        </form>
                         <div id="candidateAddedSuccess" style="display:none;">
-                            <p>Candidate added successfully!</p>
+                            <p id="candidateAddedSuccessFeedback">Candidate added successfully!</p>
                             <button onclick="resetAddCandidate()">OK</button>
                         </div>
+                        <div id="noElectionsInfoMessage" style="display: none;">No elections available yet</div>
                     </div>
                     <!-- Voters -->
                     <div class="tabcontent" id="Voters">
