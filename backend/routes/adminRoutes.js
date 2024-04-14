@@ -1,7 +1,7 @@
 const express = require('express');
 const adminRouter = express.Router();
 // const multer = require('multer');
-const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createElection, getAllElectionsAndParties, addPartiesToElection } = require('../controllers/adminController');
+const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createElection, getAllElectionsAndParties, addPartiesToElection, getElectionsAndParticipatingParties } = require('../controllers/adminController');
 // const path = require('path');
 
 // // MULTER: Filenames and storage location set up
@@ -32,5 +32,7 @@ adminRouter.post('/addParty', addParty)
 adminRouter.post('/createElection', createElection)
 adminRouter.get('/getAllElectionsAndParties', getAllElectionsAndParties);
 adminRouter.post('/addPartiesToElection', addPartiesToElection)
+adminRouter.get('/getElectionsAndParticipatingParties', getElectionsAndParticipatingParties);
+//
 
 module.exports = adminRouter;

@@ -360,11 +360,8 @@ function goToShowAddPartyToElectionForm() {
 }
 
 
-// ADD CANDIDATE LOGIC
-// Dummy data representing election relationships
-// const listOfParties = {
-//     "1":""
-// }
+// ADD CANDIDATE TO ELECTION AND PARTY LOGIC
+// Hard coded data form elections and parties
 
 const electionData = {
     "GeneralElections": ["President", "Senate", "MHA"],
@@ -403,6 +400,26 @@ function showAddCandidateForm() {
     document.getElementById('addCandidateForm').style.display = 'block';
 }
 
+// Retrieve created elections with participating parties
+const getElectionsAndParticipatingParties = async () => {
+    console.log('getElectionsAndParticipatingParties')
+    try {
+        const response = await fetch('http://localhost:3000/getElectionsAndParticipatingParties', {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        console.log(data.electionInfo)
+        return data
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message)
+    }
+}
+// getElectionsAndParticipatingParties()
+
 function updateElectionTypes() {
     const category = document.getElementsByClassName('electionCategory')[2].value;
     const selectElectionType = document.getElementsByClassName('electionType')[1];
@@ -416,7 +433,6 @@ function updateElectionTypes() {
             selectElectionType.add(option)
         });
     };
-
     updateParties();
 }
 function updateParties() {

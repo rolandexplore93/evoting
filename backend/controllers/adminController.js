@@ -282,3 +282,55 @@ exports.addPartiesToElection = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
+
+exports.getElectionsAndParticipatingParties = async (req, res) => {
+    try {
+        const electionInfo = await Election.aggregate([
+            {
+                // $lookup aggregation pipeline is used to join collections (i.e tables) together
+                $lookup: {
+                  from: Users.collection.name, // Target User collection
+                  localField: 'createdBy', // Field from Elections collection
+                  foreignField: '_id', // Field from Users collection that references Elections collection
+                  as: 'creatorInfo' // Alias for the new field
+                }
+            },
+            {
+                $unwind: '$creatorInfo' // $unwind convert the array field from creatorInfo to output an object
+            },
+            {
+              $lookup: {
+                from: Party.collection.name, // Target Party collection
+                localField: '_id', // Field from Election collection
+                foreignField: 'electionIds', // Field from Party collection that references Election collection
+                as: 'participatingParties' // Alias for the new field
+              }
+            },
+            {
+              $project: {
+                _id: 1, // 1 in Numeric format means to include this field in the result
+                electionName: 1,
+                electionCategory: 1,
+                createdBy: {
+                    firstname: '$creatorInfo.firstname',
+                    lastname: '$creatorInfo.lastname',
+                },
+                participatingParties: {
+                    _id: 1,
+                    name: 1,
+                    partyAcronym: 1
+                }
+              }
+            }
+        ])
+        return res.status(200).json({ success: true, message: 'Election information retrieved successfully.', electionInfo });
+        //   .then(results => {
+        //     console.log(JSON.stringify(results, null, 1)); // Log results with elections, createdBy and and associated parties in a JSON format
+        //   }).catch(err => {
+        //     console.error('Aggregation failed:', err);
+        //   });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ success: false, message: 'Could not retrieve elections!', error: error.message });
+    }
+}
