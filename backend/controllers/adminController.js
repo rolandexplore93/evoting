@@ -89,9 +89,7 @@ exports.adminLogin = async (req, res) => {
 
 // Authorize admin to their page
 exports.goToAdminDashboard = async (req, res) => {
-    if (!req.auth) {
-        return res.status(401).json({ message: 'No authorization token found' });
-    }
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
     // console.log(req.auth)
     const userId = req.auth._id;
 
@@ -106,11 +104,19 @@ exports.goToAdminDashboard = async (req, res) => {
 
 // Get all registered users with role equal to 5
 exports.getAllUsersWithRole5 = async (req, res) => {
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
     try {
         const users = await Users.find({ role: 5 });
-        if (!users || users.length === 0) return res.status(200).json({ message: 'User not found.', success: false });
-
-        res.json({ usersInfo: users, message: 'Users retrieved successfully', success: true });
+        if (!users || users.length === 0) return res.status(400).json({ message: 'User not found.', success: false });
+        // Map over users and convert each to a plain JavaScript object and remove password and pin
+        const usersInfo = users.map(user => {
+            const userObj = user.toObject();
+            delete userObj.password;
+            delete userObj.pin;
+            return userObj;
+        });
+        res.status(200).json({ usersInfo, message: 'Users retrieved successfully', success: true });
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send('Server error');

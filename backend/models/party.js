@@ -6,9 +6,7 @@ const partySchema = new Schema({
     partyAcronym: { type: String, default: '', unique: true },
     partyLogo: { type: String, default: '' },
     partyLogoUrl: { type: String, default: '' },
-    // electionId: { type: String, default: '' }
     electionIds: [{ type: Schema.Types.ObjectId, ref: 'Election', default: null }]
-
 }, {timestamps: true});
 
 module.exports = mongoose.model('Party', partySchema);
