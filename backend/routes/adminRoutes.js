@@ -1,6 +1,6 @@
 const express = require('express');
 const adminRouter = express.Router();
-const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createElection, getAllElectionsAndParties, addPartiesToElection, getElectionsAndParticipatingParties, addCandidateToElectionAndParty } = require('../controllers/adminController');
+const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createElection, getAllElectionsAndParties, addPartiesToElection, getElectionsAndParticipatingParties, addCandidateToElectionAndParty, voterApproval } = require('../controllers/adminController');
 require('../controllers/updateSchemaController');
 
 adminRouter.post('/adminLogin', adminLogin);
@@ -12,6 +12,8 @@ adminRouter.get('/getAllElectionsAndParties', getAllElectionsAndParties);
 adminRouter.post('/addPartiesToElection', addPartiesToElection)
 adminRouter.get('/getElectionsAndParticipatingParties', getElectionsAndParticipatingParties);
 adminRouter.post('/addCandidateToElectionAndParty', addCandidateToElectionAndParty);
+adminRouter.post('/updateVoterStatus', voterApproval);
+
 
 module.exports = adminRouter;
 

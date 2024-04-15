@@ -891,3 +891,32 @@ function updateLGA() {
 
 // Call the populateStates function when the page loads
 document.addEventListener('DOMContentLoaded', populateStates);
+
+
+
+
+// const electionData = {
+//     "GeneralElections": ["President", "Senate", "MHA"],
+//     "StatesElections": ["Governor", "HOR"],
+//     "LgaElections": ["Chairman", "Deputy"]
+// };
+
+// const electionTypeAndParties =  {
+//     "President": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Senate": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "MHA": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Governor": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "HOR": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Chairman": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
+// }
+
+// const partyData = {
+//     "President": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Senate": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "MHA": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Governor": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "HOR": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Chairman": ["ADC", "APC", "LP", "NNPP", "PDP"],
+//     "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
+// };

@@ -402,3 +402,55 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
         }
     })
 }
+
+// VOTER APPROVAL
+// Generate voting ID for user
+function generateVotingIDforUser(length) {
+    let result = '';
+    const characters = '01234567890123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+exports.voterApproval = async (req, res) => {
+    try {
+        const { userId, selectedStatus, verifiedBy } = req.body;
+        const user = await Users.findById(userId);
+    
+        // Update user collection based status (approval or rejection)
+        if (selectedStatus === 'Approved') {
+
+            // check if user merit verification requirements
+            if (!user.isNINVerified)
+            return res.status(400).json({ message: 'User NIN is not verified. Do not approve this user.' });
+            if (!user.isphonenumberVerified)
+            return res.status(400).json({ message: 'User phone number is not verified. Do not approve this user.' });
+            if (!user.isEmailVerified)
+            return res.status(400).json({ message: 'User email is not verified. Do not approve this user.' });
+            if (!user.isDOBeligibleToVote)
+            return res.status(400).json({ message: 'User is under 18 and not eligible to vote' });
+
+            user.isIdVerified = true;
+            user.profileStatus = 'Approved';
+            user.isProfileVerified = true;
+            user.verifiedBy = verifiedBy;
+            user.verificationDate = new Date();
+            user.votingID = generateVotingIDforUser(11);
+        } else if (selectedStatus === 'Rejected') {
+          user.isIdVerified = false;
+          user.profileStatus = 'Rejected';
+          user.isProfileVerified = false;
+          user.verifiedBy = verifiedBy;
+          user.verificationDate = new Date();
+          user.votingID = '';
+        }
+        await user.save();
+        res.json({ message: `Status updated to ${selectedStatus}` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }  
+}

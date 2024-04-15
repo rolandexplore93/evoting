@@ -1,4 +1,5 @@
 let globalUserData; // uninitialized variable to hold admin data after login
+
 // Tab functionality on admin page
 function openTab(e, tabTitle) {
     var index, tabContent, tabLinks;
@@ -130,18 +131,6 @@ addPartyForm.addEventListener('submit', async (event) => {
     }
 })
 
-// // Party added successful popup: When 'Ok' is clicked, reset the form and go back to add party page
-// const goToAddParty = document.getElementById('goToAddParty');
-// goToAddParty.addEventListener('click', () => {
-//     const handleAddPartyFormReset = document.getElementById('addPartyForm'); // Reset partyName, partyAcronym and logo fields
-//     handleAddPartyFormReset.reset(); 
-//     document.getElementById('openAddPartyForm').style.display = 'block';
-//     document.getElementById('addPartyFormTitle').style.display = 'none';
-//     document.getElementById('addPartyForm').style.display = 'none';
-//     document.getElementById('partyAddedSuccess').style.display = 'none';
-//     document.getElementById('addPartyButton').style.display = 'block';
-// })
-
 
 // CREATE ELECTION LOGIC
 // Display create election form
@@ -191,9 +180,6 @@ function updateCategoryOptions() {
     const category = document.getElementsByClassName('electionCategory')[0].value;
     const selectElectionType = document.getElementsByClassName('electionType')[0];
     selectElectionType.innerHTML = `<option value="">Select Election Type</option>`;
-    // console.log(category)
-    // console.log(selectElectionType)
-    // console.log(electionCategories[category])
     if (category && electionCategories[category]) {
         electionCategories[category].forEach(type => {
             const option = new Option(type, type);
@@ -255,10 +241,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
     var tabToOpen = urlParams.get('tab');
     if (tabToOpen === 'Create-Election') {
         openTab(event, 'Create-Election'); // open Create-Election Tab
-    } else if (tabToOpen == 'Add-Candidates') {
+    } else if (tabToOpen === 'Add-Candidates') {
         openTab(event, 'Add-Candidates')
-    } else if (tabToOpen == 'Add-Party') {
+    } else if (tabToOpen === 'Add-Party') {
         openTab(event, 'Add-Party')
+    } else if (tabToOpen === 'Voters') {
+        openTab(event, 'Voters')
     }
 });
 
@@ -355,7 +343,7 @@ function goToShowAddPartyToElectionForm() {
     // Reload and open Create Election tab
     window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
     openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
-    
+
     // document.getElementById('electionCategoryAP2E').selectedIndex = 0;
     // document.getElementById('electionType').selectedIndex = 0;
     // document.getElementById('selectParties').selectedIndex = 0;
@@ -368,36 +356,10 @@ function goToShowAddPartyToElectionForm() {
 
 // ADD CANDIDATE TO ELECTION AND PARTY LOGIC
 // Hard coded data for elections and parties
-const electionData = {
-    "GeneralElections": ["President", "Senate", "MHA"],
-    "StatesElections": ["Governor", "HOR"],
-    "LgaElections": ["Chairman", "Deputy"]
-};
-
 const electionCategories = {
     "General Elections 2024": ["President", "Senate", "MHA"],
     "States Elections 2024": ["Governor", "HOR"],
     "Lga Elections 2024": ["Chairman", "Deputy"]
-};
-
-const electionTypeAndParties =  {
-    "President": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Senate": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "MHA": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Governor": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "HOR": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Chairman": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
-}
-
-const partyData = {
-    "President": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Senate": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "MHA": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Governor": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "HOR": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Chairman": ["ADC", "APC", "LP", "NNPP", "PDP"],
-    "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
 };
 
 // Retrieve created elections with participating parties
@@ -411,7 +373,6 @@ const getElectionsAndParticipatingParties = async () => {
 
         const data = await response.json();
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
-        console.log(data.electionInfo)
         return data
     } catch (error) {
         console.error('Error:', error.message);
@@ -462,7 +423,6 @@ function populateElectionCategories(electionInfo) {
     const electionCategorySelect = document.getElementById('electionCategoryAC2EP');
     // Populate election categories
     electionInfo.forEach(election => {
-        console.log(election)
       const option = document.createElement('option');
       option.value = election._id;
       option.textContent = `${election.electionCategory} - ${election.electionName}`;
@@ -494,6 +454,7 @@ function populateParticipatingParties(parties) {
     }
 }
 
+// addCandidate form submission button to make an api call
 async function addCandidate() {
     // HANDLE FORM DATA
     const electionInput = document.getElementById('electionCategoryAC2EP').value;
@@ -529,13 +490,12 @@ async function addCandidate() {
         alert('Error occured: ' + error.message);
     }
 }
-
+// Reset addCandidate after submission and reload the tab
 function resetAddCandidate() {
     document.getElementById('addCandidateForm').reset();
     window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Candidates';
     openTab(null, 'Add-Candidates'); // Since no event is target, null is passed in as the first argument
 };
-
 
 // Admin Logout
 const logout = document.getElementById('logout');
@@ -556,4 +516,4 @@ logout.addEventListener('click', async () => {
     } catch (error) {
         console.error('Logout failed...' + error.message);
     }
-})
+});

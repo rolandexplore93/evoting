@@ -79,17 +79,8 @@
                                     <option value="Lga Elections 2024">LGA Elections 2024</option>
                                 </select>
                                 <select id="electionTypeCE" class="electionType CEInputField">
-                                    <!-- <option value="President">President</option>
-                                    <option value="Senate">Senate</option>
-                                    <option value="HOR">HOR</option> -->
+                                    <!-- list will be populated from the database -->
                                 </select>
-                                <!-- <select id="selectParty" class="selectParty">
-                                <option value="ADC">ADC</option>
-                                <option value="APC">APC</option>
-                                <option value="LP">LP</option>
-                                <option value="NNPP">NNPP</option>
-                                <option value="PDP">PDP</option>
-                                </select> -->
                                 <input type="datetime-local" id="openDateTime" class="CEInputField">
                                 <input type="datetime-local" id="closeDateTime" class="CEInputField" disabled>
                                 <button type="submit" id="createElectionButton">Create</button>
@@ -164,7 +155,7 @@
                         </div>
                         <div class="modal" id="votersModal" style="display: none;">
                             <div id="modal-content-voters">
-                                <!--  -->
+                                <!-- Dynamic rendering from the DOM -->
                             </div>
                         </div>
                         <!-- <div class="modal" id="votersModal">
