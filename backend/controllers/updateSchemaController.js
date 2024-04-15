@@ -32,8 +32,6 @@ const deleteManyFieldFromCollection = async () => {
     }
 }
 
-
-
 // Update an existing field without affecting their value
 const updateCollectionWithExistingField = async () => {
     try {
@@ -45,3 +43,14 @@ const updateCollectionWithExistingField = async () => {
     }
 }
 // updateCollectionWithExistingField()
+
+// confirmVoterAgeEligibilty
+const confirmVoterAgeEligibilty = async () => {
+    try {
+        await users.updateMany({}, [{ $set: { isDOBeligibleToVote: { $gte: ["$age", 18 ]} }}])
+        console.log('Users age eligibility has been confirmed')
+    } catch (error) {
+        console.log(`Error updating user eligibility: ${error.message}`)
+    }
+}
+// confirmVoterAgeEligibilty()
