@@ -157,27 +157,23 @@ function calculateAge(dob) {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(password)
         const user = await Users.findOne({ email });
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
         const hash = user.password;
-        console.log(hash)
         const isPasswordMatch = await bcrypt.compare(password, hash);
-        console.log(isPasswordMatch)
         if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
         
         // Relative path for user redirection
         const userDashboardUrl = `/user/user-dashboard.html`;
         const adminDashboardUrl = `/admin/admin-dashboard.html`;
         const errorUrl = '/error.html';
-        // Convert userdata to plain object and 
-        //delete password field before sending the remaining data to user
+        // Convert userdata to plain object and delete password field before sending the data to the client
         const userInfoNoPassword = user.toObject();
         delete userInfoNoPassword.password;
 
         if (user.role === 5) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
+            const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '1h'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
@@ -199,11 +195,14 @@ exports.goToUserDashboard = async (req, res) => {
     }
     // console.log(req.auth)
     const userId = req.auth._id;
-
     const user = await Users.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found.', success: false });
+    // Convert userdata to plain object and delete password field before sending the data to the client
+    const userInfoNoPassword = user.toObject();
+    delete userInfoNoPassword.password;
+    delete userInfoNoPassword.pin;
 
-    res.json({ userInfo: user, message: 'Accessing user dashboard', success: true })
+    res.json({ userInfo: userInfoNoPassword, message: 'Accessing user dashboard', success: true })
 }
 
 

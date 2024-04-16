@@ -325,7 +325,7 @@ exports.getElectionsAndParticipatingParties = async (req, res) => {
                 from: Party.collection.name, // Target Party collection
                 localField: '_id', // Field from Election collection
                 foreignField: 'electionIds', // Field from Party collection that references Election collection
-                as: 'participatingParties' // Alias for the new field
+                as: 'participatingParties'
               }
             },
             {
@@ -422,7 +422,6 @@ exports.voterApproval = async (req, res) => {
     
         // Update user collection based status (approval or rejection)
         if (selectedStatus === 'Approved') {
-
             // check if user merit verification requirements
             if (!user.isNINVerified)
             return res.status(400).json({ message: 'User NIN is not verified. Do not approve this user.' });
@@ -453,4 +452,69 @@ exports.voterApproval = async (req, res) => {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }  
+};
+
+
+// getElectionsWithPartiesAndCandidates
+exports.getElectionsWithPartiesAndCandidates = async (req, res) => {
+    try {
+        const electionInfo = await Election.aggregate([
+            {
+                // $lookup aggregation pipeline is used to join collections (i.e tables) together
+                $lookup: {
+                  from: Users.collection.name, // Target User collection
+                  localField: 'createdBy', // Field from Elections collection
+                  foreignField: '_id', // Field from Users collection that references Elections collection
+                  as: 'creatorInfo' // Alias for the new field
+                }
+            },
+            {
+                $unwind: '$creatorInfo' // $unwind convert the array field from creatorInfo to output an object
+            },
+            {
+              $lookup: {
+                from: Party.collection.name, // Target Party collection
+                localField: '_id', // Field from Election collection
+                foreignField: 'electionIds', // Field from Party collection that references Election collection
+                as: 'participatingParties'
+              }
+            },
+            {
+                $lookup: {
+                  from: Candidates.collection.name, // Target Candidates collection
+                  localField: '_id',
+                  foreignField: 'electionId',
+                  as: 'participatingCandidates'
+                }
+              },
+            {
+              $project: {
+                _id: 1, // 1 in Numeric format means to include this field in the result
+                electionName: 1,
+                electionCategory: 1,
+                createdBy: {
+                    firstname: '$creatorInfo.firstname',
+                    lastname: '$creatorInfo.lastname',
+                },
+                participatingParties: {
+                    _id: 1,
+                    name: 1,
+                    partyAcronym: 1,
+                    partyLogo: 1
+                },
+                participatingCandidates: {
+                    _id: 1,
+                    candidateName: 1,
+                    candidateImage: 1,
+                    partyId: 1
+                }
+              }
+            }
+        ])
+        return res.status(200).json({ success: true, message: 'Election information retrieved successfully.', electionInfo });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ success: false, message: 'Could not retrieve elections!', error: error.message });
+    }
 }
+
