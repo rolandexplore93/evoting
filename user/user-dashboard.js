@@ -10,8 +10,29 @@ const verifyEmailOTP = document.getElementById('verify-email-otp');
 const verifyPhoneOTP = document.getElementById('verify-phone-otp');
 
 let globalUserData;
-// console.log('globalUserData: ' + globalUserData)
+let allElectionsWithPartiesAndCandidates; // uninitialized variable to hold election information
 
+document.addEventListener('DOMContentLoaded', async () => {
+    allElectionsWithPartiesAndCandidates = await getElectionsWithPartiesAndCandidates();
+    // console.log(allElectionsWithPartiesAndCandidates)
+});
+
+// Get all elections
+const getElectionsWithPartiesAndCandidates = async () => {
+    console.log('getElectionsWithPartiesAndCandidates')
+    try {
+        const response = await fetch('http://localhost:3000/getElectionsWithPartiesAndCandidates', {
+            method: 'GET',
+            credentials: 'include'
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        return data
+    } catch (error) {
+        console.error('Error:', error.message);
+        alert(error.message)
+    }
+}
 
 // verifying emailotp success done
 document.getElementById('otp-email-success').onclick = function () {
@@ -111,9 +132,9 @@ function clickToCopyVotingId() {
 
 // Dummy data voting simulation
 const voter = {
-    hasVotingId: true,
-    votingId: '232123213',
+    votingId: '123',
     hasVoted: false,
+    votedInElection: ['1', '2', '661a416630b07f2517e8f46'], //d
     votedElections: {
         "GeneralElection": false,
         "StateElection": true,
@@ -123,10 +144,10 @@ const voter = {
 
 // Click Elections
 function goToElections() {
-    if (voter.hasVotingId) {
+    if (voter.votingId != '') { // If user has a votingId generated, go to choose language
         showStep('nevs-choose-language')
     } else {
-        showStep('nevs-profile-not-verified')
+        showStep('nevs-profile-not-verified') // No votingId? call goToElectionPage()
     }
 }
 
@@ -135,7 +156,7 @@ function goToElectionPage() {
     showStep('nevs-start-election-page')
 }
 
-//After choosing a language, enter Voting ID
+//After choosing a language, next is to enter Voting ID page
 function enterVotingId() {
     showStep('nevs-enter-voting-id')
 }
@@ -146,9 +167,9 @@ function validateVotingId() {
     console.log(enteredVotingId)
 
     if (enteredVotingId == voter.votingId) {
-        showStep('nevs-election-conditions')
+        showStep('nevs-election-conditions') // go to terms and conditions page
     } else {
-        showStep('nevs-voting-id-not-valid')
+        showStep('nevs-voting-id-not-valid') // alert user that voting id is not correct
     }
 }
 
@@ -168,26 +189,96 @@ document.getElementById('agreeConditions').addEventListener('change', function (
 
 // Select election activities
 function startVoting() {
-    showStep('nevs-select-election')
+    showStep('nevs-select-election');
+    console.log()
+
+    const electionInfo = allElectionsWithPartiesAndCandidates.electionInfo
+    const electionCategorySelect = document.getElementById('electionSelection');
+    // Populate election categories
+    electionInfo?.forEach(election => {
+      const option = document.createElement('option');
+      option.value = election._id;
+      option.textContent = `${election.electionCategory} - ${election.electionName}`;
+      electionCategorySelect.appendChild(option);
+    });
+
+    // document.getElementById('confirmElection').disabled = !this.checked;
+  
+    // Listen for changes to populate participating parties
+    electionCategorySelect.addEventListener('change', (event) => {
+        // const selectedElection = electionInfo.find(election => election._id === event.target.value);
+        // console.log(selectedElection)
+        toggleCreateButton();
+    });
+
+    // Function to enable or disable the confirm election button
+    function toggleCreateButton() {
+        const selectedElection = electionCategorySelect.value;
+        document.getElementById('confirmElection').disabled = !selectedElection;
+    }
 };
 
 // Select election to participate in
 function confirmElection() {
-    var electionSelected = document.getElementById('electionSelection').value;
+    var electionSelectedId = document.getElementById('electionSelection').value;
+    var electionSelected = allElectionsWithPartiesAndCandidates.electionInfo?.find(election => election._id === electionSelectedId);
+    console.log(electionSelectedId)
     console.log(electionSelected)
-    handleElectionSelection(electionSelected);
-}
-
-// Check if user has already voted in this election
-function handleElectionSelection(electionSelected) {
-    if (voter.votedElections[electionSelected]) {
+    // handleElectionSelection(electionSelected);
+    if (voter.votedInElection.includes(electionSelected._id)) {
         showStep('nevs-voter-already-voted')
     } else {
-        if (electionSelected == 'GeneralElection') {
-            showStep('nevs-PRESIDENT') // Open Presidential election
-        }
+        showElectionForm(electionSelected)
     }
-};
+}
+
+
+const showElectionForm = (electionSelected) => {
+    const participatingParties = electionSelected.participatingParties;
+    const participatingCandidates = electionSelected.participatingCandidates;
+
+    const ballotHTML = `
+        <div class="election-tab" id="nevs-${electionSelected._id}">
+            <h2>${electionSelected.electionCategory} - ${electionSelected.electionName}</h2>
+            <form id="${electionSelected._id}">
+                <table>
+                    <tr>
+                        <th>Party</th>
+                        <th>Party Logo</th>
+                        <th>Candidate Name</th>
+                        <th>Image</th>
+                        <th>Action</th>
+                    </tr>
+                    ${participatingCandidates
+                        .filter(candidate => {
+                            // Include candidate where the candidate.partyID matches one in the participatingParties
+                            return participatingParties.some(party => party._id === candidate.partyId);
+                        })
+                        .map(candidate => {
+                            // Find the party details
+                            const party = participatingParties.find(party => party._id === candidate.partyId);
+                            return `
+                            <tr>
+                                <td>${party.partyAcronym} - ${party.name}</td>
+                                <td><img src="http://localhost:3000/${party.partyLogo}" alt="${party.name}" width="30px" height="30px"></td>
+                                <td>${candidate.candidateName}</td>
+                                <td><img src="http://localhost:3000/${candidate.candidateImage}" alt="${candidate.candidateName}" width="30px" height="30px"></td>
+                                <td><input type="radio" name="voteOption" value="${candidate.id}"></td>
+                            </tr>
+                        `;
+                        }).join('')
+                    }
+                </table>
+                <button type="button" id="voteButton" disabled>Vote</button>
+            </form>
+        </div>
+    `;
+    const displayElection = document.getElementById('nevs-selectedElection');
+    displayElection.innerHTML = ballotHTML;
+
+    // Call showStep() to display this form after the html has rendered
+    showStep(`nevs-${electionSelected._id}`);
+}
 
 // Vote for President
 function voteCandidate() {
@@ -223,25 +314,34 @@ function goToResults() {
     window.location = '/election-results/electionresults.html';
 }
 
+// Election voting process using 
 function showStep(stepId) {
+    // console.log(stepId)
     // Hide all steps
     document.querySelectorAll('div[id^="nevs-"]').forEach((div) => {
         div.style.display = 'none';
     });
 
     // Show the targeted step
-    document.getElementById(stepId).style.display = 'block';
+    const step = document.getElementById(stepId);
+    const ballotFormContainer = document.getElementById('nevs-selectedElection');
+
+    if (step && ballotFormContainer) {
+        ballotFormContainer.style.display = 'block';
+        step.style.display = 'block';
+    } else {
+        document.getElementById(stepId).style.display = 'block';
+    }
 }
 
-// Authorize voters to their page
+// When a user is authorize to their page, fetch userdata on the page load
 document.addEventListener('DOMContentLoaded', async () => {
     getUserData();
 });
-
+// Function to fetch user data from the database when the user is authorized to the dashboard
 const getUserData = async () => {
     const userDashboard = document.getElementById('user-dashboard');
     try {
-
         const response = await fetch('http://localhost:3000/userDashboard', {
             method: 'GET',
             credentials: 'include'
@@ -276,8 +376,7 @@ const getUserData = async () => {
     }
 }
 
-
-
+// Display user data on the dashboard using the string literals from the DOM
 function populateUserData(userData) {
     function convertISOdateToHtmlFormat(isoDateString) {
         const date = new Date(isoDateString);
@@ -328,7 +427,7 @@ function populateUserData(userData) {
             <button class="${userData.isphonenumberVerified ? 'disable-verification-button' : 'mybutton'}" onclick="verifyPhoneNumber()" ${userData.isphonenumberVerified && 'disabled'}>${userData.isphonenumberVerified ? 'Verified' : 'Verify Phone No'}</button>
         </div>
     </div>
-    <button class="mybutton" id="editProfile">Edit Profile</button>
+    <button class="mybutton" style="display: none" id="editProfile">Edit Profile</button>
     `;
     votingIdTable.innerHTML = `
     <tr>
@@ -403,6 +502,29 @@ verifyEmailOTP.addEventListener('click', async () => {
     }
 
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Logout

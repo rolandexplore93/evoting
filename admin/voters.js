@@ -61,7 +61,6 @@ votersTabHeader.addEventListener('click', async () => {
         const userData = data.usersInfo;
         voters = userData;
         document.getElementById('AllVotersTab').click() //Open AllVotersTabTable
-        // populateUserData(userData)
     } catch (error) {
         console.error('Error:', error);
         alert('Not Authorized to access this page! Please login')
@@ -69,15 +68,16 @@ votersTabHeader.addEventListener('click', async () => {
     }
 })
 
-// Array dummy data to simulate fetched data from database
-// const voters = [
-//     { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
-//     { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
-//     { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
-// ];
+
 // All Voters list
 function openAllVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[0];
+    // Sort voters list based on status priority
+    const statusPriority = { 'Under Review': 1, 'Approved': 2, 'Rejected': 3 };
+    voters?.sort((a, b) => {
+        return statusPriority[a.profileStatus] - statusPriority[b.profileStatus];
+    });
+
     let tableHTML = `<table id='votersTable'>
                         <thead>
                             <tr>
@@ -122,7 +122,6 @@ function openApprovedVotersTable() {
     
     // Filter approved voters list
     const approvedVoters = voters?.filter(voter => voter.profileStatus === "Approved");
-    console.log(approvedVoters)
     approvedVoters.forEach((voter, index) => {
         tableHTML += `<tr>
                         <td>${voter.lastname}</td>
@@ -231,6 +230,7 @@ function openVotersModal(index) {
                 <p>LGA: ${voter.lga}</p>
             </div>
             <p>NIN: ${voter.ninNumber}</p>
+            <h5>VOTING ID: ${voter.votingID ? voter.votingID : 'Profile Not Approved'}</h5>
         </div>
         <div class="topSectionIDPhoto">
             <h4>Identity Card</h4>

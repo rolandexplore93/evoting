@@ -109,7 +109,7 @@ loginForm.addEventListener('submit', async function(e) {
             alert(data.message);
             window.setTimeout(() => {
                 window.location.href = `${window.location.origin}${data.path}`;
-            }, 2000);
+            }, 1000);
         } else {
             alert(data.message);
             window.location.href = `${window.location.origin}${data.path}`;

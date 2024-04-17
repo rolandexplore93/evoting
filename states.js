@@ -920,3 +920,11 @@ document.addEventListener('DOMContentLoaded', populateStates);
 //     "Chairman": ["ADC", "APC", "LP", "NNPP", "PDP"],
 //     "Deputy": ["ADC", "APC", "LP", "NNPP", "PDP"]
 // };
+
+
+// Array dummy data to simulate fetched data from database
+// const voters = [
+//     { Surname: 'Smith', GivenNames: 'John Alex', Age: 35, VerificationProgress: '1/5', ProfileStatus: 'Rejected' },
+//     { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
+//     { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
+// ];
