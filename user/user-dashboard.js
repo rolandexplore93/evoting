@@ -131,29 +131,30 @@ function clickToCopyVotingId() {
 }
 
 // Dummy data voting simulation
-const voter = {
-    votingId: '123',
-    hasVoted: false,
-    votedInElection: ['1', '2', '661a416630b07f2517e8f46'], //d
-    votedElections: {
-        "GeneralElection": false,
-        "StateElection": true,
-        "LGAElection": false
-    }
-};
+// const voter = {
+//     votingId: '123',
+//     hasVoted: false,
+//     votedInElection: ['1', '2', '661a416630b07f2517e8f46'], //d
+//     votedElections: {
+//         "GeneralElection": false,
+//         "StateElection": true,
+//         "LGAElection": false
+//     }
+// };
 
 // Click Elections
 function goToElections() {
-    if (voter.votingId != '') { // If user has a votingId generated, go to choose language
+    if (globalUserData.votingID != '') { // If user has a votingId generated, go to choose language
         showStep('nevs-choose-language')
     } else {
         showStep('nevs-profile-not-verified') // No votingId? call goToElectionPage()
     }
 }
 
-// Profile is not verified, go back to election page
+// Profile is not verified, voting id is not correct or user already voted go back to election page
 function goToElectionPage() {
     showStep('nevs-start-election-page')
+    location.reload()
 }
 
 //After choosing a language, next is to enter Voting ID page
@@ -166,17 +167,13 @@ function validateVotingId() {
     var enteredVotingId = document.getElementById('votingID').value;
     console.log(enteredVotingId)
 
-    if (enteredVotingId == voter.votingId) {
+    if (enteredVotingId == globalUserData.votingID) {
         showStep('nevs-election-conditions') // go to terms and conditions page
     } else {
         showStep('nevs-voting-id-not-valid') // alert user that voting id is not correct
     }
 }
 
-// Voting ID is not correct, go back to election page
-function goToElectionPage() {
-    showStep('nevs-start-election-page')
-}
 // Voting ID is not correct, enter voting ID again
 function ReEnterVotingId() {
     showStep('nevs-enter-voting-id')
@@ -225,13 +222,12 @@ function confirmElection() {
     console.log(electionSelectedId)
     console.log(electionSelected)
     // handleElectionSelection(electionSelected);
-    if (voter.votedInElection.includes(electionSelected._id)) {
+    if (globalUserData.votedInElection.includes(electionSelected._id)) {
         showStep('nevs-voter-already-voted')
     } else {
         showElectionForm(electionSelected)
     }
 }
-
 
 const showElectionForm = (electionSelected) => {
     const participatingParties = electionSelected.participatingParties;
@@ -249,28 +245,30 @@ const showElectionForm = (electionSelected) => {
                         <th>Image</th>
                         <th>Action</th>
                     </tr>
-                    ${participatingCandidates
-                        .filter(candidate => {
-                            // Include candidate where the candidate.partyID matches one in the participatingParties
-                            return participatingParties.some(party => party._id === candidate.partyId);
-                        })
-                        .map(candidate => {
-                            // Find the party details
-                            const party = participatingParties.find(party => party._id === candidate.partyId);
-                            return `
+                    ${participatingParties.map(party => {
+                        // Find candidate that matches the participating parties
+                        const candidate = participatingCandidates.find(candidate => candidate.partyId === party._id);
+                        const candidateName = candidate ? candidate.candidateName : 'No Name';
+                        const candidateImage = candidate ? `<img src="http://localhost:3000/${candidate.candidateImage}" alt="${candidateName}" width="30px" height="30px">` : '<img src="/images/placeholder-image.jpeg" alt="${candidateName}" width="30px" height="30px">';
+
+                        return `
                             <tr>
                                 <td>${party.partyAcronym} - ${party.name}</td>
                                 <td><img src="http://localhost:3000/${party.partyLogo}" alt="${party.name}" width="30px" height="30px"></td>
-                                <td>${candidate.candidateName}</td>
-                                <td><img src="http://localhost:3000/${candidate.candidateImage}" alt="${candidate.candidateName}" width="30px" height="30px"></td>
-                                <td><input type="radio" name="voteOption" value="${candidate.id}"></td>
+                                <td>${candidateName}</td>
+                                <td>${candidateImage}</td>
+                                <td><input type="radio" name="voteOption" value="${electionSelected._id}-${party._id}-${party.partyAcronym}-${candidate ? candidate._id : 'NoID'}-${candidateName}"></td>
                             </tr>
                         `;
-                        }).join('')
-                    }
+                    }).join('')}
                 </table>
                 <button type="button" id="voteButton" disabled>Vote</button>
             </form>
+        </div>
+        <div class="election-tab" id="nevs-confirm-vote">
+            <p>Confirm your vote for ${electionSelected.electionName}?</p>
+            <button id="changeVote" onclick="changeVote('nevs-${electionSelected._id}')">Change Vote</button>
+            <button id="confirmVote">Yes</button>
         </div>
     `;
     const displayElection = document.getElementById('nevs-selectedElection');
@@ -278,32 +276,69 @@ const showElectionForm = (electionSelected) => {
 
     // Call showStep() to display this form after the html has rendered
     showStep(`nevs-${electionSelected._id}`);
+
+    // Enable the voteButton when a user select at least one vote
+    document.querySelectorAll(`[name="voteOption"]`).forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            console.log(e.target.value)
+          document.getElementById("voteButton").disabled = false;
+        });
+    });
+
+    const voteCandidateButton = document.getElementById('voteButton');
+    voteCandidateButton.addEventListener('click', voteCandidate);
+
+    const votingCompletedButton = document.getElementById('confirmVote');
+    votingCompletedButton.addEventListener('click', () => {
+        const voteData = document.querySelector(`[name="voteOption"]:checked`).value;
+        votingCompleted(voteData)
+    });
 }
 
 // Vote for President
+
 function voteCandidate() {
     showStep('nevs-confirm-vote');
 }
 
-function changeVote() {
-    showStep('nevs-PRESIDENT');
+function changeVote(stepTag) {
+    showStep(stepTag);
+    // showStep('nevs-PRESIDENT');
 }
 
-function goToNextElection() {
-    showStep('nevs-SENATE');
-}
+async function votingCompleted(voteData) {
+    const userVote = voteData.split('-');
+    const electionId = userVote[0];
+    const partyId = userVote[1];
+    const partyVotedFor = userVote[2];
+    const candidateId = userVote[3];
+    const candidateVotedFor = userVote[4];
+    const userId = globalUserData._id;
 
-// Vote of Senate
-function voteCandidateSen() {
-    showStep('nevs-confirm-vote-sen');
-}
+    console.log(electionId)
+    console.log(partyId)
+    console.log(partyVotedFor)
+    console.log(candidateId)
+    console.log(candidateVotedFor)
+    console.log(userId)
 
-function changeVoteSen() {
-    showStep('nevs-SENATE');
-}
-
-function votingCompleted() {
-    showStep('nevs-voting-successful')
+    try {
+        const response = await fetch('http://localhost:3000/voteSubmission', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ electionId, partyId, partyVotedFor, candidateId, candidateVotedFor, userId}),
+            credentials: 'include'
+        });
+        
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        const data = await response.json();
+        console.log(data)
+        showStep('nevs-voting-successful')
+    } catch (error) {
+        console.error('Error saving user vote');
+        alert('Error saving user vote');
+    }
+    
 }
 
 function goToDashboard() {
@@ -314,23 +349,36 @@ function goToResults() {
     window.location = '/election-results/electionresults.html';
 }
 
+// function goToNextElection() {
+//     showStep('nevs-SENATE');
+// }
+
+// Vote of Senate
+// function voteCandidateSen() {
+//     showStep('nevs-confirm-vote-sen');
+// }
+
+// function changeVoteSen() {
+//     showStep('nevs-SENATE');
+// }
+
+
+
 // Election voting process using 
 function showStep(stepId) {
-    // console.log(stepId)
-    // Hide all steps
     document.querySelectorAll('div[id^="nevs-"]').forEach((div) => {
-        div.style.display = 'none';
+        div.style.display = 'none'; // Hide all steps
     });
 
     // Show the targeted step
     const step = document.getElementById(stepId);
     const ballotFormContainer = document.getElementById('nevs-selectedElection');
 
-    if (step && ballotFormContainer) {
-        ballotFormContainer.style.display = 'block';
+    if (step && ballotFormContainer) { // Display selected step if it's the election
+        ballotFormContainer.style.display = 'block'; 
         step.style.display = 'block';
     } else {
-        document.getElementById(stepId).style.display = 'block';
+        document.getElementById(stepId).style.display = 'block'; // Display selected step
     }
 }
 
