@@ -33,11 +33,11 @@ const userSchema = new Schema({
     isVoted: { type: Boolean, default: false },
     verificationDate: { type: Date, default: null },
     verifiedBy: { type: Schema.Types.ObjectId, ref: 'User', default: null },
-    // verifiedBy: { type: String, default: '' },
     resetToken: { type: String, default: '' },
     resetTokenExpiration: { type: Date, default: '' },
     emailOTP: { type: String, default: '' },
-    emailOtpCreatedAt: { type: Date, default: null }
+    emailOtpCreatedAt: { type: Date, default: null },
+    votedInElection: [{ type: String, default: [] }]
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema)

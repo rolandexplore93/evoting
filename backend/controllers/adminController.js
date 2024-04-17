@@ -8,6 +8,7 @@ const Candidates = require("../models/candidates");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const Vote = require("../models/vote");
 
 // Manually create admin account from the server
 adminRegistration = async (firstname, lastname, username, password, pin, role, email) => {
@@ -518,3 +519,37 @@ exports.getElectionsWithPartiesAndCandidates = async (req, res) => {
     }
 }
 
+// VOTE SUBMISSION
+exports.voteSubmission = async (req, res) => {
+    try {
+
+        const { userId, electionId } = req.body;
+
+        // If user has already voted in this election, do not change the old vote
+        const user = await Users.findById(userId);
+        if (user.votedInElection.includes(electionId)) {
+            return res.status(400).json({ message: 'You have already voted for this election.', status: false });
+        }  
+
+        // Find the highest voting serial number and add 1 to it to create the next serial number for vote
+        const lastVote = await Vote.find().sort({ votingSerialId: -1 }).limit(1);
+        const nextSerialNo = lastVote.length > 0 ? lastVote[0].votingSerialId + 1 : 1;
+
+        const newVote = new Vote({
+            ...req.body,
+            votingSerialId: nextSerialNo
+        });
+
+        
+        await newVote.save(); // Save vote to the database
+
+        // After saving newvote, include the electionId inside votedInElection field in user collection
+        user.votedInElection.push(electionId);
+        await user.save();
+
+        return res.status(200).json({ success: true, message: 'Vote casted successfully.' });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ success: false, message: 'Error saving user vote!', error: error.message });
+    }
+}

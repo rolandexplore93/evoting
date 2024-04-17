@@ -5,8 +5,8 @@ const party = require("../models/party");
 const updateUserSchema = async () => {
     try {
         // Update profileStatus for all users
-        await users.updateMany({}, {$set: { profileStatus: 'Under Review' } });
-        console.log(`Users collection fields have been updated.`)
+        await users.updateMany({}, {$set: { votedInElection: [] } });
+        console.log(`Users collection field has been updated.`)
     } catch (error) {
         console.log(`Error updating user model schema: ${error.message}`)
     }
