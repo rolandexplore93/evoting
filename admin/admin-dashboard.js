@@ -279,7 +279,7 @@ async function ShowAddPartyToElectionForm() {
     addPartyToElectionForm.style.display = 'block';
     const data = await getAllElectionsAndParties()
     allElectionsAndParties = data;
-    if (data.elections.length === 0) { // if no election, display no election available
+    if (data.elections?.length === 0) { // if no election, display no election available
         noElectionsMessage.style.display = 'block';
         addPartyToElectionForm.style.display = 'none';
     } else {
@@ -389,7 +389,7 @@ const showAddCandidateForm = async () => {
     const noElectionsInfoMessage = document.getElementById('noElectionsInfoMessage'); // Get noElectionsInfoMessage html
 
     const data = await getElectionsAndParticipatingParties();
-    if (data.electionInfo.length === 0) { // if no election, display no election available
+    if (data.electionInfo?.length === 0) { // if no election, display no election available
         noElectionsInfoMessage.style.display = 'block';
         addCandidateForm.style.display = 'none';
         addCandidateFormTag.style.display = 'none';

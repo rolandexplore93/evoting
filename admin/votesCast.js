@@ -285,9 +285,6 @@ function openModal(index) {
         const selectedStatus = document.getElementById('voteDecider').value;
         const voteId = vote._id;
         const verifiedBy = globalUserData._id;
-        // console.log(selectedStatus)
-        // console.log(voteId)
-        // console.log(verifiedBy)
         handleDecideVoteSubmission(voteId, selectedStatus, verifiedBy)
     })
 }
@@ -295,23 +292,21 @@ function openModal(index) {
 // handleDecideVoteSubmission
 const handleDecideVoteSubmission = async (voteId, selectedStatus, verifiedBy) => {
     console.log('confirmed')
-    // try {
-    //     const response = await fetch('http://localhost:3000/updateVoteStatus', {
-    //       method: 'POST',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify({ voteId, selectedStatus, verifiedBy }),
-    //       credentials: 'include'
-    //     });
-    //     const data = await response.json();
-    //     // if (!response.ok) throw new Error(data.error || 'Authorization failed');
-    //     if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
-    //     alert(data.message); 
-    //     // Reload and open Voters tab
-    //     location.reload();     
-    // } catch (error) {
-    //     alert('Error: ' + error.message);
-    // }
+    try {
+        const response = await fetch('http://localhost:3000/updateVoteStatus', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ voteId, selectedStatus, verifiedBy }),
+          credentials: 'include'
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
+        alert(data.message); 
+        location.reload(); // Reload page to fetch latest changes to the database
+    } catch (error) {
+        alert('Error: ' + error.message);
+    }
 }
 

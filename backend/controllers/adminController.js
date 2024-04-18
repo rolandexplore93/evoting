@@ -567,3 +567,25 @@ exports.getAllVotes = async (req, res) => {
         res.status(500).send('Server error');
     }
 }
+
+exports.updateVoteStatus = async (req, res) => {
+    try {
+        const { voteId, selectedStatus, verifiedBy } = req.body;
+        const vote = await Vote.findById(voteId);
+        // Update vote status based on approved or rejected)
+        if (selectedStatus === 'Approved') {
+            vote.voteStatus = 'Approved';
+            vote.approvedBy = verifiedBy;
+            vote.approvedDate = new Date();
+        } else if (selectedStatus === 'Rejected') {
+          vote.voteStatus = 'Rejected';
+          vote.approvedBy = verifiedBy;
+          vote.approvedDate = new Date();
+        }
+        await vote.save();
+        res.json({ message: `Status updated to ${selectedStatus}` });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server error' });
+    }  
+};
