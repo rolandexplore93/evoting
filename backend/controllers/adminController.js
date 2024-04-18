@@ -553,3 +553,17 @@ exports.voteSubmission = async (req, res) => {
         return res.status(500).json({ success: false, message: 'Error saving user vote!', error: error.message });
     }
 }
+
+// VOTES FETCHING
+exports.getAllVotes = async (req, res) => {
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
+    try {
+        const votes = await Vote.find();
+        if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
+        res.status(200).json({ votes, message: 'Votes retrieved successfully', success: true });
+    } catch (error) {
+        console.error('Error fetching votes:', error);
+        res.status(500).send('Server error');
+    }
+}
