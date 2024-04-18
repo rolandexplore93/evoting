@@ -295,7 +295,6 @@ function openVotersModal(index) {
 
     // Grab the selectVerificationStatus button; disabled Under Review when clicked
     document.getElementById('selectVerificationStatus').addEventListener('change', function() {
-        console.log('updateButton')
         var updateButton = document.getElementById('updateButton');
         updateButton.disabled = (this.value === 'Under Review');
     });
