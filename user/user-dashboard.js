@@ -552,29 +552,6 @@ verifyEmailOTP.addEventListener('click', async () => {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Logout
 const logout = document.getElementById('logout');
 logout.addEventListener('click', async () => {

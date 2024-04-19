@@ -928,3 +928,18 @@ document.addEventListener('DOMContentLoaded', populateStates);
 //     { Surname: 'Johnson', GivenNames: 'Lara Beth', Age: 42, VerificationProgress: '5/5', ProfileStatus: 'Approved' },
 //     { Surname: 'John', GivenNames: 'Doe', Age: 22, VerificationProgress: '4/5', ProfileStatus: 'Under Review' },
 // ];
+
+
+
+
+
+// Dummy data for election to build election result page before setting the database
+// const electionsList = ['General Election - President 2024', 'General Election - Senate 2024', 'States Election - Governor 2024'];
+// // const electionsList = [];
+// const electionsData = {
+//     'General Election - President 2024': [
+//         { partyName: 'PDP', partyLogo: 'pdp.jpg', candidateName: 'John Doe', candidateLogo: 'john.jpg', totalVotes: 2000 },
+//         { partyName: 'APC', partyLogo: 'apc.jpg', candidateName: 'Jane Doe', candidateLogo: 'jane.jpg', totalVotes: 1500 },
+//         { partyName: 'LP', partyLogo: 'lp.jpg', candidateName: 'Jim Beam', candidateLogo: 'jim.jpg', totalVotes: 2500 }
+//     ],
+// };
