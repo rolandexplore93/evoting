@@ -589,3 +589,77 @@ exports.updateVoteStatus = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }  
 };
+
+// Election Result 
+// getElectionsWithPartiesAndCandidates
+exports.getElectionsWithPartiesAndCandidatesInfo = async (req, res) => {
+    try {
+        const electionInfo = await Election.aggregate([
+            {
+                // $lookup aggregation pipeline is used to join collections (i.e tables) together
+                $lookup: {
+                  from: Users.collection.name, // Target User collection
+                  localField: 'createdBy', // Field from Elections collection
+                  foreignField: '_id', // Field from Users collection that references Elections collection
+                  as: 'creatorInfo' // Alias for the new field
+                }
+            },
+            {
+                $unwind: '$creatorInfo' // $unwind convert the array field from creatorInfo to output an object
+            },
+            {
+              $lookup: {
+                from: Party.collection.name, // Target Party collection
+                localField: '_id', // Field from Election collection
+                foreignField: 'electionIds', // Field from Party collection that references Election collection
+                as: 'participatingParties'
+              }
+            },
+            {
+                $lookup: {
+                  from: Candidates.collection.name, // Target Candidates collection
+                  localField: '_id',
+                  foreignField: 'electionId',
+                  as: 'participatingCandidates'
+                }
+              },
+            {
+              $project: {
+                _id: 1, // 1 in Numeric format means to include this field in the result
+                electionName: 1,
+                electionCategory: 1,
+                participatingParties: {
+                    _id: 1,
+                    name: 1,
+                    partyAcronym: 1,
+                    partyLogo: 1
+                },
+                participatingCandidates: {
+                    _id: 1,
+                    candidateName: 1,
+                    candidateImage: 1,
+                    partyId: 1
+                }
+              }
+            }
+        ])
+        return res.status(200).json({ success: true, message: 'Election information retrieved successfully.', electionInfo });
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ success: false, message: 'Could not retrieve elections!', error: error.message });
+    }
+}
+
+// Fecth all approved votes
+exports.getAllApprovedVotes = async (req, res) => {
+    try {
+        const { electionIdSelected } = req.body;
+        const votes = await Vote.find({ electionId: electionIdSelected, voteStatus: 'Approved'});
+        if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote approved yet.', success: false });
+        res.status(200).json({ votes, message: 'Approved votes retrieved successfully', success: true });
+    } catch (error) {
+        console.error('Error fetching votes:', error);
+        res.status(500).send('Server error');
+    }
+}
+

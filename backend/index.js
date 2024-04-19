@@ -18,10 +18,8 @@ app.use(bodyParser.json());
 app.use(cors({ origin: 'http://localhost:5500', credentials: true }));
 app.use(cookieParser())
 
-// Custom function to get the token from request cookies
+// This function gets user token from request cookies
 const getTokenFromCookie = (req) => {
-    // console.log('every')
-    // console.log('token: ' + req.cookies.token)
   return req.cookies.token;
 };
 
@@ -31,7 +29,7 @@ app.use(jwt({
   algorithms: [process.env.JWTalgorithms],
   getToken: getTokenFromCookie
 }).unless({ path: ['/login', '/validatenin', '/signup', '/emailOTP', '/verifyEmailOTP', '/logout',
-'/adminLogin'] }));
+'/adminLogin', '/getElectionsWithPartiesAndCandidatesInfo', '/approvedVotes'] }));
 
 // Serve static images and files from the "uploads" directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
