@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-require("dotenv").config(); // Enable access to environment variables
+require("dotenv").config(); // Enable access to environment variables (This file holds sensitive information that is not accessible to the public)
 const Users = require('../models/users');
 const Party = require('../models/party');
 const Election = require('../models/elections');
@@ -10,67 +10,62 @@ const path = require('path');
 const fs = require('fs');
 const Vote = require("../models/vote");
 
-// Manually create admin account from the server
+// This function for the manual creation of admin account from the backend
+// Fill in admin details as arguments in line 47 and uncomment the method() when you are ready to create the admin account
 adminRegistration = async (firstname, lastname, username, password, pin, role, email) => {
-
     try {
+        // Search if admin account with this email or username already exist
         const existingUser = await Users.findOne({
-            $or: [{ email: email }, { username: username }]
+            $or: [{ email: email }, { username: username }] 
         });
-
         if (existingUser) {
             console.log('A user with this email or username already exists.');
             return;
-        }
-
-        // Encrypt password and pin
+        };
+        // Encrypt the new password and pin using bcrypt security mechanism
         const salt = await bcrypt.genSalt();
         const encryptPassword = await bcrypt.hash(password, salt);
         const encryptPIN = await bcrypt.hash(pin, salt);
-
-        // Create admin user
+        // Create admin user using the Users model
         const admin = new Users({
             firstname,
             lastname,
             username,
             password: encryptPassword,
             pin: encryptPIN,
-            role,
+            role, // role = 4 is for admin.
             email
         });
-
-        // Save to database
-        await admin.save();
-        console.log('Admin account successfully created.', admin);
+        await admin.save(); // Save to database
+        console.log('Admin account successfully created.');
     } catch (error) {
         console.error('Error creating admin account:', error);
-    }
-
-}
-// role = 4 is admin. Uncomment next line when you need to create an admin account
+    };
+};
 // adminRegistration('Roland', 'Ogundipe', 'roland.ogundipe', 'Password123!', '123456', 4, 'roland.ogundipe@yopmail.com' )
 
-// Admin login api
+// Admin login functionality
 exports.adminLogin = async (req, res) => {
     try {
-        const { username, password, pin } = req.body;
-        const user = await Users.findOne({ username });
+        const { username, password, pin } = req.body; // Login details received from the frontend
+        const user = await Users.findOne({ username }); // Search for admin in the database
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
-        const getEncryptedPassword = user.password
-        const getEncryptedPin = user.pin
-        const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword)
-        const isPinMatch = await bcrypt.compare(pin, getEncryptedPin)
+        const getEncryptedPassword = user.password;
+        const getEncryptedPin = user.pin;
+
+        // Use bycrpt.compare to check if the password submitted is the same as password in the database
+        const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword);
+        const isPinMatch = await bcrypt.compare(pin, getEncryptedPin);
         if (!isPinMatch) return res.status(409).json({ success: false, message: "PIN is not correct" });
         if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
 
-        // Relative path for user redirection
-        const adminDashboardUrl = `/admin/admin-dashboard.html`;
-        const errorUrl = '/error.html';
-        // Convert userdata to plain object and delete password and pin field before sending the data to admin user
+        const adminDashboardUrl = `/admin/admin-dashboard.html`; // Relative path for admin user redirection
+        const errorUrl = '/error.html'; // path to error page
+        // Convert admin user data to plain object and delete password and pin field before sending the data to the frontend
         const userInfoNoPasswordAndPin = user.toObject();
         delete userInfoNoPasswordAndPin.password;
         delete userInfoNoPasswordAndPin.pin;
-
+        // If user role is 4 or 3, redirect to the admin dashboard. Otherwise, redirect to the error page
         if (user.role === 4) {
             // Email is valid, then generate a login token with jwt and save it to the cookie
             const token = await jwt.sign(userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h' });
@@ -85,32 +80,32 @@ exports.adminLogin = async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ success: false, message: "An error occurred during login" });
-    }
-}
-
-// Authorize admin to their page
-exports.goToAdminDashboard = async (req, res) => {
-    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
-    // console.log(req.auth)
-    const userId = req.auth._id;
-
-    const user = await Users.findById(userId);
-    const userInfoNoPasswordAndPin = user.toObject();
-    delete userInfoNoPasswordAndPin.password;
-    delete userInfoNoPasswordAndPin.pin;
-    if (!user) return res.status(404).json({ message: 'User not found.', success: false });
-
-    res.json({ userInfo: userInfoNoPasswordAndPin, message: 'Accessing user dashboard', success: true })
+    };
 };
 
-// Get all registered users with role equal to 5
+// Function to authorize admin to their page
+exports.goToAdminDashboard = async (req, res) => {
+    // This check for the token stored inside the cookies
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
+    const userId = req.auth._id; // If there is token, get the userId
+    const user = await Users.findById(userId); // Search for the userId in the database
+    if (!user) return res.status(404).json({ message: 'User not found.', success: false });
+    const userInfoNoPasswordAndPin = user.toObject(); // Delete password and pin before sending the data to the admin dashboard
+    delete userInfoNoPasswordAndPin.password;
+    delete userInfoNoPasswordAndPin.pin;
+    res.json({ userInfo: userInfoNoPasswordAndPin, message: 'Accessing user dashboard', success: true });
+};
+
+// Get all registered users with role equal to 5 (voters account has a role of 5)
 exports.getAllUsersWithRole5 = async (req, res) => {
-    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
-    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
+    // Check if token is present inside the cookies
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
+    // Only admin with role = 4 is authorized to access this date
+    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' })};
     try {
         const users = await Users.find({ role: 5 });
         if (!users || users.length === 0) return res.status(400).json({ message: 'User not found.', success: false });
-        // Map over users and convert each to a plain JavaScript object and remove password and pin
+        // Map over users and convert each to a plain JavaScript object and remove password and pin before sending to the frontend
         const usersInfo = users.map(user => {
             const userObj = user.toObject();
             delete userObj.password;
@@ -121,8 +116,8 @@ exports.getAllUsersWithRole5 = async (req, res) => {
     } catch (error) {
         console.error('Error fetching users:', error);
         res.status(500).send('Server error');
-    }
-}
+    };
+};
 
 
 
@@ -361,7 +356,7 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
             return res.status(500).json({ message: 'File upload failed', success: false });
         }
         // Validate form fields
-        if (!req.body.electionId || !req.body.partyId || !req.body.candidateName || !req.body.uniqueTag || !req.files) {
+        if (!req.body.electionId || !req.body.partyId || !req.body.candidateName  || !req.files) { // || !req.body.uniqueTag
             uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
                 fs.unlink(filePath, unlinkErr => {
                     if (unlinkErr) {
@@ -376,7 +371,7 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
             // Create new candidate
             const newCandidate = new Candidates({
                 candidateName: req.body.candidateName,
-                uniqueTag: req.body.uniqueTag,
+                // uniqueTag: req.body.uniqueTag,
                 partyId: req.body.partyId,
                 electionId: req.body.electionId,
                 candidateImage: req.files["candidateImage"] ? req.files["candidateImage"][0].path : ''
@@ -393,13 +388,13 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
                 });
             });
             uploadedFiles = [];  // Clear uploadedFiles array after handling error
-            let errorMessage;
-            if (error.code == 11000) {
-                errorMessage = "Candidate Tag already exist!"
-                return res.status(409).json({ message: errorMessage, success: false });
-            } else {
+            // let errorMessage;
+            // if (error.code == 11000) {
+            //     errorMessage = "Candidate Tag already exist!"
+            //     return res.status(409).json({ message: errorMessage, success: false });
+            // } else {
                 return res.status(500).json({ message: 'Error saving candidate! Please try again', success: false });
-            }
+            // }
         }
     })
 }

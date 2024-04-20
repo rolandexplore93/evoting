@@ -1,11 +1,13 @@
 const users = require("../models/users");
 const party = require("../models/party");
+const candidates = require("../models/candidates");
+
 
 // Update document field inside collection in the database
 const updateUserSchema = async () => {
     try {
         // Update profileStatus for all users
-        await users.updateMany({}, {$set: { votedInElection: [] } });
+        await candidates.updateMany({}, {$set: { uniqueTag: '' } });
         console.log(`Users collection field has been updated.`)
     } catch (error) {
         console.log(`Error updating user model schema: ${error.message}`)
@@ -15,7 +17,8 @@ const updateUserSchema = async () => {
 
 const deleteOneFieldFromCollection = async () => {
     try {
-        await party.updateMany({}, { $unset: { electionId: "" } });
+        await candidates.updateMany({}, { $unset: { uniqueTag: "" } });
+        // await candidates.collection.dropIndex('uniqueTag_1');
         console.log(`Field deleted.`)
     } catch (error) {
         console.log(`Error updating user model schema: ${error.message}`)
