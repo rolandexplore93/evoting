@@ -554,8 +554,50 @@ exports.getAllVotes = async (req, res) => {
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
     if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
     try {
-        const votes = await Vote.find();
-        if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
+        // const votes = await Vote.find();
+        // if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
+        const votes = await Vote.aggregate([
+            {
+                // $lookup aggregation pipeline is used to join collections together
+                $lookup: {
+                  from: Election.collection.name,
+                  localField: 'electionId', 
+                  foreignField: '_id',
+                  as: 'RefElectionInfo'
+                }
+            },
+            {
+                $unwind: '$RefElectionInfo'
+            },
+            {
+              $lookup: {
+                from: Users.collection.name,
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'userWhoVoted'
+              }
+            },
+            {
+                $unwind: '$userWhoVoted'
+            },
+            {
+              $project: {
+                _id: 1,
+                votingSerialId: 1,
+                partyVotedFor: 1,
+                candidateVotedFor: 1,
+                voterScreenshots: 1,
+                voterVideo: 1,
+                voteStatus: 1,
+                createdAt: 1,
+                "RefElectionInfo.electionName": 1,
+                "RefElectionInfo.electionCategory": 1,
+                "userWhoVoted.firstname": 1,
+                "userWhoVoted.lastname": 1,
+                "userWhoVoted.uploadSelfie": 1,
+              }
+            }
+        ])
         res.status(200).json({ votes, message: 'Votes retrieved successfully', success: true });
     } catch (error) {
         console.error('Error fetching votes:', error);
@@ -584,6 +626,64 @@ exports.updateVoteStatus = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }  
 };
+
+// ogetAllVotes = async (req, res) => {
+//     // if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+//     // if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
+//     try {
+//         // const votes = await Vote.find();
+//         // if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
+//         // console.log(votes)
+//         // res.status(200).json({ votes, message: 'Votes retrieved successfully', success: true });
+
+//         const voteInfo = await Vote.aggregate([
+//             {
+//                 // $lookup aggregation pipeline is used to join collections together
+//                 $lookup: {
+//                   from: Election.collection.name,
+//                   localField: 'electionId', 
+//                   foreignField: '_id',
+//                   as: 'RefElectionInfo'
+//                 }
+//             },
+//             {
+//                 $unwind: '$RefElectionInfo'
+//             },
+//             {
+//               $lookup: {
+//                 from: Users.collection.name,
+//                 localField: 'userId',
+//                 foreignField: '_id',
+//                 as: 'userWhoVoted'
+//               }
+//             },
+//             {
+//                 $unwind: '$userWhoVoted'
+//             },
+//             {
+//               $project: {
+//                 _id: 1,
+//                 votingSerialId: 1,
+//                 partyVotedFor: 1,
+//                 candidateVotedFor: 1,
+//                 voterScreenshots: 1,
+//                 voterVideo: 1,
+//                 voteStatus: 1,
+//                 "RefElectionInfo.electionName": 1,
+//                 "RefElectionInfo.electionCategory": 1,
+//                 "userWhoVoted.firstname": 1,
+//                 "userWhoVoted.lastname": 1,
+//                 "userWhoVoted.uploadSelfie": 1,
+//               }
+//             }
+//         ])
+//         console.log(voteInfo)
+//     } catch (error) {
+//         console.error('Error fetching votes:', error);
+//         // res.status(500).send('Server error');
+//     }
+// }
+// ogetAllVotes()
 
 // Election Result 
 // getElectionsWithPartiesAndCandidates
