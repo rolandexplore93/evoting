@@ -31,13 +31,6 @@ function openVotesTab(e, tabTitle) {
 
 document.getElementById('defaultVotesPage').click()
 
-// Array dummy data to simulate fetched data from database
-// const votes = [
-//     { VoteId: 1, NamesInitials: 'S. J. A', Age: 35, TimeVoted: '2023-05-12', Status: 'Rejected' },
-//     { VoteId: 2, NamesInitials: 'J. L. B', Age: 42, TimeVoted: '2023-05-12', Status: 'Approved' },
-//     { VoteId: 3, NamesInitials: 'J. D', Age: 22, TimeVoted: '2023-05-12', Status: 'Under Review' },
-// ];
-
 const decideVotesTabHeader = document.getElementById('decideVotesTabHeader');
 decideVotesTabHeader.addEventListener('click', async () => {
     
@@ -95,7 +88,7 @@ function openAllVotesTable() {
                             <tr>
                                 <th>VoteId</th>
                                 <th>Election</th>
-                                <th>Initials</th>
+                                <th>Name</th>
                                 <th>Time Voted</th>
                                 <th>Approval Status</th>
                                 <th>Action</th>
@@ -108,8 +101,8 @@ function openAllVotesTable() {
         const formatDateVoted = convertISOdateToHtmlFormat(dateVoted)
         tableHTML += `<tr>
                 <td>${vote.votingSerialId}</td>
-                <td>${vote.electionId}</td>
-                <td>${vote.userId}</td>
+                <td>${vote.RefElectionInfo.electionCategory} - ${vote.RefElectionInfo.electionName}</td>
+                <td>${vote.userWhoVoted.firstname} ${vote.userWhoVoted.lastname}</td>
                 <td>${formatDateVoted}</td>
                 <td>${vote.voteStatus}</td>
                 <td><button onclick="openModal(${index})">Preview</button></td>
@@ -228,8 +221,8 @@ function openModal(index) {
     const formatDateVoted = convertISOdateToHtmlFormat(dateVoted)
     // Update the modal content with vote details
     modalContent.innerHTML = `<strong>VoteId:</strong> ${vote?.votingSerialId}<br>
-                              <strong>Election:</strong> ${vote?.electionId}<br>
-                              <strong>Initials:</strong> ${vote?.userId}<br>
+                              <strong>Election: </strong>${vote?.RefElectionInfo.electionCategory} - ${vote?.RefElectionInfo.electionName}<br>
+                              <strong>Initials: </strong>${vote?.userWhoVoted.firstname} ${vote?.userWhoVoted.lastname}<br>
                               <strong>Time Voted:</strong> ${formatDateVoted}<br>
                               <strong>Approval Status:</strong> ${vote?.voteStatus}
                               <span class="close">&times;</span>
@@ -291,7 +284,6 @@ function openModal(index) {
 
 // handleDecideVoteSubmission
 const handleDecideVoteSubmission = async (voteId, selectedStatus, verifiedBy) => {
-    console.log('confirmed')
     try {
         const response = await fetch('http://localhost:3000/updateVoteStatus', {
           method: 'POST',

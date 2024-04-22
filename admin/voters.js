@@ -268,7 +268,7 @@ function openVotersModal(index) {
                     <td>${voter.isphonenumberVerified ? 'Verified &#10004' : 'Pending &#8987'}</td>
                 </tr>
                 <tr>
-                    <td>Is Voter above 18 yeard?</td>
+                    <td>Is Voter above 18 years?</td>
                     <td>${voter.age}</td>
                     <td>${voter.isDOBeligibleToVote ? 'Yes &#10004' : 'No &#8987'}</td>
                 </tr>

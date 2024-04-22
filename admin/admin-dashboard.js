@@ -461,7 +461,7 @@ async function addCandidate() {
     const electionInput = document.getElementById('electionCategoryAC2EP').value;
     const partyInput = document.getElementById('selectParty').value;
     const candidateName = document.getElementById('candidateName').value;
-    const uniqueTag = document.getElementById('uniqueTag').value;
+    // const uniqueTag = document.getElementById('uniqueTag').value;
     const candidateImage = document.getElementById('candidateImage').files[0];
 
     const formData = new FormData();
@@ -469,7 +469,7 @@ async function addCandidate() {
     formData.append('partyId', partyInput);
     formData.append('candidateName', candidateName);
     formData.append('candidateImage', candidateImage);
-    formData.append('uniqueTag', uniqueTag);
+    // formData.append('uniqueTag', uniqueTag);
 
     try {
         const response = await fetch('http://localhost:3000/addCandidateToElectionAndParty', {

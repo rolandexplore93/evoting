@@ -895,6 +895,40 @@ document.addEventListener('DOMContentLoaded', populateStates);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // const electionData = {
 //     "GeneralElections": ["President", "Senate", "MHA"],
 //     "StatesElections": ["Governor", "HOR"],
@@ -931,7 +965,12 @@ document.addEventListener('DOMContentLoaded', populateStates);
 
 
 
-
+// Array dummy data to simulate fetched data from database
+// const votes = [
+//     { VoteId: 1, NamesInitials: 'S. J. A', Age: 35, TimeVoted: '2023-05-12', Status: 'Rejected' },
+//     { VoteId: 2, NamesInitials: 'J. L. B', Age: 42, TimeVoted: '2023-05-12', Status: 'Approved' },
+//     { VoteId: 3, NamesInitials: 'J. D', Age: 22, TimeVoted: '2023-05-12', Status: 'Under Review' },
+// ];
 
 // Dummy data for election to build election result page before setting the database
 // const electionsList = ['General Election - President 2024', 'General Election - Senate 2024', 'States Election - Governor 2024'];
