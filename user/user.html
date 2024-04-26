@@ -20,8 +20,8 @@
 
                 <div id="login">
                     <form id="login-form">
-                        <input type="email" id="email" placeholder="Email">
-                        <input type="password" id="password" placeholder="Password">
+                        <input type="email" id="email" placeholder="Email" required>
+                        <input type="password" id="password" placeholder="Password" required>
                         <button type="submit">Login</button>
                     </form>
                     <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
@@ -79,10 +79,10 @@
                 <div id="reset-password" style="display: none;">
                     <form id="reset-password-form">
                         <p style="text-align: center; text-decoration: underline; color: #003366;">Reset Password</p>
-                        <input type="email" placeholder="Email">
+                        <input type="email" placeholder="Email" required>
                         <p style="text-align: center;">or</p>
                         <input type="text" placeholder="Phone number" disabled>
-                        <button onclick="showResetPasswordSuccess()">Submit</button>
+                        <button type="submit" onclick="showResetPasswordSuccess()">Submit</button>
                     </form>
                     <p>If you know your login details, <a href="#" onclick="showLoginForm()">click here to Login</a></p>
                     <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
@@ -90,7 +90,7 @@
                 <!-- HTML TEMPLATE FOR RESET PASSWORD SUCCESS -->
                 <div id="reset-password-success" style="display: none;">
                     <p style="text-align: center; color: #003366;">Password reset link has been sent to your email address.</p>
-                    <button onclick="showLoginForm()">OK</button>
+                    <button onclick="resetPasswordOk()">OK</button>
                 </div>
             </div>
             <!-- HTML TEMPLATE FOR SIGNUP SUCCESS -->
@@ -98,7 +98,7 @@
                 <div class="modal-content">
                     <span class="close">&times;</span>
                     <p>Account created successfully. Please login and verify your email.</p>
-                    <p>Once your profile is verified and approved, your voting ID will be generated.</p>
+                    <p>Once your profile is verified by the Electoral commission, your voting ID will be generated.</p>
                     <button class="mybutton" id="go-to-login" style="position: relative; right: 0;">Login</button>
                 </div>
             </div>

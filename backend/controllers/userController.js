@@ -1,4 +1,3 @@
-var createError = require('http-errors');
 const naijaFaker = require("naija-faker");
 const { states, stateLGA } = require('../nigerianStates');
 const Users = require('../models/users');
@@ -6,8 +5,6 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 require("dotenv").config(); // Enable access to environment variables
 const nodemailer = require('nodemailer');
-
-
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
@@ -18,10 +15,8 @@ exports.validateNIN = async (req, res, next) => {
         if (existingUserWithNIN) {
             return res.status(201).json({ message: 'NIN already exists. Please enter correct NIN number.', success: false });
         }
-
         let uniqueUserInfo = false;
         let userData;
-
         while (!uniqueUserInfo) {
             const naijaPersonInfo = naijaFaker.getPersonList({ amt: 1 });
             const username = `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}`;
@@ -49,7 +44,6 @@ exports.validateNIN = async (req, res, next) => {
                     nin
                 };   
             }
-            
         }
         res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
@@ -235,7 +229,6 @@ const emailSender = async (email, otp, firstname, lastname) => {
              <p>It will expire in 15 minutes</p>
              `,
     };
-  
     try {
       const info = await transporter.sendMail(mailOptions);
       console.log('Message sent: %s', info.messageId);

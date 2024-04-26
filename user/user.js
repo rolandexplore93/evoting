@@ -1,3 +1,4 @@
+// Get target HTML elements
 const signup = document.getElementById('signup');
 const login = document.getElementById('login');
 const signupSuccess = document.getElementById('signup-success');
@@ -9,8 +10,9 @@ const loginFormDisplay = document.getElementById('login-form-display');
 const signupFormDisplay = document.getElementById('signup-form-display');
 const nin = document.getElementById('nin');
 
-loginFormDisplay.classList.add('activeDisplay');
+loginFormDisplay.classList.add('activeDisplay'); // Add active style to login form
 
+// Function to display login form
 function showLoginForm() {
     signup.style.display = 'none';
     form.style.display = 'block';
@@ -21,7 +23,7 @@ function showLoginForm() {
     loginFormDisplay.classList.add('activeDisplay')
     signupFormDisplay.classList.remove('activeDisplay')
 }
-
+// Function to display registration form
 function showSignupForm() {
     login.style.display = 'none';
     signup.style.display = 'block';
@@ -31,7 +33,7 @@ function showSignupForm() {
     loginFormDisplay.classList.remove('activeDisplay')
     signupFormDisplay.classList.add('activeDisplay')
 }
-
+// Function to display show reset password form
 function showResetPassword () {
     resetPassword.style.display = 'block';
     login.style.display = 'none';
@@ -40,13 +42,7 @@ function showResetPassword () {
     loginOrSignup.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
 }
-
-
-
-// function showSignupSuccess() {
-//     signupSuccess.style.display = 'block';
-// }
-
+// Function to display show reset password success card
 function showResetPasswordSuccess() {
     resetPasswordSucsess.style.display = 'block';
     resetPassword.style.display = 'none';
@@ -54,6 +50,12 @@ function showResetPasswordSuccess() {
     signup.style.display = 'none';
     signupSuccess.style.display = 'none';
     loginOrSignup.style.display = 'none';
+}
+
+// Function: When the OK button is clicked after the indication that reset link 
+// has been sent to the user, redirect user to the login page
+function resetPasswordOk() {
+    window.location.href = '/user/user.html';
 }
 
 
@@ -64,10 +66,6 @@ document.getElementById('go-to-login').onclick = function () {
     showLoginForm();
 }
 
-// When the user clicks on "Go to my profile", authenticate and redirect user to user profile
-// document.getElementById('go-to-profile').onclick = function () {
-//     alert('Authenticating and redirecting to user profile...');
-// }
 const modal = document.getElementsByClassName('modal')[0];
 const modalContent = document.getElementsByClassName('modal-content');
 
@@ -81,11 +79,6 @@ closeModal.onclick = function() {
 
 
 // LOGIN logic
-// document.getElementById('go-to-useraccount').onclick = function () {
-//     alert('Authenticating and redirecting to user profile...');
-//     window.location = '/user/user-dashboard.html';
-// }
-
 const loginForm = document.getElementById('login-form');
 loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -140,7 +133,7 @@ const validateUserNIN = async () => {
     const ninHTML = document.getElementById('nin');
     const guidedText = document.getElementById('guide-text');
     const formSection2 = document.getElementById('form-section-2');
-    
+    // NIN internal requirement: Do not accept NIN that starts with 0 and 9.
     const ninFirst = nin[0]
     if (ninFirst == 0 || ninFirst == 9) {
         guidedText.textContent = 'NIN is not valid';
@@ -152,9 +145,8 @@ const validateUserNIN = async () => {
         }, 1000)
         return
     }
-
     const ninData = { ninDigit: nin }
-
+    // Make an api to validate NIN on the backend 
     await fetch('http://localhost:3000/validatenin', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -162,7 +154,7 @@ const validateUserNIN = async () => {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success == false) {
+        if (data.success == false) { // If NIN already exists
             guidedText.textContent = data.message;
             guidedText.style.color = 'red';
 
@@ -173,13 +165,13 @@ const validateUserNIN = async () => {
             }, 800)
             return
         }
-
+        // If NIN doesn't exist, user information is retrieved and populated in an HTML form from the DOM using String literals
         guidedText.textContent = data.message;
         guidedText.style.color = 'green';
         document.getElementById('validateNIN').style.display = 'none';
         ninHTML.textContent = data.userData.ninNumber;
         ninHTML.setAttribute('disabled', 'disabled');
-        setTimeout(() => {
+        setTimeout(() => { // Display the registration form after 1 seconds
             formSection2.style.display = 'block';
             formSection2.innerHTML = `
                 <div class="entry-wrapper">Lastname: 
@@ -232,7 +224,7 @@ const validateUserNIN = async () => {
                     <button type="submit" id="registerButton" disabled>Register</button>
                 </div>
             `
-            listenForClickOnRegisterForm();
+            listenForClickOnRegisterForm(); // Enable or disabled register button when all fields are filled or not 
         }, 1000);
     })
     .catch(error => {
@@ -244,31 +236,22 @@ const validateUserNIN = async () => {
 const listenForClickOnRegisterForm = () => {
     const inputs = document.querySelectorAll('.inputField');
     const registerButton = document.getElementById('registerButton');
-    console.log(inputs)
-
     const toggleButtonState = () => {
         // Check if all inputs have a value
         const allInputFilled = Array.from(inputs).every(input => input.value.trim() !== '');
-        
         // Enable or disable the register button based on the fields being filled
         registerButton.disabled = !allInputFilled;
     };
-
     // Add event listeners to each input field
     inputs.forEach(input => {
         input.addEventListener('input', toggleButtonState);
     });
 }
 
-// const signupForm = document.getElementById('signup-form').addEventListener('submit', (e) => {
-//     e.preventDefault()
-//     console.log('ssssss')
-// })
-
 // const register = async () => {
 const signupForm = document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault()
-    // signup.style.display = 'none';
+    // use FormData to process user entries and hanlde the images attached
     const formData = new FormData();
     formData.append('ninNumber', document.getElementById('nin').value);
     formData.append('lastname', document.getElementById('lastname').value);
@@ -281,26 +264,25 @@ const signupForm = document.getElementById('signup-form').addEventListener('subm
     formData.append('phonenumber', document.getElementById('phonenumber').value);
     formData.append('gender', document.getElementById('gender').value);
     formData.append('password', document.getElementById('userPassword').value);
-
-    // // Append files to formData
+    // Append files to formData
     formData.append('uploadID', document.getElementById('uploadID').files[0]);
     formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
 
+    // Make an API call to the backend to register this user
     await fetch('http://localhost:3000/signup', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        // Handle response data
+        // Handle response data from the backend server
         console.log(data);
-
+        // Notify the user if the registration is not successful and redirects to user entry page
         if (!data.success) {
             alert(data.message);
             window.location.href = '/user/user.html';
         }
-
-        // alert('Account creation is successful');
+        // Notify the user if the registration is successful
         alert(data.message);
         form.style.display = 'none';
         signupSuccess.style.display = 'block';
@@ -308,59 +290,4 @@ const signupForm = document.getElementById('signup-form').addEventListener('subm
     .catch(error => {
         console.error('Error:', error);
     });
-    // showSignupSuccess();
-
-
-    // alert('Account creation is successful');
-    // form.style.display = 'none';
-    // signupSuccess.style.display = 'block';
-// }
-})
-
-
-
-
-
-
-
-// Frontend constructs full URL and redirects
-// window.location.href = `${window.location.origin}${data.path}`;
-
-    // const ninNumber = nin.value;
-    // const lastname = document.getElementById('lastname').value;
-    // const firstname = document.getElementById('firstname').value;
-    // const username = document.getElementById('username').value;
-    // const dateOfBirth = document.getElementById('dob').value;
-    // const state = document.getElementById('state').value;
-    // const lga = document.getElementById('lga').value;
-    // const email = document.getElementById('userEmail').value;
-    // const phonenumber = document.getElementById('phonenumber').value;
-    // const gender = document.getElementById('gender').value;
-    // const password = document.getElementById('userPassword').value;
-    // const uploadID = document.getElementById('uploadID').files[0];
-    // const uploadSelfie = document.getElementById('uploadSelfie').files[0];
-
-    // console.log(ninNumber)
-    // console.log(lastname);
-    // console.log(firstname);
-    // console.log(username);
-    // console.log(dateOfBirth);
-    // console.log(state);
-    // console.log(lga);
-    // console.log(email);
-    // console.log(phonenumber);
-    // console.log(gender);
-    // console.log(password);
-    // console.log(uploadID);
-    // console.log(uploadSelfie);
-
-
-
-
-
-
-
-
-
-
-
+});
