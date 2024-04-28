@@ -45,7 +45,7 @@ exports.validateNIN = async (req, res, next) => {
                 };   
             }
         }
-        res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
+        return res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
         next(error)
     }
@@ -96,23 +96,19 @@ exports.signup = async (req, res) => {
         
         const dob = req.body.dateOfBirth;
         const password = req.body.password;
-        console.log('Pw:' + password)
         const salt = await bcrypt.genSalt();
-        const encryptedPassword = await bcrypt.hash(password, salt);
-        console.log(encryptedPassword)
-        const result = await bcrypt.compare(password, encryptedPassword);
-        // console.log('Hash:', encryptedPassword);
-        console.log('Comparison result:', result);
-        
+        const encryptedPassword = await bcrypt.hash(password, salt); // Encrypt user password
         const age = calculateAge(dob);
         firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
         lastname = `${req.body.lastname[0].toUpperCase()}${req.body.lastname.slice(1)}`;
+        const isDOBeligibleToVote = age >= 18 // Set to True if age is >= 18, otherwise, set to false
         // If no existing user, create new user
         const newUser = new Users({
             ...req.body,
             firstname,
             lastname,
             age,
+            isDOBeligibleToVote,
             password: encryptedPassword,
             uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
@@ -120,11 +116,12 @@ exports.signup = async (req, res) => {
 
         // Save the new user to the database
         await newUser.save();
+        console.log({message: "User successfully registered", success: true })
+        return res.status(200).json({ success: true, message: "User successfully registered" });
 
-        res.status(201).json({ message: "User successfully registered", a: 'newUser', success: true });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "An error occurred during registration", success: false });
+        return res.status(500).json({ message: "An error occurred during registration", success: false });
     }
 }
 
@@ -139,10 +136,10 @@ function calculateAge(dob) {
     }
     const currentDate = new Date();
     let age = currentDate.getFullYear() - dob.getFullYear();
-    const m = currentDate.getMonth() - dob.getMonth();
+    const differentInMonth = currentDate.getMonth() - dob.getMonth();
 
     // If dob is yet to come in the current year, adjust the age
-    if (m < 0 || (m === 0 && currentDate.getDate() < dob.getDate())) {
+    if (differentInMonth < 0 || (differentInMonth === 0 && currentDate.getDate() < dob.getDate())) {
         age--;
     }
     return age;
@@ -178,7 +175,7 @@ exports.login = async (req, res) => {
             return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
         }
     } catch (error) {
-        res.status(500).json({ success: false, message: "An error occurred during login" });
+        return res.status(500).json({ success: false, message: "An error occurred during login" });
         
     }
 }
@@ -196,7 +193,7 @@ exports.goToUserDashboard = async (req, res) => {
     delete userInfoNoPassword.password;
     delete userInfoNoPassword.pin;
 
-    res.json({ userInfo: userInfoNoPassword, message: 'Accessing user dashboard', success: true })
+    return res.json({ userInfo: userInfoNoPassword, message: 'Accessing user dashboard', success: true })
 }
 
 
@@ -266,16 +263,16 @@ exports.verifyEmailOTP = async (req, res) => {
 
     if (user.emailOTP === otp && user.email === email) {
         await Users.updateOne({ _id }, { isEmailVerified: true, emailOTP: '', emailOtpCreatedAt: null });
-        res.json({ success: true, message: 'Email verified successfully', nextStep: 'correct' });
+        return res.json({ success: true, message: 'Email verified successfully', nextStep: 'correct' });
     } else {
-        res.json({ success: false, message: 'Email verification code is incorrect', nextStep: 'incorrect' });
+        return res.json({ success: false, message: 'Email verification code is incorrect', nextStep: 'incorrect' });
     }
 }
 
 exports.logout = (req, res) => {
     res.clearCookie('token'); // Clear authentication cookie
     // res.redirect('/user/user.html')
-    res.json({ message: "Logged out successfully", success: true })
+    return res.json({ message: "Logged out successfully", success: true })
 }
 
 

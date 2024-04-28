@@ -1,7 +1,8 @@
 const users = require("../models/users");
 const party = require("../models/party");
 const candidates = require("../models/candidates");
-
+const elections = require("../models/elections");
+const vote = require("../models/vote");
 
 // Update document field inside collection in the database
 const updateUserSchema = async () => {
@@ -46,14 +47,3 @@ const updateCollectionWithExistingField = async () => {
     }
 }
 // updateCollectionWithExistingField()
-
-// confirmVoterAgeEligibilty
-const confirmVoterAgeEligibilty = async () => {
-    try {
-        await users.updateMany({}, [{ $set: { isDOBeligibleToVote: { $gte: ["$age", 18 ]} }}])
-        console.log('Users age eligibility has been confirmed')
-    } catch (error) {
-        console.log(`Error updating user eligibility: ${error.message}`)
-    }
-}
-// confirmVoterAgeEligibilty()

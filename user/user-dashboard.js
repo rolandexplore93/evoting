@@ -130,18 +130,6 @@ function clickToCopyVotingId() {
     }, 600)
 }
 
-// Dummy data voting simulation
-// const voter = {
-//     votingId: '123',
-//     hasVoted: false,
-//     votedInElection: ['1', '2', '661a416630b07f2517e8f46'], //d
-//     votedElections: {
-//         "GeneralElection": false,
-//         "StateElection": true,
-//         "LGAElection": false
-//     }
-// };
-
 // Click Elections
 function goToElections() {
     if (globalUserData.votingID != '') { // If user has a votingId generated, go to choose language
@@ -349,21 +337,6 @@ function goToResults() {
     window.location = '/election-results/electionresults.html';
 }
 
-// function goToNextElection() {
-//     showStep('nevs-SENATE');
-// }
-
-// Vote of Senate
-// function voteCandidateSen() {
-//     showStep('nevs-confirm-vote-sen');
-// }
-
-// function changeVoteSen() {
-//     showStep('nevs-SENATE');
-// }
-
-
-
 // Election voting process using 
 function showStep(stepId) {
     document.querySelectorAll('div[id^="nevs-"]').forEach((div) => {
@@ -438,11 +411,11 @@ function populateUserData(userData) {
     <p>Welcome ${userData.firstname}</p>
     <div>
         <p>Profile photo</p>
-        <img src="http://localhost:3000/${userData.uploadID}" alt="selfie-image" width="200px" height="200px">
+        <img src="http://localhost:3000/${userData.uploadSelfie}" alt="selfie-image" width="90%" height="150px">
     </div>
     <div>
         <p>ID CARD</p>
-        <img src="http://localhost:3000/${userData.uploadSelfie}" alt="selfie-image" width="90%" height="150px">
+        <img src="http://localhost:3000/${userData.uploadID}" alt="selfie-image" width="200px" height="200px">
         <span class="verified">${userData.isIdVerified ? '&#10004' : '&#8987'}</span>
     </div>
     <div class="user-details">

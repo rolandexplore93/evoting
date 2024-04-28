@@ -1,3 +1,21 @@
+// use FormData to process user entries and hanlde the images attached
+    // const formData = new FormData();
+    // formData.append('ninNumber', document.getElementById('nin').value);
+    // formData.append('lastname', document.getElementById('lastname').value);
+    // formData.append('firstname', document.getElementById('firstname').value);
+    // formData.append('username', document.getElementById('username').value);
+    // formData.append('dateOfBirth', document.getElementById('dob').value);
+    // formData.append('state', document.getElementById('state').value);
+    // formData.append('lga', document.getElementById('lga').value);
+    // formData.append('email', document.getElementById('userEmail').value);
+    // formData.append('phonenumber', document.getElementById('phonenumber').value);
+    // formData.append('gender', document.getElementById('gender').value);
+    // formData.append('password', document.getElementById('userPassword').value);
+    // // Append files to formData
+    // formData.append('uploadID', document.getElementById('uploadID').files[0]);
+    // formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
+
+
 // const electionData = {
 //     "GeneralElections": ["President", "Senate", "MHA"],
 //     "StatesElections": ["Governor", "HOR"],
@@ -83,3 +101,16 @@
     // console.log(password);
     // console.log(uploadID);
     // console.log(uploadSelfie);
+
+
+
+// // confirmVoterAgeEligibilty
+// const confirmVoterAgeEligibilty = async () => {
+//     try {
+//         await users.updateMany({}, [{ $set: { isDOBeligibleToVote: { $gte: ["$age", 18 ]} }}])
+//         console.log('Users age eligibility has been confirmed')
+//     } catch (error) {
+//         console.log(`Error updating user eligibility: ${error.message}`)
+//     }
+// }
+// // confirmVoterAgeEligibilty()

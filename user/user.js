@@ -96,7 +96,6 @@ loginForm.addEventListener('submit', async function(e) {
         });
 
         const data = await response.json();
-        console.log(data)
         if (data.success) {
             // Redirect based on role
             alert(data.message);
@@ -170,35 +169,35 @@ const validateUserNIN = async () => {
         guidedText.style.color = 'green';
         document.getElementById('validateNIN').style.display = 'none';
         ninHTML.textContent = data.userData.ninNumber;
-        ninHTML.setAttribute('disabled', 'disabled');
+        ninHTML.setAttribute('readonly', 'readonly');
         setTimeout(() => { // Display the registration form after 1 seconds
             formSection2.style.display = 'block';
             formSection2.innerHTML = `
                 <div class="entry-wrapper">Lastname: 
-                    <input class="inputField" type="text" id="lastname" placeholder="Lastname" value='${data.userData.lastName}' disabled required>
+                    <input class="inputField" type="text" id="lastname" name="lastname" placeholder="Lastname" value='${data.userData.lastName}' readonly required>
                 </div>
                 <div class="entry-wrapper">Firstname: 
-                    <input class="inputField" type="text" id="firstname" placeholder="Firstname" value='${data.userData.firstName}' disabled required>
+                    <input class="inputField" type="text" id="firstname" name="firstname" placeholder="Firstname" value='${data.userData.firstName}' readonly required>
                 </div>
                 <div class="entry-wrapper">Username:
-                    <input class="inputField" type="text" id="username" placeholder="Username" value='${data.userData.username}' disabled required>
+                    <input class="inputField" type="text" id="username" name="username" placeholder="Username" value='${data.userData.username}' readonly required>
                 </div>
                 <div class="entry-wrapper">Date of Birth:
-                    <input class="inputField" type="date" name="dob" id="dob">
+                    <input class="inputField" type="date" name="dateOfBirth" id="dob">
                 </div>
                 <div class="entry-wrapper">
                     <div>State:
-                        <select id="state-dropdown" onchange="updateLGA()" disabled>
+                        <select id="state-dropdown" name="state" onchange="updateLGA()" readonly>
                             <option id="state" value="${data.userData.state}">${data.userData.state}</option>
                         </select>
                     </div>
                     <div>LGA:
-                        <select id="lga-dropdown" disabled>
+                        <select id="lga-dropdown" name="lga" readonly>
                             <option id="lga" value="${data.userData.lga}">${data.userData.lga}</option>
                         </select>
                     </div>
                     <div>Gender:
-                        <select id="gender">
+                        <select id="gender" name="gender">
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                             <option value="others">Others</option>
@@ -207,13 +206,13 @@ const validateUserNIN = async () => {
                     </div>
                 </div>
                 <div class="entry-wrapper">Email:
-                    <input class="inputField" type="email" id="userEmail" placeholder="Email" value='${data.userData.email}' required>
+                    <input class="inputField" type="email" id="userEmail" name="email" placeholder="Email" value='${data.userData.email}' required>
                 </div>
                 <div class="entry-wrapper">Phone Number:
-                    <input class="inputField" type="text" id="phonenumber" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
+                    <input class="inputField" type="text" id="phonenumber" name="phonenumber" placeholder="Phone Number" value='${data.userData.phoneNumber}' required>
                 </div>
                 <div class="entry-wrapper">Password:
-                    <input class="inputField" type="password" id="userPassword" placeholder="Password" required>
+                    <input class="inputField" type="password" id="userPassword" name="password" placeholder="Password" required>
                 </div>
                 <div class="entry-wrapper upload"><p>Upload ID card</p>
                     <input class="inputField" type="file" name="uploadID" id="uploadID" accept="image/*" required>
@@ -248,46 +247,31 @@ const listenForClickOnRegisterForm = () => {
     });
 }
 
-// const register = async () => {
-const signupForm = document.getElementById('signup-form').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    // use FormData to process user entries and hanlde the images attached
-    const formData = new FormData();
-    formData.append('ninNumber', document.getElementById('nin').value);
-    formData.append('lastname', document.getElementById('lastname').value);
-    formData.append('firstname', document.getElementById('firstname').value);
-    formData.append('username', document.getElementById('username').value);
-    formData.append('dateOfBirth', document.getElementById('dob').value);
-    formData.append('state', document.getElementById('state').value);
-    formData.append('lga', document.getElementById('lga').value);
-    formData.append('email', document.getElementById('userEmail').value);
-    formData.append('phonenumber', document.getElementById('phonenumber').value);
-    formData.append('gender', document.getElementById('gender').value);
-    formData.append('password', document.getElementById('userPassword').value);
-    // Append files to formData
-    formData.append('uploadID', document.getElementById('uploadID').files[0]);
-    formData.append('uploadSelfie', document.getElementById('uploadSelfie').files[0]);
+// Send user entries to the server for registration
+const formElement = document.getElementsByClassName('signup-form')[0];
+formElement.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(formElement);
 
-    // Make an API call to the backend to register this user
-    await fetch('http://localhost:3000/signup', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Handle response data from the backend server
-        console.log(data);
-        // Notify the user if the registration is not successful and redirects to user entry page
-        if (!data.success) {
-            alert(data.message);
-            window.location.href = '/user/user.html';
+    // Console user entries in formData to the console for confirmation
+    // for (item of formData) {
+    //     console.log(item[0], item[1])
+    // }
+
+    try {
+        const response = await fetch('http://localhost:3000/signup', {
+            method: 'POST',
+            body: formData // FormData will be sent as 'multipart/form-data'
+        })
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`${data.message} Status: ${response.status}, Message: ${errorText}`);
         }
-        // Notify the user if the registration is successful
+        const data = await response.json();
         alert(data.message);
-        form.style.display = 'none';
-        signupSuccess.style.display = 'block';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-});
+    } catch (error) {
+        // console.error('Error:', error);
+        alert('Error occured: ' + error.message);
+    }
+
+})

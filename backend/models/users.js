@@ -40,19 +40,4 @@ const userSchema = new Schema({
     votedInElection: [{ type: String, default: [] }]
 }, {timestamps: true});
 
-module.exports = mongoose.model('User', userSchema)
-
-
-
-
-
-
-
-
-
-
-
-
-
-//     riskLevel: {type: Number, enum: [1, 2, 3, 4, 5], default: null},
-//     productTypes: [{ type: Schema.Types.ObjectId, ref: 'ProductType' }],
+module.exports = mongoose.model('User', userSchema);

@@ -29,9 +29,11 @@
                 </div>
 
                 <div id="signup" style="display: none;">
-                    <form id="signup-form" enctype="multipart/form-data">
+                    <h4>Complete this Registration Form</h4>
+                    <form id="signup-form" method="post" enctype="multipart/form-data" class="signup-form">
+                        <!-- enctype="multipart/form-data" -->
                         <div id="form-section-1">
-                            <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" placeholder="Enter 11-digit NIN number" required>
+                            <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" name="ninNumber" placeholder="Enter 11-digit NIN number" required>
                             <span id="validation"></span>
                             <p id="guide-text">NIN must be numeric</p>
                             <p id="error-nin"></p>
@@ -70,7 +72,7 @@
                             <div class="entry-wrapper upload"><p>Upload Selfie (plain background only)</p>
                                 <input type="file" name="uploadSelfie" id="uploadSelfie" accept="image/*">
                             </div>
-                            <button type="button">Register</button>
+                            <!-- <button type="submit">Register</button> -->
                         </div>
                     </form>
                     <p>Already registered? <a href="#" onclick="showLoginForm()">Click here to Login</a></p>
