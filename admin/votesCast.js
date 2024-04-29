@@ -229,15 +229,15 @@ function openModal(index) {
                                 <div class="modal-inner-content">
                                     <div id="voterTracking">
                                         <div id="userSelfie">
-                                            <h4>Profile Image</h4>
-                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                            <h4>Profile Photo</h4>
+                                            <img src="http://localhost:3000/${vote?.userWhoVoted.uploadSelfie}" alt="selfie-image" width="200px%" height="150px">
                                         </div>
                                         <div id="userVotingScreenshots">
                                             <h4>Voter's screenshots with timestamp during voting</h4>
                                             <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
                                             <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
                                             <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
-                                            <img src="/images/placeholder-image.jpeg" alt="" width="200px" height="150px">
+                                            <img src="http://localhost:3000/${vote?.userWhoVoted.uploadSelfie}" alt="selfie-image" width="200px%" height="150px">
                                         </div>
                                         <div id="userVotingVideo">
                                             <h4>Voter's video recorded during voting</h4>
