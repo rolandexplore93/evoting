@@ -1,16 +1,16 @@
-const naijaFaker = require("naija-faker");
-const { states, stateLGA } = require('../nigerianStates');
-const Users = require('../models/users');
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const naijaFaker = require("naija-faker"); // Import API to generate random Nigeria names
+const { states, stateLGA } = require('../nigerianStates'); // Import Nigeria states and lgas list
+const Users = require('../models/users'); // Import Users Model
+const bcrypt = require("bcrypt");  // Import bcrypt for credential hashing and encryption
+const jwt = require("jsonwebtoken"); // Import jsonwebtoken for access token
 require("dotenv").config(); // Enable access to environment variables
-const nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer'); // Import nodemailer to send email to users' email address
 
 // Verify NIN and and return user information to the frontend for user to register on the evoting system
 exports.validateNIN = async (req, res, next) => {
-    const nin = req.body.ninDigit;
+    const nin = req.body.ninDigit; // Receive NIN submitted by the user from frontend
     try {
-        // Check if NIN exists in the Users db
+        // Check if NIN exists in the Users collection database
         const existingUserWithNIN = await Users.findOne({ ninNumber: nin });
         if (existingUserWithNIN) {
             return res.status(201).json({ message: 'NIN already exists. Please enter correct NIN number.', success: false });
@@ -96,7 +96,7 @@ exports.signup = async (req, res) => {
         
         const dob = req.body.dateOfBirth;
         const password = req.body.password;
-        const salt = await bcrypt.genSalt();
+        const salt = await bcrypt.genSalt(); // Generate bcrypt salt for password hashing
         const encryptedPassword = await bcrypt.hash(password, salt); // Encrypt user password
         const age = calculateAge(dob);
         firstname = `${req.body.firstname[0].toUpperCase()}${req.body.firstname.slice(1)}`;
@@ -113,14 +113,12 @@ exports.signup = async (req, res) => {
             uploadID: req.files["uploadID"] ? req.files["uploadID"][0].path : '',
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
         });
-
         // Save the new user to the database
-        await newUser.save();
-        console.log({message: "User successfully registered", success: true })
-        return res.status(200).json({ success: true, message: "User successfully registered" });
-
+        // await newUser.save();
+        // console.log({message: "User successfully registered", success: true })
+        return res.status(200).json({ success: true, message: "User successfully registered", newUser });
     } catch (error) {
-        console.error(error);
+        // console.error(error);
         return res.status(500).json({ message: "An error occurred during registration", success: false });
     }
 }

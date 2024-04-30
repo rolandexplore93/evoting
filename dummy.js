@@ -114,3 +114,144 @@
 //     }
 // }
 // // confirmVoterAgeEligibilty()
+
+    // window.location.href = `${window.location.origin}${data.path}`;
+
+
+//     <!-- <div>
+//     <p>Profile photo</p>
+//     <img src="../images/placeholder-image.jpeg" alt="selfie-image" width="300px" height="160px">
+// </div>
+// <div>
+//     <p>ID CARD</p>
+//     <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px">
+//     <span class="verified">&#8987</span>
+// </div>
+// <div class="user-details">
+//     <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span
+//             class="verified">&#10004</span></p>
+//     <div>
+//         <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
+//         <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
+//     </div>
+//     <div>
+//         <p>Other names: <input type="text" name="" id="" value="Mark" disabled></p>
+//         <p>Gender: <input type="text" name="" id="" value="Male" disabled></p>
+//     </div>
+//     <div>
+//         <p>Date of Birth: <input type="date" name="" id="" value="" disabled></p>
+//         <p>Age: <input type="number" name="" id="" value="64" disabled></p>
+//     </div>
+//     <div>
+//         <p>State: <input type="text" name="" id="" value="Lagos" disabled></p>
+//         <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
+//     </div>
+//     <div style="display: flex;">
+//         <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span
+//                 class="verified">&#10008</span></p>
+//         <button class="mybutton" onclick="verifyEmail()">Verify Email</button>
+//     </div>
+//     <div style="display: flex;">
+//         <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span
+//                 class="verified">&#8987</span></p>
+//         <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone No</button>
+//     </div>
+// </div>
+// <button class="mybutton">Edit Profile</button> -->
+// <!-- <tr>
+//                                 <th>Title</th>
+//                                 <th>Value</th>
+//                                 <th>Action</th>
+//                             </tr>
+//                             <tr>
+//                                 <td>VOTING ID</td>
+//                                 <td id="voting-id">232123213</td>
+//                                 <td>
+//                                     <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')">Copy Voting Id</button>
+//                                 </td>
+//                             </tr> -->
+
+
+// <!-- <div class="election-tab" id="nevs-confirm-vote">
+//                             <p>Confirm your vote for PRESIDENT?</p>
+//                             <button id="changePRESIDENTVote" onclick="changeVote()">Change Vote</button>
+//                             <button id="confirmPRESIDENTVote" onclick="votingCompleted()">Yes</button>
+//                         </div> -->
+//                         <!-- Senate election -->
+//                         <!-- <div class="election-tab" id="nevs-SENATE">
+//                             <h2>SENATE Election</h2>
+//                             <form id="SENATE">
+//                                 <table>
+//                                     <tr>
+//                                         <th>Party</th>
+//                                         <th>Party Logo</th>
+//                                         <th>Candidate Name</th>
+//                                         <th>Image</th>
+//                                         <th>Action</th>
+//                                     </tr>
+//                                     <tr>
+//                                         <td>P1</td>
+//                                         <td>P1 Logo</td>
+//                                         <td>Charles</td>
+//                                         <td>Charles Image</td>
+//                                         <td><input type="radio" name="SENATEVote" value="Roland"></td>
+//                                     </tr>
+//                                     <tr>
+//                                         <td>P2</td>
+//                                         <td>P2 Logo</td>
+//                                         <td>Mary</td>
+//                                         <td>Mary Image</td>
+//                                         <td><input type="radio" name="SENATEVote" value="Orobola"></td>
+//                                     </tr>
+//                                     <tr>
+//                                         <td>P3</td>
+//                                         <td>P3 Logo</td>
+//                                         <td>AY</td>
+//                                         <td>AY Image</td>
+//                                         <td><input type="radio" name="SENATEVote" value="Oguns"></td>
+//                                     </tr>
+//                                 </table>
+//                                 <button type="button" id="voteSENATE" onclick="voteCandidateSen()">Vote</button>
+//                             </form>
+//                         </div> -->
+//                         <!-- <div class="election-tab" id="nevs-confirm-vote-sen">
+//                             <p>Confirm your vote for SENATE?</p>
+//                             <button id="changeSENATEVote" onclick="changeVoteSen()">Change Vote</button>
+//                             <button id="confirmSENATEVote" onclick="votingCompleted()">Yes</button>
+//                         </div> -->
+
+
+// <!-- <h2>PRESIDENTIAL Election</h2> -->
+// <!-- <form id="PRESIDENT">
+//     <table>
+//         <tr>
+//             <th>Party</th>
+//             <th>Party Logo</th>
+//             <th>Candidate Name</th>
+//             <th>Image</th>
+//             <th>Action</th>
+//         </tr>
+//         <tr>
+//             <td>P1</td>
+//             <td>P1 Logo</td>
+//             <td>Roland</td>
+//             <td>Roland Image</td>
+//             <td><input type="radio" name="PRESIDENTVote" value="Roland"></td>
+//         </tr>
+//         <tr>
+//             <td>P2</td>
+//             <td>P2 Logo</td>
+//             <td>Orobola</td>
+//             <td>Orobola Image</td>
+//             <td><input type="radio" name="PRESIDENTVote" value="Orobola"></td>
+//         </tr>
+//         <tr>
+//             <td>P3</td>
+//             <td>P3 Logo</td>
+//             <td>Oguns</td>
+//             <td>Oguns Image</td>
+//             <td><input type="radio" name="PRESIDENTVote" value="Oguns"></td>
+//         </tr>
+//     </table>
+//     <button type="button" id="votePRESIDENT" onclick="voteCandidate()">Vote</button>
+// </form> -->

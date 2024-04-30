@@ -10,14 +10,14 @@
 </head>
 <body>
     <div class="container">
-        <page-header></page-header>
+        <page-header></page-header> <!-- Header content -->
         <div class="main">
             <div id="form">
                 <div id="login-or-signup">
                     <button id="login-form-display" onclick="showLoginForm()">Login</button>
                     <button id="signup-form-display" onclick="showSignupForm()">Sign up</button>
                 </div>
-
+                <!-- Login form -->
                 <div id="login">
                     <form id="login-form">
                         <input type="email" id="email" placeholder="Email" required>
@@ -27,20 +27,20 @@
                     <p>Forget password? <a href="#" onclick="showResetPassword()">Click Reset Password</a></p>
                     <p>No account yet? <a href="#" onclick="showSignupForm()">Click here to Register</a></p>
                 </div>
-
+                <!-- Signup form -->
                 <div id="signup" style="display: none;">
                     <h4>Complete this Registration Form</h4>
                     <form id="signup-form" method="post" enctype="multipart/form-data" class="signup-form">
-                        <!-- enctype="multipart/form-data" -->
                         <div id="form-section-1">
-                            <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" name="ninNumber" placeholder="Enter 11-digit NIN number" required>
+                            <input type="text" maxlength="11" inputmode="numeric" pattern="[0-9]{11}" id="nin" 
+                            name="ninNumber" placeholder="Enter 11-digit NIN number" required>
                             <span id="validation"></span>
                             <p id="guide-text">NIN must be numeric</p>
                             <p id="error-nin"></p>
                             <button type="button" id="validateNIN" onclick="validateUserNIN()" disabled>Submit</button>
                         </div>
                         <!-- HTML TEMPLATE FOR SIGNUP SECTION -->
-                        <!-- This template is now hidden. It will be populated dynamically from the DOM once NIN is verified -->
+                        <!-- This template is hidden. It will be populated dynamically from the DOM once NIN is verified -->
                         <div style="display: none;" id="form-section-2">
                             <div class="entry-wrapper">Lastname: 
                                 <input type="text" placeholder="Lastname">
@@ -64,7 +64,8 @@
                                 <input type="email" placeholder="Email">
                             </div>
                             <div class="entry-wrapper">Password:
-                                <input type="password" id="passwordField" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
+                                <input type="password" id="passwordField" placeholder="Password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" 
+                                title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters">
                             </div>
                             <div class="entry-wrapper upload"><p>Upload ID card</p>
                                 <input type="file" name="uploadID" id="uploadID" accept="image/*">
@@ -105,7 +106,7 @@
                 </div>
             </div>
         </div>
-        <page-footer></page-footer>
+        <page-footer></page-footer> <!-- Footer content -->
     </div>
     <script src=".././script.js"></script>
     <script src="./user.js"></script>

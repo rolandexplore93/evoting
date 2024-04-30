@@ -127,7 +127,6 @@ addPartyForm.addEventListener('submit', async (event) => {
         window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Party';
         openTab(null, 'Add-Party');
     } catch (error) {
-        // console.error('Error:', error);
         alert('Error occured: ' + error.message);
     }
 })
@@ -199,12 +198,6 @@ createElectionForm.addEventListener('submit', async (event) => {
     const openDate = document.getElementById('openDateTime').value;
     const closingDate = document.getElementById('closeDateTime').value;
     const createdByUserId = globalUserData._id;
-
-    // console.log(electionName)
-    // console.log(electionCategory)
-    // console.log(openDate)
-    // console.log(closingDate)
-    // console.log(createdByUserId)
     
     try {
         const response = await fetch('http://localhost:3000/createElection', {

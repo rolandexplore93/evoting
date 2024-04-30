@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,59 +8,17 @@
     <link rel="stylesheet" href="./user-dashboard.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
 </head>
-
 <body>
     <div class="container" id="user-dashboard">
         <div class="main" id="main">
             <!-- Sidebar content tab -->
             <div class="sidebar" id="sidebar">
                 <!-- Sidebar content is render dynamically from the DOM -->
-                <!-- <div>
-                    <p>Profile photo</p>
-                    <img src="../images/placeholder-image.jpeg" alt="selfie-image" width="300px" height="160px">
-                </div>
-                <div>
-                    <p>ID CARD</p>
-                    <img src="../images/nigeria-flag.png" alt="selfie-image" width="300px" height="200px">
-                    <span class="verified">&#8987</span>
-                </div>
-                <div class="user-details">
-                    <p>NIN: <input type="text" name="" id="" value="23423423422" disabled> <span
-                            class="verified">&#10004</span></p>
-                    <div>
-                        <p>Surname: <input type="text" name="" id="" value="John" disabled></p>
-                        <p>Firstname: <input type="text" name="" id="" value="Doe" disabled></p>
-                    </div>
-                    <div>
-                        <p>Other names: <input type="text" name="" id="" value="Mark" disabled></p>
-                        <p>Gender: <input type="text" name="" id="" value="Male" disabled></p>
-                    </div>
-                    <div>
-                        <p>Date of Birth: <input type="date" name="" id="" value="" disabled></p>
-                        <p>Age: <input type="number" name="" id="" value="64" disabled></p>
-                    </div>
-                    <div>
-                        <p>State: <input type="text" name="" id="" value="Lagos" disabled></p>
-                        <p>LGA: <input type="text" name="" id="" value="Lekki" disabled></p>
-                    </div>
-                    <div style="display: flex;">
-                        <p>Email: <input type="email" name="" id="" value="John@gmail.com" disabled> <span
-                                class="verified">&#10008</span></p>
-                        <button class="mybutton" onclick="verifyEmail()">Verify Email</button>
-                    </div>
-                    <div style="display: flex;">
-                        <p>Phone: <input type="text" name="" id="" value="+234704864789" disabled> <span
-                                class="verified">&#8987</span></p>
-                        <button class="mybutton" onclick="verifyPhoneNumber()">Verify Phone No</button>
-                    </div>
-                </div>
-                <button class="mybutton">Edit Profile</button> -->
             </div>
             <!-- Main content tab -->
             <div class="main-content" id="main-content">
                 <div class="user-header">
-                    <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEVS</a>
-                    </div>
+                    <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEVS</a></div>
                     <nav class="tab">
                         <ul>
                             <li><a class="tablinks" onclick="openTab(event, 'Dashboard')" id="defaultPage">Dashboard</a></li>
@@ -76,18 +33,6 @@
                     <div class="tabcontent" id="Dashboard">
                         <table id="votingIdTable">
                             <!-- Sidebar content is render dynamically from the DOM -->
-                            <!-- <tr>
-                                <th>Title</th>
-                                <th>Value</th>
-                                <th>Action</th>
-                            </tr>
-                            <tr>
-                                <td>VOTING ID</td>
-                                <td id="voting-id">232123213</td>
-                                <td>
-                                    <button id="copy-voting-id" onclick="clickToCopyVotingId('voting-id')">Copy Voting Id</button>
-                                </td>
-                            </tr> -->
                         </table>
                     </div>
                     <div class="tabcontent" id="Election">
@@ -101,7 +46,7 @@
                             <p>Your profile has not yet been verified.</p>
                             <button onclick="goToElectionPage()">OK</button>
                         </div>
-                        <!-- Profile approved. Voter choose language -->
+                        <!-- Profile approved. Voter chooses language -->
                         <div class="election-tab" id="nevs-choose-language">
                             <label for="language">Choose Language:</label>
                             <select id="language">
@@ -124,7 +69,7 @@
                             <button onclick="ReEnterVotingId()">Try Again</button>
                             <button onclick="goToElectionPage()">Quit</button>
                         </div>
-                        <!-- Correct voting id. Show election T&C -->
+                        <!-- Correct voting id. Show election Terms and conditions -->
                         <div class="election-tab" id="nevs-election-conditions">
                             <p>Election conditions and warning text...</p>
                             <input type="checkbox" id="agreeConditions" name="agreeConditions" value="agreeConditions">
@@ -135,103 +80,20 @@
                         <div class="election-tab" id="nevs-select-election">
                             <label for="electionSelection">Select Election:</label>
                             <select id="electionSelection">
-                                <!-- <option value="">Select...</option>
-                                <option value="GeneralElection">General Election</option>
-                                <option value="StateElection">State Election</option>
-                                <option value="LGAElection">LGA Election</option> -->
+                                <!-- Elections are retrieved from the database and render dynamically from the DOM -->
                             </select>
                             <button id="confirmElection" onclick="confirmElection()">Confirm Election</button>
                         </div>
-                        <!-- Voter cannot vote twice -->
+                        <!-- Voter cannot vote twice in an election -->
                         <div class="election-tab" id="nevs-voter-already-voted">
                             <p>You have already voted.</p>
                             <button onclick="goToElectionPage()">Ok</button>
                             <button onclick="goToResults()">See Results</button>
                         </div>
-                        <!-- Voting activities / President election -->
+                        <!-- E-Voting process  -->
                         <div class="election-tab" id="nevs-selectedElection">
-                            <!-- <h2>PRESIDENTIAL Election</h2> -->
-                            <!-- <form id="PRESIDENT">
-                                <table>
-                                    <tr>
-                                        <th>Party</th>
-                                        <th>Party Logo</th>
-                                        <th>Candidate Name</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <tr>
-                                        <td>P1</td>
-                                        <td>P1 Logo</td>
-                                        <td>Roland</td>
-                                        <td>Roland Image</td>
-                                        <td><input type="radio" name="PRESIDENTVote" value="Roland"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>P2</td>
-                                        <td>P2 Logo</td>
-                                        <td>Orobola</td>
-                                        <td>Orobola Image</td>
-                                        <td><input type="radio" name="PRESIDENTVote" value="Orobola"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>P3</td>
-                                        <td>P3 Logo</td>
-                                        <td>Oguns</td>
-                                        <td>Oguns Image</td>
-                                        <td><input type="radio" name="PRESIDENTVote" value="Oguns"></td>
-                                    </tr>
-                                </table>
-                                <button type="button" id="votePRESIDENT" onclick="voteCandidate()">Vote</button>
-                            </form> -->
+                        <!-- Rendered dynamically from the DOM -->
                         </div>
-                        <!-- <div class="election-tab" id="nevs-confirm-vote">
-                            <p>Confirm your vote for PRESIDENT?</p>
-                            <button id="changePRESIDENTVote" onclick="changeVote()">Change Vote</button>
-                            <button id="confirmPRESIDENTVote" onclick="votingCompleted()">Yes</button>
-                        </div> -->
-                        <!-- Senate election -->
-                        <!-- <div class="election-tab" id="nevs-SENATE">
-                            <h2>SENATE Election</h2>
-                            <form id="SENATE">
-                                <table>
-                                    <tr>
-                                        <th>Party</th>
-                                        <th>Party Logo</th>
-                                        <th>Candidate Name</th>
-                                        <th>Image</th>
-                                        <th>Action</th>
-                                    </tr>
-                                    <tr>
-                                        <td>P1</td>
-                                        <td>P1 Logo</td>
-                                        <td>Charles</td>
-                                        <td>Charles Image</td>
-                                        <td><input type="radio" name="SENATEVote" value="Roland"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>P2</td>
-                                        <td>P2 Logo</td>
-                                        <td>Mary</td>
-                                        <td>Mary Image</td>
-                                        <td><input type="radio" name="SENATEVote" value="Orobola"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>P3</td>
-                                        <td>P3 Logo</td>
-                                        <td>AY</td>
-                                        <td>AY Image</td>
-                                        <td><input type="radio" name="SENATEVote" value="Oguns"></td>
-                                    </tr>
-                                </table>
-                                <button type="button" id="voteSENATE" onclick="voteCandidateSen()">Vote</button>
-                            </form>
-                        </div> -->
-                        <!-- <div class="election-tab" id="nevs-confirm-vote-sen">
-                            <p>Confirm your vote for SENATE?</p>
-                            <button id="changeSENATEVote" onclick="changeVoteSen()">Change Vote</button>
-                            <button id="confirmSENATEVote" onclick="votingCompleted()">Yes</button>
-                        </div> -->
                         <!-- Successful voting -->
                         <div class="election-tab" id="nevs-voting-successful">
                             <p>VOTING SUCCESSFUL</p>
@@ -246,30 +108,30 @@
         </div>
         <!-- Modal layouts -->
         <div id="verification-modal" class="modal">
-            <div id="verify-email-content" class="modal-content">
+            <div id="verify-email-content" class="modal-content"> <!-- Show Card: Enter OTP code for email verification -->
                 <p id="verify-email-content-text">Enter the verification code sent to your email</p>
                 <input type="text" name="otp-code" id="otp-code"></p>
                 <button type="button" id="verify-email-otp">Verify</button>
             </div>
-            <div id="verify-email-success" class="modal-content">
+            <div id="verify-email-success" class="modal-content"> <!-- Show Card: Successful Email Verification -->
                 <p>Email verified successfully</p>
                 <button type="button" id="otp-email-success">Done</button>
             </div>
             <div id="verify-email-error" class="modal-content">
-                <p>Email verification code is incorrect</p>
+                <p>Email verification code is incorrect</p> <!-- Show Card: Email OTP is not correct -->
                 <button type="button" id="otp-email-error">Try again</button>
                 <button type="button" id="go-to-dashboard">Cancel</button>
             </div>
-            <div id="verify-phone-content" class="modal-content">
+            <div id="verify-phone-content" class="modal-content"> <!-- Show Card: Enter OTP code for email verification -->
                 <p>Enter the verification code sent to your phone number</p>
                 <input type="text" name="" id=""></p>
                 <button type="button" id="verify-phone-otp">Verify</button>
             </div>
-            <div id="verify-phoneno-success" class="modal-content">
+            <div id="verify-phoneno-success" class="modal-content"> <!-- Show Card: Successful phone number Verification -->
                 <p>Phone number verified successfully</p>
                 <button type="button" id="otp-phone-success">Done</button>
             </div>
-            <div id="verify-phoneno-error" class="modal-content">
+            <div id="verify-phoneno-error" class="modal-content"><!-- Show Card: Phone number OTP is not correct -->
                 <p>Phone number verification code is incorrect</p>
                 <button type="button" id="otp-phone-error">Try again</button>
                 <button type="button" id="go-to-dashboard-now">Cancel</button>
@@ -277,9 +139,7 @@
         </div>
         <page-footer></page-footer>
     </div>
-
     <script src=".././script.js"></script>
     <script src="./user-dashboard.js"></script>
 </body>
-
 </html>

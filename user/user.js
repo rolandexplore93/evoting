@@ -11,7 +11,6 @@ const signupFormDisplay = document.getElementById('signup-form-display');
 const nin = document.getElementById('nin');
 
 loginFormDisplay.classList.add('activeDisplay'); // Add active style to login form
-
 // Function to display login form
 function showLoginForm() {
     signup.style.display = 'none';
@@ -42,7 +41,7 @@ function showResetPassword () {
     loginOrSignup.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
 }
-// reset-password-form function
+// function to process submission on reset-password-form
 const resetPasswordForm = document.getElementById('reset-password-form');
 resetPasswordForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -57,14 +56,12 @@ function showResetPasswordSuccess() {
     signupSuccess.style.display = 'none';
     loginOrSignup.style.display = 'none';
 }
-
 // Function: When the OK button is clicked after the indication that reset link 
 // has been sent to the user, redirect user to the login page
 function resetPasswordOk() {
     window.location.href = '/user/user.html';
 }
-
-
+// Function to close the successful registration card and redirect user to login
 document.getElementById('go-to-login').onclick = function () {
     signupSuccess.style.display = 'none';
     form.style.display = 'block';
@@ -72,9 +69,9 @@ document.getElementById('go-to-login').onclick = function () {
     showLoginForm();
 }
 
+// Function to close the sign up success modal when "X" is clicked 
 const modal = document.getElementsByClassName('modal')[0];
 const modalContent = document.getElementsByClassName('modal-content');
-
 const closeModal = document.getElementsByClassName('close')[0];
 closeModal.onclick = function() {
     login.style.display = 'block';
@@ -83,16 +80,14 @@ closeModal.onclick = function() {
     showLoginForm();
 }
 
-
-// LOGIN logic
+// LOGIN logic: This receives user email and password and make an api call to the server to verify the user credentials.
 const loginForm = document.getElementById('login-form');
 loginForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
+    e.preventDefault(); 
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     
-    // window.location.href = `${window.location.origin}${data.path}`;
     try {
         const response = await fetch('http://localhost:3000/login', {
             method: 'POST',
@@ -100,15 +95,14 @@ loginForm.addEventListener('submit', async function(e) {
             body: JSON.stringify({ email, password }),
             credentials: 'include'
         });
-
-        const data = await response.json();
+        const data = await response.json(); // Convert server response to JSON
         if (data.success) {
-            // Redirect based on role
+            // If the credentials are valid, user is authenticated and authorised to the user dashboard
             alert(data.message);
             window.setTimeout(() => {
                 window.location.href = `${window.location.origin}${data.path}`;
             }, 1000);
-        } else {
+        } else { // Display error message if login fails
             alert(data.message);
             window.location.href = `${window.location.origin}${data.path}`;
         }
@@ -118,11 +112,10 @@ loginForm.addEventListener('submit', async function(e) {
 })
 
 // SIGNUP LOGIC
-// Check whether NIN input is valid or not. Then enable submission button if it's valid
+// Check whether NIN input and format is valid or not. Then enable submission button if it's valid
 document.addEventListener('DOMContentLoaded', () => {
     const signupForm = document.getElementById('signup-form');
     const validateNIN = document.getElementById('validateNIN');
-
     signupForm.addEventListener('input', () => {
         if (signupForm.checkValidity()) {
             validateNIN.removeAttribute('disabled')
@@ -132,18 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 });
 
-// Verify NIN and populate user information to the signup form
+// Verify NIN and populate user information from the database into the signup form
 const validateUserNIN = async () => {
-    const nin = document.getElementById('nin').value;
-    const ninHTML = document.getElementById('nin');
+    const nin = document.getElementById('nin').value; // get the nin value
+    const ninHTML = document.getElementById('nin'); // get the nin element
     const guidedText = document.getElementById('guide-text');
-    const formSection2 = document.getElementById('form-section-2');
+    const formSection2 = document.getElementById('form-section-2'); // get registration form
     // NIN internal requirement: Do not accept NIN that starts with 0 and 9.
     const ninFirst = nin[0]
     if (ninFirst == 0 || ninFirst == 9) {
         guidedText.textContent = 'NIN is not valid';
         guidedText.style.color = 'red';
-
         setTimeout(() => {
             guidedText.textContent = 'NIN must be numeric';
             guidedText.style.color = 'inherit';
@@ -151,18 +143,16 @@ const validateUserNIN = async () => {
         return
     }
     const ninData = { ninDigit: nin }
-    // Make an api to validate NIN on the backend 
-    await fetch('http://localhost:3000/validatenin', {
+    await fetch('http://localhost:3000/validatenin', { // Make an api to the backend to validate NIN 
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(ninData)
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success == false) { // If NIN already exists
+        if (data.success == false) { // If NIN already exists, notify the user
             guidedText.textContent = data.message;
             guidedText.style.color = 'red';
-
             setTimeout(() => {
                 guidedText.textContent = 'NIN must be numeric';
                 guidedText.style.color = 'inherit';
@@ -174,9 +164,10 @@ const validateUserNIN = async () => {
         guidedText.textContent = data.message;
         guidedText.style.color = 'green';
         document.getElementById('validateNIN').style.display = 'none';
+        document.getElementById('validateNIN').disabled = true;
         ninHTML.textContent = data.userData.ninNumber;
         ninHTML.setAttribute('readonly', 'readonly');
-        setTimeout(() => { // Display the registration form after 1 seconds
+        setTimeout(() => { // Display the registration form after 1 seconds and populate it with user details using string literals and innerHTML property from the DOM
             formSection2.style.display = 'block';
             formSection2.innerHTML = `
                 <div class="entry-wrapper">Lastname: 
@@ -229,15 +220,15 @@ const validateUserNIN = async () => {
                     <button type="submit" id="registerButton" disabled>Register</button>
                 </div>
             `
-            listenForClickOnRegisterForm(); // Enable or disabled register button when all fields are filled or not 
+            listenForClickOnRegisterForm(); // Call this method to enable or disabled register button when all fields are filled or not 
         }, 1000);
     })
     .catch(error => {
-        console.log(error)
+        console.log(error) // Display an error if any
     })
 };
 
-// Enable register button when all fields are filled 
+// Enable or disable register button when all fields are filled or not
 const listenForClickOnRegisterForm = () => {
     const inputs = document.querySelectorAll('.inputField');
     const registerButton = document.getElementById('registerButton');
@@ -258,26 +249,22 @@ const formElement = document.getElementsByClassName('signup-form')[0];
 formElement.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(formElement);
-
     // Console user entries in formData to the console for confirmation
-    // for (item of formData) {
-    //     console.log(item[0], item[1])
-    // }
-
+    for (item of formData) {
+        console.log(item[0], item[1])
+    }
     try {
         const response = await fetch('http://localhost:3000/signup', {
             method: 'POST',
-            body: formData // FormData will be sent as 'multipart/form-data'
+            body: formData // This will be sent as 'multipart/form-data'
         })
         if (!response.ok) {
             const errorText = await response.text()
-            throw new Error(`${data.message} Status: ${response.status}, Message: ${errorText}`);
+            throw new Error(`Status: ${response.status}, Message: ${errorText}`);
         }
         const data = await response.json();
-        alert(data.message);
+        alert(data.message); // Notify the user if registration is successful
     } catch (error) {
-        // console.error('Error:', error);
-        alert('Error occured: ' + error.message);
+        alert('Error occured: ' + error.message); // Signup Error notification
     }
-
-})
+});

@@ -1,7 +1,8 @@
+/* Styling for User login, sign up and reset password components */
 * {
-    box-sizing: border-box;
+    box-sizing: border-box; /* All content should fit inside it box element */
 }
-
+/* Style the form */
 #form {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     max-width: 450px;
@@ -22,7 +23,7 @@
 
 }
 
-#login-or-signup > button {
+#login-or-signup>button {
     border: 0;
     outline: 0;
 }
@@ -51,8 +52,6 @@ input[type="text"] {
     border: 0;
     outline: 0;
     border-bottom: 1px solid black;
-    /* border: 1px solid red; */
-
 }
 
 input[type="file"] {
@@ -61,15 +60,15 @@ input[type="file"] {
     border-bottom: 1px solid black;
 }
 
-.upload > p{
+.upload>p {
     flex: 1;
 }
 
-form > div {
+form>div {
     position: relative;
-} 
+}
 
-input:invalid:not(:placeholder-shown) + span::after {
+input:invalid:not(:placeholder-shown)+span::after {
     position: absolute;
     content: '✖';
     margin: 10px auto;
@@ -78,20 +77,16 @@ input:invalid:not(:placeholder-shown) + span::after {
     color: red;
 }
 
-input:valid:not(:placeholder-shown) + span::after {
+input:valid:not(:placeholder-shown)+span::after {
     position: absolute;
     content: '✓';
     margin: 10px auto;
     padding: 5px;
     padding-left: 0px;
     color: green;
-    /* border: 1px solid red; */
-
 }
 
-
 #guide-text {
-    /* border: 1px solid red; */
     margin: 0;
     margin-top: -8px;
     font-size: 10px;
@@ -135,21 +130,17 @@ a {
     width: 600px;
 }
 
-
-
 /* Modal content close icon */
 .close {
     color: rgb(236, 91, 91);
     float: right;
     font-size: 38px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
+}
+
+.close:hover,
+.close:focus {
     color: red;
     text-decoration: none;
     cursor: pointer;
-  }
-  
-
+}
