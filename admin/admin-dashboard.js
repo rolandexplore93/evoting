@@ -123,6 +123,7 @@ addPartyForm.addEventListener('submit', async (event) => {
         document.getElementById('partyAddedSuccessFeedback').textContent = data.message;
         alert(data.message)
         // Reload and open Add-Party tab
+        location.reload();
         window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Party';
         openTab(null, 'Add-Party');
     } catch (error) {

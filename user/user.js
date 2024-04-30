@@ -42,6 +42,12 @@ function showResetPassword () {
     loginOrSignup.style.display = 'none';
     resetPasswordSucsess.style.display = 'none';
 }
+// reset-password-form function
+const resetPasswordForm = document.getElementById('reset-password-form');
+resetPasswordForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    showResetPasswordSuccess()
+})
 // Function to display show reset password success card
 function showResetPasswordSuccess() {
     resetPasswordSucsess.style.display = 'block';

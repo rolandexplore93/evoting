@@ -470,11 +470,6 @@ function populateUserData(userData) {
     verifyEmailButton.addEventListener('click', () => {
         verifyEmail(userData._id, userData.firstname, userData.lastname, userData.email);
     })
-
-    // const editProfileButton = document.getElementById('editProfile');
-    // editProfileButton.addEventListener('click', () => {
-    //     editProfile()
-    // })
 }
 
 // Grab verify-email-content card
@@ -549,16 +544,3 @@ logout.addEventListener('click', async () => {
         console.error('Logout failed...' + error.message);
     }
 })
-
-// const editProfile = () => {
-    
-// }
-
-
-
-
-
-// verified &#10004
-// pending &#8987
-// non-verified &#10008
-// http://localhost:5500/user/user-dashboard.html
