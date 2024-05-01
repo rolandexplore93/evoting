@@ -1,65 +1,54 @@
 // VOTERS TAB LOGIC
-let voters; // Variable to store voters information from the database
+let voters; // Global variable to store voters information from the database
 
 // VotersTab functionality
 function openVotersTab(e, tabTitle) {
     var index, votersTabContent, votersTabLinks;
-
+    // Iterate over each tab content and set display to none
     votersTabContent = document.getElementsByClassName('votersTabContent');
     for (index = 0; index < votersTabContent.length; index++) {
         votersTabContent[index].style.display = 'none';
     }
-
+    // Iterate over each tab link and remove 'active' class from it
     votersTabLinks = document.getElementsByClassName('votersTabLinks');
     for (index = 0; index < votersTabLinks.length; index++) {
         votersTabLinks[index].className = votersTabLinks[index].className.replace(" active", "");
     }
-
+    // Display current tab, and add an "active" class style to it
     document.getElementById(tabTitle).style.display = 'block';
     e.currentTarget.className += " active";
-
-    if ( tabTitle == 'AllVotersTab') {
-        openAllVotersTable();
-    } else if (tabTitle == 'ApprovedVoters') {
-        openApprovedVotersTable();
-    } else if (tabTitle == 'UnderReviewVoters') {
-        openUnderReviewVotersTable();
-    } else {
-        openRejectedVotersTable()
-    }
+    // Open the sub-tab page selected inside the voters tab page
+    if ( tabTitle == 'AllVotersTab') { openAllVotersTable(); } 
+    else if (tabTitle == 'ApprovedVoters') { openApprovedVotersTable(); } 
+    else if (tabTitle == 'UnderReviewVoters') { openUnderReviewVotersTable(); } 
+    else { openRejectedVotersTable() }
 }
-document.getElementById('defaultVotersPage').click() 
+document.getElementById('defaultVotersPage').click() // Set AllVotersTab as default tab view
 
-// document.addEventListener('DOMContentLoaded', async () => {
-    
-// })
+// Function to get the lists of all voters from the database
 const votersTabHeader = document.getElementById('votersTabHeader');
 votersTabHeader.addEventListener('click', async () => {
-    console.log('votersTabHeader')
-    
     try {
         const response = await fetch('http://localhost:3000/allVoterUsersWithRole5', {
             method: 'GET',
             credentials: 'include'
         });
-
         const data =  await response.json();
         if (!response.ok) throw new Error(data.error || 'Authorization failed');
-
+        // Do not grant API access to unauthorized user 
         if (data.error === "No authorization token was found") {
             alert('Unauthorized! Please login to access this page')
             window.location.href = '/admin/admin.html';
             return
         }
-
+        // Prompt user to login if session token has expired
         if (data.error === "jwt expired") {
             alert('Session expired! Please login again')
             window.location.href = '/admin/admin.html';
             return
         }
-
         const userData = data.usersInfo;
-        voters = userData;
+        voters = userData; // Save all voters details inside the global variable
         document.getElementById('AllVotersTab').click() //Open AllVotersTabTable
     } catch (error) {
         console.error('Error:', error);
@@ -68,8 +57,7 @@ votersTabHeader.addEventListener('click', async () => {
     }
 })
 
-
-// All Voters list
+// Function to display All registered Voters in the 'All' tab table
 function openAllVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[0];
     // Sort voters list based on status priority
@@ -77,7 +65,6 @@ function openAllVotersTable() {
     voters?.sort((a, b) => {
         return statusPriority[a.profileStatus] - statusPriority[b.profileStatus];
     });
-
     let tableHTML = `<table id='votersTable'>
                         <thead>
                             <tr>
@@ -105,7 +92,7 @@ function openAllVotersTable() {
     container.innerHTML = tableHTML;
 }
 
-// Approved Voters list
+//  Function to display All APPROVED Voters in the 'APPROVED' tab table
 function openApprovedVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[1];
     let tableHTML = `<table id='votersTable'>
@@ -136,7 +123,7 @@ function openApprovedVotersTable() {
     container.innerHTML = tableHTML;
 }
 
-// Under Review Voters list
+//  Function to display All Voters with UNDER REVIEW status in the 'UNDER REVIEW' tab table
 function openUnderReviewVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[2];
     let tableHTML = `<table id='votersTable'>
@@ -167,7 +154,7 @@ function openUnderReviewVotersTable() {
     container.innerHTML = tableHTML;
 }
 
-// Rejected Voters list
+//  Function to display All REJECTED Voters in the 'REJECTED' tab table
 function openRejectedVotersTable() {
     const container = document.getElementsByClassName('votersTabContent')[3];
     let tableHTML = `<table id='votersTable'>
@@ -198,11 +185,11 @@ function openRejectedVotersTable() {
     container.innerHTML = tableHTML;
 };
 
-// OPEN MODAL
+// Function to open a modal when each voter profile is cliecked and populate the voter details in the modal content
 function openVotersModal(index) {
     const voter = voters[index];
     const modalContent = document.getElementById("modal-content-voters");
-    // Format ISO date format
+    // Format ISO date of birth
     function convertISOdateToHtmlFormat(isoDateString) {
         const date = new Date(isoDateString);
         return date.toISOString().split('T')[0];
@@ -213,7 +200,8 @@ function openVotersModal(index) {
     modalContent.innerHTML = `
     <span class="close">&times;</span>
     <div class="topSection">
-        <div class="topSectionSelfie"><h4>Photo</h4><img src="http://localhost:3000/${voter.uploadSelfie}" alt="selfie-image" width="50%" height="250px"></div>
+        <div class="topSectionSelfie"><h4>Photo</h4><img src="http://localhost:3000/${voter.uploadSelfie}" 
+        alt="selfie-image" width="50%" height="250px"></div>
         <div class="topSectionPersonInfo">
             <div>
                 <p>Surname: ${voter.lastname}</p>
@@ -286,29 +274,28 @@ function openVotersModal(index) {
     `;
     const modal = document.getElementsByClassName("modal")[0];                     
     modal.style.display = 'block';
-
     // Close votes modal
     document.getElementsByClassName("close")[0].onclick = function() {
         const modal = document.getElementsByClassName("modal")[0];                     
         modal.style.display = 'none';
     };
-
     // Grab the selectVerificationStatus button; disabled Under Review when clicked
     document.getElementById('selectVerificationStatus').addEventListener('change', function() {
         var updateButton = document.getElementById('updateButton');
         updateButton.disabled = (this.value === 'Under Review');
     });
-
     // handleVerificationSubmit
     const handleVerificationSubmitButton = document.getElementById('updateButton');
     handleVerificationSubmitButton.addEventListener('click', () => {
         const selectedStatus = document.getElementById('selectVerificationStatus').value;
         const userId = voter._id;
         const verifiedBy = globalUserData._id;
-        handleVerificationSubmit(userId, selectedStatus, verifiedBy)
+        // Pass the userId, selectedStatus, verifiedBy as parameter to handleVerificationSubmit()
+        handleVerificationSubmit(userId, selectedStatus, verifiedBy); //See line 299
     })
 };
-// handleVerificationSubmit
+
+// Function to handleVerificationSubmit by send parameters received to the backend
 const handleVerificationSubmit = async (userId, selectedStatus, verifiedBy) => {
     try {
         const response = await fetch('http://localhost:3000/updateVoterStatus', {
@@ -320,13 +307,9 @@ const handleVerificationSubmit = async (userId, selectedStatus, verifiedBy) => {
           credentials: 'include'
         });
         const data = await response.json();
-        // if (!response.ok) throw new Error(data.error || 'Authorization failed');
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
         alert(data.message); 
-        // Reload and open Voters tab
-        location.reload();
-        // window.location.href = window.location.origin + window.location.pathname + '?tab=Voters';
-        // openTab(null, 'Voters');       
+        location.reload(); // Reload and open Voters tab  
     } catch (error) {
         alert('Error: ' + error.message);
     }

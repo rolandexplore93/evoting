@@ -1,6 +1,7 @@
-let electionsList2;
+let electionsList; // Uninitialized global variable to store elections from database
 const eResultsContent = document.getElementById('eResultsContent');
-
+// On loading election results page, call an api to getElectionsWithPartiesAndCandidatesInfo from database
+// and populate them on the sidebar of the page
 document.addEventListener('DOMContentLoaded', async () => {
     const electionTabsContainer = document.getElementById('eTabs');
     const getElectionsWithPartiesAndCandidates = async () => {
@@ -16,32 +17,27 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert(error.message)
         }
     }
-
-    const allElectionsWithPartiesAndCandidates = await getElectionsWithPartiesAndCandidates() // uninitialized variable to hold election information
-    
-    electionsList2 = allElectionsWithPartiesAndCandidates.electionInfo;
+    // Call getElectionsWithPartiesAndCandidates api and save the data inside a variable
+    const allElectionsWithPartiesAndCandidates = await getElectionsWithPartiesAndCandidates() 
+    electionsList = allElectionsWithPartiesAndCandidates.electionInfo; // Obtain election lists information
 
     // Populate all created elections on the sidebar tabs
-    if (electionsList2.length === 0) document.getElementById('main').innerHTML = '<h1>No election available</h1>';
-    electionsList2.forEach((election, index) => {
+    if (electionsList.length === 0) document.getElementById('main').innerHTML = '<h1>No election available</h1>';
+    electionsList.forEach((election, index) => {
         const tab = document.createElement('li');
         tab.textContent = `${election.electionCategory} - ${election.electionName}`;
         tab.setAttribute('data-election', election._id);
         tab.addEventListener('click', (e) => {
-
             // Remove the active class from all tabs
             document.querySelectorAll('#eTabs li').forEach(tab => {
                 tab.classList.remove('active-tab')
             });
-
             // When a tab is clicked, add active class
             e.target.classList.add('active-tab');
-
             // get the data for approved votes for selectedt election
             getSelectedElectionResult(election._id)
         });
         electionTabsContainer.appendChild(tab);
-        
         // Display the result for the first election created
         if (index === 0) {
             tab.click();
@@ -49,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 })
 
+// When an election is selected, make a call to the backend to send list of approved votes
 const getSelectedElectionResult = async (electionIdSelected) => {
     try {
         const response = await fetch('http://localhost:3000/approvedVotes', {
@@ -56,18 +53,19 @@ const getSelectedElectionResult = async (electionIdSelected) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ electionIdSelected }),
         });
-        
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
         const data = await response.json();
+        // Call the showElectionData function and populate the result of selected election
         showElectionData(approvedVotes = data.votes, electionIdSelected)
     } catch (error) {
-        // console.error('Error saving user vote');
+        // if there is no result found for an election
         eResultsContent.innerHTML = '<h1>No result available yet for this election</h1>';
     }
 }
 
+// This function displays the result of selected eletion
 function showElectionData(approvedVotes, electionIdSelected) {
-    const election = electionsList2.find( e => e._id === electionIdSelected)
+    const election = electionsList.find(e => e._id === electionIdSelected)
     if (!election) return eResultsContent.innerHTML = '<h1>No result available yet for this election</h1>';
     let totalVotesCast = 0;
     // Setup the election result table
@@ -80,11 +78,13 @@ function showElectionData(approvedVotes, electionIdSelected) {
             <th>Candidate Image</th>
             <th>Vote Counts</th>
         </tr>`;
+    // Iterate over participatingParties array and populate result receive per party and their candiddate
     election.participatingParties.forEach(party => {
         const voteReceivedByParty = approvedVotes.filter(vote => vote.partyId === party._id);
         const candidate = election.participatingCandidates.find(candidate => candidate.partyId === party._id);
         const candidateName = candidate ? candidate.candidateName : 'No Name';
-        const candidateImage = candidate ? `<img src="/backend/${candidate.candidateImage}" alt="${candidateName}" width="30px" height="30px">` : `<img src="/images/placeholder-image.jpeg" alt="${candidateName}" width="30px" height="30px">`;
+        const candidateImage = candidate ? `<img src="/backend/${candidate.candidateImage}" alt="${candidateName}" width="30px" 
+        height="30px">` : `<img src="/images/placeholder-image.jpeg" alt="${candidateName}" width="30px" height="30px">`;
         // Add row to the html table created above
         tableHTML += `
         <tr>
@@ -95,9 +95,8 @@ function showElectionData(approvedVotes, electionIdSelected) {
             <td>${voteReceivedByParty.length}</td>
         </tr>
         `;
-        totalVotesCast += voteReceivedByParty.length;
-    })
-
+        totalVotesCast += voteReceivedByParty.length; // Total vote cast for this election
+    });
     tableHTML += `</table><p>Total Votes Cast: ${totalVotesCast}</p>`; // close the </table>
-    eResultsContent.innerHTML = tableHTML;
+    eResultsContent.innerHTML = tableHTML; // Display the html from the DOM
 }

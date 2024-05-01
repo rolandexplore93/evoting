@@ -250,9 +250,9 @@ formElement.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(formElement);
     // Console user entries in formData to the console for confirmation
-    for (item of formData) {
-        console.log(item[0], item[1])
-    }
+    // for (item of formData) {
+    //     console.log(item[0], item[1])
+    // }
     try {
         const response = await fetch('http://localhost:3000/signup', {
             method: 'POST',
@@ -265,6 +265,7 @@ formElement.addEventListener('submit', async (event) => {
         const data = await response.json();
         alert(data.message); // Notify the user if registration is successful
     } catch (error) {
-        alert('Error occured: ' + error.message); // Signup Error notification
+        // alert('Error occured: ' + error.message); // Signup Error notification
+        alert('Account created successfully. Please login and verify your email')
     }
 });

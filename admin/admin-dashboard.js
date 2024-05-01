@@ -1,14 +1,13 @@
 let globalUserData; // uninitialized variable to hold admin data after login
-
 // Tab functionality on admin page
 function openTab(e, tabTitle) {
     var index, tabContent, tabLinks;
-
+    // Iterate over each tab content and set display to none
     tabContent = document.getElementsByClassName('tabcontent');
     for (index = 0; index < tabContent.length; index++) {
         tabContent[index].style.display = 'none';
     }
-
+    // Iterate over each tab link and remove 'active' class from it
     tabLinks = document.getElementsByClassName('tablinks');
     for (index = 0; index < tabLinks.length; index++) {
         tabLinks[index].className = tabLinks[index].className.replace(" active", "");
@@ -17,42 +16,39 @@ function openTab(e, tabTitle) {
     document.getElementById(tabTitle).style.display = 'block';
     if (e != null) e.currentTarget.className += " active";
 }
+document.getElementById('defaultPage').click(); // Set Dashboard as default tab view
 
-document.getElementById('defaultPage').click();
-
-
-// Authorize admin to their page and fetch admin data from the db
+// When Admin is authorize to the portal, fetch admin data from the database
 document.addEventListener('DOMContentLoaded', async () => {
-    getUserData();
+    getUserData(); // See line 27
 });
 
-// Get user data from the database
+// Function to get admin user data from the database
 const getUserData = async () => {
     try {
         const response = await fetch('http://localhost:3000/adminDashboard', {
             method: 'GET',
             credentials: 'include'
         });
-
         const data =  await response.json();
         if (!response.ok)  throw new Error(data.error || 'Authorization failed');
-
         if (data.error === "No authorization token was found") {
-            document.getElementById('admin-dashboard-container').style.display = 'none'; // Don't show page if user is not authorized
+            // Don't show page if user is not authorized
+            document.getElementById('admin-dashboard-container').style.display = 'none'; 
             alert('Unauthorized! Please login to access this page')
             window.location.href = '/admin/admin.html';
             return
         }
-
         if (data.error === "jwt expired") {
-            document.getElementById('admin-dashboard-container').style.display = 'none'; // Don't show page if user session has expired
+            // Don't show page if user session has expired
+            document.getElementById('admin-dashboard-container').style.display = 'none';
             alert('Session expired! Please login again')
             window.location.href = '/admin/admin.html';
             return
         }
         const userData = data.userInfo;
         globalUserData = userData; // Save admin data inside globalUserData
-        populateUserData(userData)
+        populateUserData(userData) // See line 60
     } catch (error) {
         console.error('Error:', error);
         alert('Not Authorized to access this page! Please login')
@@ -60,15 +56,14 @@ const getUserData = async () => {
     }
 }
 
+// Function to display admin names on the dashboard tab
 function populateUserData(userData) {
     const dashboardWelcome = document.getElementById('dashboard-welcome');
     dashboardWelcome.textContent = `Welcome ${userData.firstname} ${userData.lastname}`
-
 }
 
 
-// ADD PARTY LOGIC
-// openAddPartyForm
+// ADD PARTY LOGIC: openAddPartyForm
 const openAddPartyForm = document.getElementById('openAddPartyForm');
 openAddPartyForm.addEventListener('click', () => {
     console.log('openAddPartyForm')
@@ -98,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleButtonState();
 });
 
-// AddPartyForm submission call to the database
+// FUNCTION to handle AddPartyForm submission call to the database
 const addPartyForm = document.getElementById('addPartyForm');
 addPartyForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -131,14 +126,12 @@ addPartyForm.addEventListener('submit', async (event) => {
     }
 })
 
-
 // CREATE ELECTION LOGIC
 // Display create election form
 const openCreateElectionForm = document.getElementById('createElectionTag');
 openCreateElectionForm.addEventListener('click', () => {
     document.getElementById('createElectionForm').style.display = 'block';
 });
-
 
 // Create Election: Display create election form and only enable add election button when all the form fields are filled 
 document.addEventListener('DOMContentLoaded', () => {
@@ -170,12 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCategoryOptions(); // Call updateCategoryOptions to first populate election categories and types
     const updateCECategories = document.getElementById('electionCategoryCE');
-    updateCECategories.addEventListener('change', updateCategoryOptions); // Attach event listener to handle changes when user selects an option
-
-    // getAllElectionsAndParties() //getAllElectionsAndParties
+    // Attach event listener to handle changes when user selects an option
+    updateCECategories.addEventListener('change', updateCategoryOptions); 
 });
 
-// CE - CreateElection
+// CE - CreateElection: Function to update list of election type to match election category selected
 function updateCategoryOptions() {
     const category = document.getElementsByClassName('electionCategory')[0].value;
     const selectElectionType = document.getElementsByClassName('electionType')[0];
@@ -188,7 +180,7 @@ function updateCategoryOptions() {
     };
 }
 
-// CEPartyForm submission call to the database
+// CEPartyForm submission call to the database to save election
 const createElectionForm = document.getElementById('createElectionForm');
 createElectionForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -210,8 +202,6 @@ createElectionForm.addEventListener('submit', async (event) => {
         const data = await response.json();
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
             // Display Election successful card
-            console.log(data)
-            console.log(data.message)
             document.getElementById('createElectionForm').style.display = 'none';
             document.getElementById('electionCreatedSuccess').style.display = 'block';
             document.getElementById('createElectionTag').style.display = 'none';
@@ -253,7 +243,6 @@ const getAllElectionsAndParties = async () => {
             method: 'GET',
             credentials: 'include'
         });
-
         const data = await response.json();
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
         return data
@@ -262,7 +251,8 @@ const getAllElectionsAndParties = async () => {
         alert(error.message)
     }
 }
-// Show ShowAddPartyToElectionForm
+
+// Function to ShowAddPartyToElectionForm
 async function ShowAddPartyToElectionForm() {
     const noElectionsMessage = document.getElementById('noElectionsMessage'); // Get noElectionsMessage html
     const addPartyToElectionForm = document.getElementById('addPartyToElectionForm'); // Get addPartyToElectionForm html
@@ -289,29 +279,25 @@ async function ShowAddPartyToElectionForm() {
         selectParties.add(option);
         });
     }
-
-
     // Listener for selections
     electionCategoryAP2E.addEventListener('change', toggleCreateButton);
     selectParties.addEventListener('change', toggleCreateButton);
-
     // Function to enable or disable the create button
     function toggleCreateButton() {
         const selectedElection = electionCategoryAP2E.value;
-        // console.log(selectedElection)
         const selectedParties = Array.from(selectParties.selectedOptions).map(option => option.value);
-        // console.log(selectedParties)
         addPartiesToElectionButton.disabled = !(selectedElection && selectedParties.length > 0);
     }
 }
 
-// Display party added to election
+// Function to Display party added to election
 async function addPartiesToElection() {
-
-    const electionId = document.getElementById('electionCategoryAP2E').value; // Get the value (id) of electionCategoryAP2E dropdown html
-    const selectParties = Array.from(document.getElementById('selectParties').selectedOptions); // Get the array list of each party selected from selectParties dropdown html
-    const selectedPartiesIds = selectParties.map(party => party.value) // Map over each selected parties array to get their value (id)
-
+    // Get the value (id) of electionCategoryAP2E dropdown html
+    const electionId = document.getElementById('electionCategoryAP2E').value; 
+    // Get the array list of each party selected from selectParties dropdown html
+    const selectParties = Array.from(document.getElementById('selectParties').selectedOptions); 
+    // Map over each selected parties array to get their value (id)
+    const selectedPartiesIds = selectParties.map(party => party.value)
     try {
         const response = await fetch('http://localhost:3000/addPartiesToElection', {
             method: 'POST',
@@ -338,34 +324,24 @@ function goToShowAddPartyToElectionForm() {
     // Reload and open Create Election tab
     window.location.href = window.location.origin + window.location.pathname + '?tab=Create-Election';
     openTab(null, 'Create-Election'); // Since no event is target, null is passed in as the first argument
-
-    // document.getElementById('electionCategoryAP2E').selectedIndex = 0;
-    // document.getElementById('electionType').selectedIndex = 0;
-    // document.getElementById('selectParties').selectedIndex = 0;
-    // document.getElementById('addPartyToElectionForm').style.display = 'none';
-    // document.getElementById('addPartyToElectionSuccess').style.display = 'none';
-    // document.getElementById('addPartyToElectionTag').style.display = 'block';
-
 }
 
 
 // ADD CANDIDATE TO ELECTION AND PARTY LOGIC
-// Hard coded data for elections and parties
+// Hard coded data for election categories and type of election in each category
 const electionCategories = {
     "General Elections 2024": ["President", "Senate", "MHA"],
     "States Elections 2024": ["Governor", "HOR"],
     "Lga Elections 2024": ["Chairman", "Deputy"]
 };
 
-// Retrieve created elections with participating parties
+// Retrieve created elections with participating parties from the database
 const getElectionsAndParticipatingParties = async () => {
-    console.log('getElectionsAndParticipatingParties')
     try {
         const response = await fetch('http://localhost:3000/getElectionsAndParticipatingParties', {
             method: 'GET',
             credentials: 'include'
         });
-
         const data = await response.json();
         if (!response.ok) throw new Error(`${data.message}, statusCode: ${response.status}`);
         return data
@@ -374,15 +350,14 @@ const getElectionsAndParticipatingParties = async () => {
         alert(error.message)
     }
 }
+
 // Display add candidate page logic
 const showAddCandidateForm = async () => {
     const addCandidateFormTag = document.getElementById('addCandidateFormTag')
     const addCandidateFormTitle = document.getElementById('addCandidateFormTitle')
-
     const addCandidateForm = document.getElementById('addCandidateForm'); // Get addCandidateForm html
     const noElectionsInfoMessage = document.getElementById('noElectionsInfoMessage'); // Get noElectionsInfoMessage html
-
-    const data = await getElectionsAndParticipatingParties();
+    const data = await getElectionsAndParticipatingParties(); // Retrieve created elections with participating parties
     if (data.electionInfo?.length === 0) { // if no election, display no election available
         noElectionsInfoMessage.style.display = 'block';
         addCandidateForm.style.display = 'none';
@@ -391,9 +366,8 @@ const showAddCandidateForm = async () => {
         addCandidateFormTitle.style.display = 'block';
         addCandidateFormTag.style.display = 'none'; // disabled add candidate tag
         addCandidateForm.style.display = 'block';
-        populateElectionCategories(data.electionInfo)
+        populateElectionCategories(data.electionInfo) // Refer to line 391
     }
-
 
     // Function to check if Add Candidate form fields are filled
     const addCandidateButton = document.getElementById('addCandidateButton');
@@ -427,7 +401,8 @@ function populateElectionCategories(electionInfo) {
     // Listen for changes to populate participating parties
     electionCategorySelect.addEventListener('change', (event) => {
       const selectedElection = electionInfo.find(election => election._id === event.target.value);
-      populateParticipatingParties(selectedElection.participatingParties);
+      // Call the Function to populate parties based on selected type
+      populateParticipatingParties(selectedElection.participatingParties); 
     });
 };
 
@@ -449,7 +424,7 @@ function populateParticipatingParties(parties) {
     }
 }
 
-// addCandidate form submission button to make an api call
+// Function to process addCandidate form submission to API
 async function addCandidate() {
     // HANDLE FORM DATA
     const electionInput = document.getElementById('electionCategoryAC2EP').value;
@@ -483,14 +458,14 @@ async function addCandidate() {
         alert('Error occured: ' + error.message);
     }
 }
-// Reset addCandidate after submission and reload the tab
+// Function to Reset addCandidate form after submission and reload the tab
 function resetAddCandidate() {
     document.getElementById('addCandidateForm').reset();
     window.location.href = window.location.origin + window.location.pathname + '?tab=Add-Candidates';
     openTab(null, 'Add-Candidates'); // Since no event is target, null is passed in as the first argument
 };
 
-// Admin Logout
+// Admin Logout functionality
 const logout = document.getElementById('logout');
 logout.addEventListener('click', async () => {
     try {

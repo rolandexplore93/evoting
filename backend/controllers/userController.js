@@ -10,21 +10,20 @@ const nodemailer = require('nodemailer'); // Import nodemailer to send email to 
 exports.validateNIN = async (req, res, next) => {
     const nin = req.body.ninDigit; // Receive NIN submitted by the user from frontend
     try {
-        // Check if NIN exists in the Users collection database
+        // Check if NIN exists in the Users collection database and notify user
         const existingUserWithNIN = await Users.findOne({ ninNumber: nin });
         if (existingUserWithNIN) {
             return res.status(201).json({ message: 'NIN already exists. Please enter correct NIN number.', success: false });
         }
-        let uniqueUserInfo = false;
-        let userData;
+        let uniqueUserInfo = false; // Create uniqueUserInfo variable and Initialise it to false
+        let userData; // Create uninitialise userData variable
         while (!uniqueUserInfo) {
-            const naijaPersonInfo = naijaFaker.getPersonList({ amt: 1 });
+            const naijaPersonInfo = naijaFaker.getPersonList({ amt: 1 }); // Get one random person details from naijaFaker API
             const username = `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}`;
-            // const username = `olatunde.peaces`; // for testing before live
-            const email = `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}@yopmail.com`;
+            const email = `${naijaPersonInfo[0].fName}.${naijaPersonInfo[0].lName}@yopmail.com`; // Create custom email address
             const phoneNumber = `${naijaPersonInfo[0].phoneNumber}`;
 
-            // Check if username, email, or phoneNumber exists
+            // Check if username, email, or phoneNumber exists, then notify user
             const existingUser = await Users.findOne({ $or: [{ username }, { email }, { phoneNumber }] });
             if (!existingUser) {
                 uniqueUserInfo = true;
@@ -40,27 +39,28 @@ exports.validateNIN = async (req, res, next) => {
                     email,
                     phoneNumber,
                     state: userStateOfOrigin,
-                    lga: assignLGAtoUser(userStateOfOrigin),
+                    lga: assignLGAtoUser(userStateOfOrigin), // Generate random local government area for the user
                     nin
                 };   
             }
         }
+        // NIN is unique, then return user information to the frontend to populate the signup form
         return res.json({userData, message: 'NIN Verified! User information retrieved', success: true})
     } catch (error) {
         next(error)
     }
 }
 
-// Use user state of origin from naijaFaker API to assign random LGA to user
+// Use user state of origin from naijaFaker API to assign random LGA to the user
 assignLGAtoUser = (userState) => {
     try {
         // Format state input such that the first letter of each word is capitalize 
         const formatStateString = userState.toLowerCase()
         .split(' ') // Split state string into array
         .map(eachWord => eachWord.charAt(0).toUpperCase() + eachWord.substring(1)) // Capitalize the first letter of each word
-        .join(' ').trim()
-        const lgas = stateLGA[formatStateString];
-        if (!lgas) {
+        .join(' ').trim() // Remove empty whitespace
+        const lgas = stateLGA[formatStateString]; // Save user state into lgas variable
+        if (!lgas) { //
             console.log(`LGA not found for ${formatStateString}`);
             return null
         }
@@ -72,6 +72,7 @@ assignLGAtoUser = (userState) => {
     }
 }
 
+// SIGNUP LOGIC: Process user registration and save it to the database
 exports.signup = async (req, res) => {
     try {
         // Check for existing user with the same NIN, email, or phone number
@@ -114,42 +115,46 @@ exports.signup = async (req, res) => {
             uploadSelfie: req.files["uploadSelfie"] ? req.files["uploadSelfie"][0].path : ''
         });
         // Save the new user to the database
-        // await newUser.save();
-        // console.log({message: "User successfully registered", success: true })
-        return res.status(200).json({ success: true, message: "User successfully registered", newUser });
+        await newUser.save();
+        console.log({message: "User successfully registered", success: true })
+        return res.status(200).json({ success: true, message: "Account created successfully. Please login and verify your email" });
     } catch (error) {
         // console.error(error);
         return res.status(500).json({ message: "An error occurred during registration", success: false });
     }
 }
 
+// Calcuate user date of birth and check if it is less than 18 or greater than or equal to 18 
 function calculateAge(dob) {
     // if birthDate is a string, convert it to a Date object
     if (typeof dob === 'string') {
-        dob = new Date(dob);
+        dob = new Date(dob); // Format date of birth
     }
-    // Ensure dob is a Date object
+    // Ensure dob is a Date object; throw an error
     if (!(dob instanceof Date) || isNaN(dob)) {
         throw new Error('Invalid date');
     }
     const currentDate = new Date();
-    let age = currentDate.getFullYear() - dob.getFullYear();
+    let age = currentDate.getFullYear() - dob.getFullYear(); 
     const differentInMonth = currentDate.getMonth() - dob.getMonth();
 
     // If dob is yet to come in the current year, adjust the age
     if (differentInMonth < 0 || (differentInMonth === 0 && currentDate.getDate() < dob.getDate())) {
         age--;
     }
-    return age;
+    return age; // Return exact user age
 }
 
+// LOGIN Functionality: To Authenticate and Authorize user and generate access token
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        const user = await Users.findOne({ email });
+        const { email, password } = req.body; // Receive user login entries
+        const user = await Users.findOne({ email }); // Check if user email exist in the database
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
-        const hash = user.password;
-        const isPasswordMatch = await bcrypt.compare(password, hash);
+        const userPasswordFromDatabase = user.password; // Get user password from database
+        // Compare password submitted by user with the password in the database using bcrpty.compare()
+        const isPasswordMatch = await bcrypt.compare(password, userPasswordFromDatabase);
+        // If Passowrd does not match
         if (!isPasswordMatch) return res.status(409).json({ success: false, message: "Invalid credentials" });
         
         // Relative path for user redirection
@@ -164,42 +169,47 @@ exports.login = async (req, res) => {
             // Email is valid, then generate a login token with jwt and save it to the cookie
             const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '1h'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
-            return res.json({ success: true, path: userDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to User dashboard" });
+            return res.json({ success: true, path: userDashboardUrl, role: user.role, token, 
+                message: "Login successful. Redirecting to User dashboard" });
         } else if (user.role === 4) {
             const token = await jwt.sign( userInfoNoPassword, process.env.SECRETJWT, { expiresIn: '5m'});
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
-            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard"  });
+            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, 
+                message: "Login successful. Redirecting to Admin dashboard"  });
         } else {
             return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
         }
     } catch (error) {
         return res.status(500).json({ success: false, message: "An error occurred during login" });
-        
     }
 }
 
+// If user is authorize to the dashboard, get userId from the auth token and fetch user information from database
 exports.goToUserDashboard = async (req, res) => {
-    if (!req.auth) {
-        return res.status(401).json({ message: 'No authorization token found' });
-    }
-    // console.log(req.auth)
-    const userId = req.auth._id;
-    const user = await Users.findById(userId);
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }) };
+    const userId = req.auth._id; // Get user id from auth token
+    const user = await Users.findById(userId); // Get user details from database and send the frontend
     if (!user) return res.status(404).json({ message: 'User not found.', success: false });
     // Convert userdata to plain object and delete password field before sending the data to the client
     const userInfoNoPassword = user.toObject();
     delete userInfoNoPassword.password;
     delete userInfoNoPassword.pin;
-
     return res.json({ userInfo: userInfoNoPassword, message: 'Accessing user dashboard', success: true })
+};
+
+// User logout functionality
+exports.logout = (req, res) => {
+    res.clearCookie('token'); // Clear authentication cookie
+    // res.redirect('/user/user.html')
+    return res.json({ message: "Logged out successfully", success: true })
 }
 
-
-// Generate Random 6 digits for OTP
+// Generate Random 6 digits for OTP for verification purpose
 function generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
-// OTP Expires in 15 mins
+
+// Configure OTP to expires in 15 mins
 function otpHasExpired(emailOtpCreatedAt) {
     const expiryTime = 15 * 60 * 1000;
     return Date.now() - new Date(emailOtpCreatedAt).getTime() > expiryTime;
@@ -213,7 +223,8 @@ const transporter = nodemailer.createTransport({
       pass: process.env.GOOGLE_PASSWORD,
     },
   });
-  
+
+// Configure nodemailer options for email dissemination
 const emailSender = async (email, otp, firstname, lastname) => {
     const mailOptions = {
       from: 'NEVS Electoral Commission',
@@ -231,34 +242,35 @@ const emailSender = async (email, otp, firstname, lastname) => {
       console.log(error);
     }
 }
-// emailSender('roland.oguns@yopmail.com', '324562', 'NEVS', 'ELECTION')
+// emailSender('roland.oguns@yopmail.com', '324562', 'NEVS', 'ELECTION') // Testing purpose
 
+// Function to send OTP to user email address
 exports.emailOTP = async (req, res) => {
-    const  {_id, firstname, lastname, email } = req.body;
-    const user = await Users.findById(_id);
+    const  {_id, firstname, lastname, email } = req.body; // Get user entries from frontend
+    const user = await Users.findById(_id); // Find the user
     if (!user) return res.status(404).json({ message: 'User not found', success: false });
-
     // if user has otp and it hasn't expired, remind user, otherwise, send new otp to user
     if (user.emailOTP && user.emailOtpCreatedAt && !otpHasExpired(user.emailOtpCreatedAt)) {
         return res.json({ message: 'You still have active OTP. Please check your email for the last OTP received.', success: false });
     } else {
         const otp = generateOTP(); // Generate otp code
-        await Users.updateOne({ _id }, { emailOTP: otp, emailOtpCreatedAt: new Date() }); // Save user otp and time  in the database
+        await Users.updateOne({ _id }, { emailOTP: otp, emailOtpCreatedAt: new Date() }); // Save user otp and time in the database
         await emailSender(email, otp, firstname, lastname); // Send email with OTP to user's email address
         return res.json({ message: 'Enter the verification code sent to your email.', success: true });
     }
 }
 
+// Function to verify OTP sent to user email address
 exports.verifyEmailOTP = async (req, res) => {
-    const { _id, otp, email } = req.body;
-    const user = await Users.findById(_id);
+    const { _id, otp, email } = req.body; // Get user entries from the frontend
+    const user = await Users.findById(_id); // Find the user
     if (!user) return res.status(404).json({ message: 'User not found.', success: false });
-
+    //  If OTP has expired, notify the user to request another one
     if (otpHasExpired(user.emailOtpCreatedAt)) {
         await Users.updateOne({ _id }, { emailOTP: '', emailOtpCreatedAt: null });
         return res.status(410).json({ message: 'OTP has expired. Please request a new one.', success: false, nextStep: 'expired' });
     }
-
+    // If OTP and email submitted by user are the same as the OTP and email in the user database, verify the user email addresss
     if (user.emailOTP === otp && user.email === email) {
         await Users.updateOne({ _id }, { isEmailVerified: true, emailOTP: '', emailOtpCreatedAt: null });
         return res.json({ success: true, message: 'Email verified successfully', nextStep: 'correct' });
@@ -267,11 +279,7 @@ exports.verifyEmailOTP = async (req, res) => {
     }
 }
 
-exports.logout = (req, res) => {
-    res.clearCookie('token'); // Clear authentication cookie
-    // res.redirect('/user/user.html')
-    return res.json({ message: "Logged out successfully", success: true })
-}
+
 
 
 

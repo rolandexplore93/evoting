@@ -1,17 +1,17 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt"); // Import bcrypt for credential hashing and encryption
+const jwt = require("jsonwebtoken"); // Import jsonwebtoken for access token
 require("dotenv").config(); // Enable access to environment variables (This file holds sensitive information that is not accessible to the public)
-const Users = require('../models/users');
-const Party = require('../models/party');
-const Election = require('../models/elections');
-const Candidates = require("../models/candidates");
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const Vote = require("../models/vote");
+const Users = require('../models/users'); // Import Users Model
+const Party = require('../models/party'); // Import Party Model
+const Election = require('../models/elections'); // Import Election Model
+const Candidates = require("../models/candidates"); // Import Candidates Model
+const multer = require('multer'); // Import multer library to handle images
+const path = require('path'); // Node.js utility to handle and manipulate file system paths
+const fs = require('fs'); // Node.js utility for file system
+const Vote = require("../models/vote"); // Import Vote Model
 
-// This function for the manual creation of admin account from the backend
-// Fill in admin details as arguments in line 47 and uncomment the method() when you are ready to create the admin account
+// This function for the manual creation of admin account from the backend server code
+// Fill in admin details as arguments in line 45 and uncomment the method() when you are ready to create the admin account
 adminRegistration = async (firstname, lastname, username, password, pin, role, email) => {
     try {
         // Search if admin account with this email or username already exist
@@ -52,7 +52,6 @@ exports.adminLogin = async (req, res) => {
         if (!user) return res.status(200).json({ success: false, message: "User not found" });
         const getEncryptedPassword = user.password;
         const getEncryptedPin = user.pin;
-
         // Use bycrpt.compare to check if the password submitted is the same as password in the database
         const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword);
         const isPinMatch = await bcrypt.compare(pin, getEncryptedPin);
@@ -119,8 +118,6 @@ exports.getAllUsersWithRole5 = async (req, res) => {
     };
 };
 
-
-
 // MULTER configuration for file storage
 // Helper function to sanitize file name
 function sanitizeFileName(filename) {
@@ -129,7 +126,9 @@ function sanitizeFileName(filename) {
 }
 
 let uploadedFiles = []; // Empty variable to store each file path for potential deletion when data is not stored in the database
-const storage = multer.diskStorage({ // Configure custom file name
+
+// Configure custom file name for party logo upload
+const storage = multer.diskStorage({ 
     destination: function (req, file, cb) {
         cb(null, 'uploads/partyLogo')
     },
@@ -142,7 +141,8 @@ const storage = multer.diskStorage({ // Configure custom file name
     }
 });
 
-const candidatePhotoStorage = multer.diskStorage({ // Configure custom file name
+// Configure custom file name for candidate photo upload
+const candidatePhotoStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/candidateImage')
     },
@@ -154,18 +154,17 @@ const candidatePhotoStorage = multer.diskStorage({ // Configure custom file name
         cb(null, filename)
     }
 });
-
+// Initialize partyLogo and candidateImage multer functionality
 const upload = multer({ storage: storage }).fields([{ name: 'partyLogo', maxCount: 1 }, { name: 'partyLogo', maxCount: 1 }]);
 const candidateUpload = multer({ storage: candidatePhotoStorage }).fields([{ name: 'candidateImage', maxCount: 1 }, { name: 'candidateImage', maxCount: 1 }]);
 
-// Add Party to the database logic
+// Function to Add Party to the database
 exports.addParty = async (req, res, next) => {
-    // Multer library to add or remove file depending on if party is added successfully to db
+    // Multer library to add or remove file depending on whether party is added successfully to database
     upload(req, res, async (err) => {
         if (err) {
             return res.status(500).json({ message: 'File upload failed', success: false });
         }
-        // console.log(uploadedFiles)
         // Validate form fields
         if (!req.body.partyName || !req.body.partyAcronym || !req.files) {
             uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
@@ -208,11 +207,10 @@ exports.addParty = async (req, res, next) => {
     })
 }
 
-
-// CREATE ELECTION API
+// Function to save new ELECTION information to the database
 exports.createElection = async (req, res) => {
+    // Get submission entries from the admin
     const { electionName, electionCategory, openDate, closingDate, createdByUserId } = req.body;
-
     // Check that election form fields are not empty
     if (!electionName || !electionCategory || !openDate || !closingDate) {
         return res.status(400).json({
@@ -227,21 +225,19 @@ exports.createElection = async (req, res) => {
             message: "Closing date must be after the opening date."
         });
     }
-
     try {
         // Check for an existing election with the same election name and category
         const existingElection = await Election.findOne({
             electionName,
             electionCategory
         });
-
+        // Notify admin if election already exist
         if (existingElection) {
             return res.status(409).json({
                 success: false,
                 message: "An election with the same election category and type already exists."
             });
         }
-
         // Create a new election if there's no conflict
         const newElection = new Election({
             electionName,
@@ -250,14 +246,11 @@ exports.createElection = async (req, res) => {
             closingDate,
             createdBy: createdByUserId
         });
-
         await newElection.save(); // Save election to the database
-
         return res.status(201).json({
             success: true,
             message: "Election created successfully."
         });
-
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -269,21 +262,20 @@ exports.createElection = async (req, res) => {
 // Get all elections and parties created
 exports.getAllElectionsAndParties = async (req, res) => {
     try {
-      const elections = await Election.find();
-      const parties = await Party.find();
+      const elections = await Election.find(); // Get all elections from database
+      const parties = await Party.find(); // Get all parties from database
       res.status(200).json({ elections, parties, success: true });
     } catch (error) {
       res.status(500).json({ message: 'Error fetching data', error: error.message });
     }
 };
 
-// addPartiesToElection
+// Function to add Parties To Election
 exports.addPartiesToElection = async (req, res) => {
-    const { electionId, selectedPartiesIds } = req.body;
-    if (!electionId || !selectedPartiesIds) {
+    const { electionId, selectedPartiesIds } = req.body; // Get submission entries from admin
+    if (!electionId || !selectedPartiesIds) { // Validate admin submission
         return res.status(400).json({ success: false, message: 'Election ID and Party IDs are required.' });
     }
-
     try {
         for (const partyId of selectedPartiesIds) { // Loop through each party ID
             const party = await Party.findById(partyId); // Find each party by ID
@@ -300,7 +292,7 @@ exports.addPartiesToElection = async (req, res) => {
     }
 };
 
-// getElectionsAndParticipatingParties
+// Function to get Elections And Participating Parties
 exports.getElectionsAndParticipatingParties = async (req, res) => {
     try {
         const electionInfo = await Election.aggregate([
@@ -325,7 +317,7 @@ exports.getElectionsAndParticipatingParties = async (req, res) => {
               }
             },
             {
-              $project: {
+              $project: { // Data to send to the frontend
                 _id: 1, // 1 in Numeric format means to include this field in the result
                 electionName: 1,
                 electionCategory: 1,
@@ -348,7 +340,7 @@ exports.getElectionsAndParticipatingParties = async (req, res) => {
     }
 }
 
-// addCandidateToElectionAndParty
+// Function to add Candidate To Election And Party
 exports.addCandidateToElectionAndParty = async (req, res) => {
     // Multer library to add or remove file depending on if candidate is added successfully to db
     candidateUpload(req, res, async (err) => {
@@ -356,7 +348,7 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
             return res.status(500).json({ message: 'File upload failed', success: false });
         }
         // Validate form fields
-        if (!req.body.electionId || !req.body.partyId || !req.body.candidateName  || !req.files) { // || !req.body.uniqueTag
+        if (!req.body.electionId || !req.body.partyId || !req.body.candidateName  || !req.files) {
             uploadedFiles.forEach(filePath => { // Do not save file path inside the uploads/partyLogo directory
                 fs.unlink(filePath, unlinkErr => {
                     if (unlinkErr) {
@@ -387,20 +379,13 @@ exports.addCandidateToElectionAndParty = async (req, res) => {
                     }
                 });
             });
-            uploadedFiles = [];  // Clear uploadedFiles array after handling error
-            // let errorMessage;
-            // if (error.code == 11000) {
-            //     errorMessage = "Candidate Tag already exist!"
-            //     return res.status(409).json({ message: errorMessage, success: false });
-            // } else {
-                return res.status(500).json({ message: 'Error saving candidate! Please try again', success: false });
-            // }
+            uploadedFiles = [];  // Clear uploadedFiles array after handling error    
+            return res.status(500).json({ message: 'Error saving candidate! Please try again', success: false });
         }
     })
 }
 
-// VOTER APPROVAL
-// Generate voting ID for user
+// VOTER APPROVAL: Generate random voting ID for Approved user
 function generateVotingIDforUser(length) {
     let result = '';
     const characters = '01234567890123456789';
@@ -411,11 +396,12 @@ function generateVotingIDforUser(length) {
     return result;
 }
 
+// Function to approve or rejected each voter profile when admin decide on it
 exports.voterApproval = async (req, res) => {
     try {
+        // Get the admin submission input from the frontend
         const { userId, selectedStatus, verifiedBy } = req.body;
         const user = await Users.findById(userId);
-    
         // Update user collection based status (approval or rejection)
         if (selectedStatus === 'Approved') {
             // check if user merit verification requirements
@@ -433,7 +419,7 @@ exports.voterApproval = async (req, res) => {
             user.isProfileVerified = true;
             user.verifiedBy = verifiedBy;
             user.verificationDate = new Date();
-            user.votingID = generateVotingIDforUser(11);
+            user.votingID = generateVotingIDforUser(11); // Generate VOTING ID for the user
         } else if (selectedStatus === 'Rejected') {
           user.isIdVerified = false;
           user.profileStatus = 'Rejected';
@@ -442,7 +428,7 @@ exports.voterApproval = async (req, res) => {
           user.verificationDate = new Date();
           user.votingID = '';
         }
-        await user.save();
+        await user.save(); // Save to user collection
         res.json({ message: `Status updated to ${selectedStatus}` });
     } catch (error) {
         console.error(error);
@@ -451,7 +437,7 @@ exports.voterApproval = async (req, res) => {
 };
 
 
-// getElectionsWithPartiesAndCandidates
+// Function to getElectionsWithPartiesAndCandidates
 exports.getElectionsWithPartiesAndCandidates = async (req, res) => {
     try {
         const electionInfo = await Election.aggregate([
@@ -484,7 +470,7 @@ exports.getElectionsWithPartiesAndCandidates = async (req, res) => {
                 }
               },
             {
-              $project: {
+              $project: { // data to send to the frontend
                 _id: 1, // 1 in Numeric format means to include this field in the result
                 electionName: 1,
                 electionCategory: 1,
@@ -514,34 +500,28 @@ exports.getElectionsWithPartiesAndCandidates = async (req, res) => {
     }
 }
 
-// VOTE SUBMISSION
+// Function to save each VOTE cast to the database
 exports.voteSubmission = async (req, res) => {
     try {
-
-        const { userId, electionId } = req.body;
-
+        const { userId, electionId } = req.body; // Get userId who voted and electionId the user voted in
         // If user has already voted in this election, do not change the old vote
         const user = await Users.findById(userId);
         if (user.votedInElection.includes(electionId)) {
             return res.status(400).json({ message: 'You have already voted for this election.', status: false });
         }  
-
         // Find the highest voting serial number and add 1 to it to create the next serial number for vote
         const lastVote = await Vote.find().sort({ votingSerialId: -1 }).limit(1);
         const nextSerialNo = lastVote.length > 0 ? lastVote[0].votingSerialId + 1 : 1;
-
+        // Model to create the new vote to save to the database
         const newVote = new Vote({
             ...req.body,
             votingSerialId: nextSerialNo
         });
-
-        
+        // Save vote to the database
         await newVote.save(); // Save vote to the database
-
         // After saving newvote, include the electionId inside votedInElection field in user collection
         user.votedInElection.push(electionId);
         await user.save();
-
         return res.status(200).json({ success: true, message: 'Vote casted successfully.' });
     } catch (error) {
         console.error('Error:', error);
@@ -549,17 +529,16 @@ exports.voteSubmission = async (req, res) => {
     }
 }
 
-// VOTES FETCHING
+// Function to get all VOTES from the database
 exports.getAllVotes = async (req, res) => {
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+    // Give access to only admin to see list of all votes
     if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
     try {
-        // const votes = await Vote.find();
-        // if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
         const votes = await Vote.aggregate([
             {
                 // $lookup aggregation pipeline is used to join collections together
-                $lookup: {
+                $lookup: { // Join Election collection to obtain the election details
                   from: Election.collection.name,
                   localField: 'electionId', 
                   foreignField: '_id',
@@ -570,7 +549,7 @@ exports.getAllVotes = async (req, res) => {
                 $unwind: '$RefElectionInfo'
             },
             {
-              $lookup: {
+              $lookup: { // Join User collection to get details of user who voted
                 from: Users.collection.name,
                 localField: 'userId',
                 foreignField: '_id',
@@ -581,7 +560,7 @@ exports.getAllVotes = async (req, res) => {
                 $unwind: '$userWhoVoted'
             },
             {
-              $project: {
+              $project: { //Data to send to the frontend
                 _id: 1,
                 votingSerialId: 1,
                 partyVotedFor: 1,
@@ -605,6 +584,7 @@ exports.getAllVotes = async (req, res) => {
     }
 }
 
+// Function to update the status of a vote cast to approved or rejected
 exports.updateVoteStatus = async (req, res) => {
     try {
         const { voteId, selectedStatus, verifiedBy } = req.body;
@@ -627,66 +607,7 @@ exports.updateVoteStatus = async (req, res) => {
     }  
 };
 
-// ogetAllVotes = async (req, res) => {
-//     // if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
-//     // if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
-//     try {
-//         // const votes = await Vote.find();
-//         // if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote cast yet.', success: false });
-//         // console.log(votes)
-//         // res.status(200).json({ votes, message: 'Votes retrieved successfully', success: true });
-
-//         const voteInfo = await Vote.aggregate([
-//             {
-//                 // $lookup aggregation pipeline is used to join collections together
-//                 $lookup: {
-//                   from: Election.collection.name,
-//                   localField: 'electionId', 
-//                   foreignField: '_id',
-//                   as: 'RefElectionInfo'
-//                 }
-//             },
-//             {
-//                 $unwind: '$RefElectionInfo'
-//             },
-//             {
-//               $lookup: {
-//                 from: Users.collection.name,
-//                 localField: 'userId',
-//                 foreignField: '_id',
-//                 as: 'userWhoVoted'
-//               }
-//             },
-//             {
-//                 $unwind: '$userWhoVoted'
-//             },
-//             {
-//               $project: {
-//                 _id: 1,
-//                 votingSerialId: 1,
-//                 partyVotedFor: 1,
-//                 candidateVotedFor: 1,
-//                 voterScreenshots: 1,
-//                 voterVideo: 1,
-//                 voteStatus: 1,
-//                 "RefElectionInfo.electionName": 1,
-//                 "RefElectionInfo.electionCategory": 1,
-//                 "userWhoVoted.firstname": 1,
-//                 "userWhoVoted.lastname": 1,
-//                 "userWhoVoted.uploadSelfie": 1,
-//               }
-//             }
-//         ])
-//         console.log(voteInfo)
-//     } catch (error) {
-//         console.error('Error fetching votes:', error);
-//         // res.status(500).send('Server error');
-//     }
-// }
-// ogetAllVotes()
-
-// Election Result 
-// getElectionsWithPartiesAndCandidates
+// Election Result: Function to getElections With Parties And Candidates
 exports.getElectionsWithPartiesAndCandidatesInfo = async (req, res) => {
     try {
         const electionInfo = await Election.aggregate([
@@ -745,10 +666,10 @@ exports.getElectionsWithPartiesAndCandidatesInfo = async (req, res) => {
     }
 }
 
-// Fecth all approved votes
+// Get all approved votes
 exports.getAllApprovedVotes = async (req, res) => {
     try {
-        const { electionIdSelected } = req.body;
+        const { electionIdSelected } = req.body; // get the selected election ID
         const votes = await Vote.find({ electionId: electionIdSelected, voteStatus: 'Approved'});
         if (!votes || votes.length === 0) return res.status(400).json({ message: 'No vote approved yet.', success: false });
         res.status(200).json({ votes, message: 'Approved votes retrieved successfully', success: true });
