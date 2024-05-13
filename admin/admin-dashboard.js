@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     getUserData(); // See line 27
 });
 
-// Function to get admin user data from the database
+// Authorization to adminDashboard and retrieve admin data from the database
 const getUserData = async () => {
     try {
         const response = await fetch('http://localhost:3000/adminDashboard', {
@@ -31,23 +31,24 @@ const getUserData = async () => {
             credentials: 'include'
         });
         const data =  await response.json();
-        if (!response.ok)  throw new Error(data.error || 'Authorization failed');
+        if (data.message === "Unauthorized Access!") {
+            alert('Opps! You cannot access this page')
+            window.location.href = '/user/user.html';
+            return
+        };
         if (data.error === "No authorization token was found") {
-            // Don't show page if user is not authorized
-            document.getElementById('admin-dashboard-container').style.display = 'none'; 
-            alert('Unauthorized! Please login to access this page')
+            alert('Token revoked! Please login to access this page')
             window.location.href = '/admin/admin.html';
             return
-        }
+        };
         if (data.error === "jwt expired") {
-            // Don't show page if user session has expired
-            document.getElementById('admin-dashboard-container').style.display = 'none';
             alert('Session expired! Please login again')
             window.location.href = '/admin/admin.html';
             return
-        }
+        };
+        document.getElementById('admin-dashboard-container').style.display = 'block'; 
         const userData = data.userInfo;
-        globalUserData = userData; // Save admin data inside globalUserData
+        globalUserData = userData; // Save admin data inside globalUserData variable
         populateUserData(userData) // See line 60
     } catch (error) {
         console.error('Error:', error);
@@ -59,7 +60,7 @@ const getUserData = async () => {
 // Function to display admin names on the dashboard tab
 function populateUserData(userData) {
     const dashboardWelcome = document.getElementById('dashboard-welcome');
-    dashboardWelcome.textContent = `Welcome ${userData.firstname} ${userData.lastname}`
+    dashboardWelcome.textContent = `Welcome Admin, ${userData.firstname} ${userData.lastname}`
 }
 
 

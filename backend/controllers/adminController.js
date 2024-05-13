@@ -1,28 +1,25 @@
-const bcrypt = require("bcrypt"); // Import bcrypt for credential hashing and encryption
-const jwt = require("jsonwebtoken"); // Import jsonwebtoken for access token
-require("dotenv").config(); // Enable access to environment variables (This file holds sensitive information that is not accessible to the public)
-const Users = require('../models/users'); // Import Users Model
-const Party = require('../models/party'); // Import Party Model
-const Election = require('../models/elections'); // Import Election Model
-const Candidates = require("../models/candidates"); // Import Candidates Model
-const multer = require('multer'); // Import multer library to handle images
+const bcrypt = require("bcrypt"); 
+const jwt = require("jsonwebtoken"); 
+require("dotenv").config();
+const multer = require('multer');
 const path = require('path'); // Node.js utility to handle and manipulate file system paths
 const fs = require('fs'); // Node.js utility for file system
-const Vote = require("../models/vote"); // Import Vote Model
+const Users = require('../models/users');
+const Party = require('../models/party');
+const Election = require('../models/elections');   
+const Candidates = require("../models/candidates");
+const Vote = require("../models/vote");
 
-// This function for the manual creation of admin account from the backend server code
-// Fill in admin details as arguments in line 45 and uncomment the method() when you are ready to create the admin account
+// Manual creation of admin account from the backend
+// Complete line 46 and uncomment the method()to create a new admin account. Once done, comment the code
 adminRegistration = async (firstname, lastname, username, password, pin, role, email) => {
     try {
-        // Search if admin account with this email or username already exist
-        const existingUser = await Users.findOne({
-            $or: [{ email: email }, { username: username }] 
-        });
+        const existingUser = await Users.findOne({ $or: [{ email }, { username }] });
         if (existingUser) {
             console.log('A user with this email or username already exists.');
             return;
         };
-        // Encrypt the new password and pin using bcrypt security mechanism
+        // Encrypt admin password and pin using bcrypt security mechanism
         const salt = await bcrypt.genSalt();
         const encryptPassword = await bcrypt.hash(password, salt);
         const encryptPIN = await bcrypt.hash(pin, salt);
@@ -33,8 +30,8 @@ adminRegistration = async (firstname, lastname, username, password, pin, role, e
             username,
             password: encryptPassword,
             pin: encryptPIN,
-            role, // role = 4 is for admin.
-            email
+            role, // role = 3 and 4 are for admin.
+            email,
         });
         await admin.save(); // Save to database
         console.log('Admin account successfully created.');
@@ -42,16 +39,17 @@ adminRegistration = async (firstname, lastname, username, password, pin, role, e
         console.error('Error creating admin account:', error);
     };
 };
-// adminRegistration('Roland', 'Ogundipe', 'roland.ogundipe', 'Password123!', '123456', 4, 'roland.ogundipe@yopmail.com' )
+// adminRegistration('Festus', 'Banks', 'festus.banks', 'Password123!', '123456', 3, 'festus.banks@yopmail.com' )
 
 // Admin login functionality
 exports.adminLogin = async (req, res) => {
     try {
-        const { username, password, pin } = req.body; // Login details received from the frontend
-        const user = await Users.findOne({ username }); // Search for admin in the database
-        if (!user) return res.status(200).json({ success: false, message: "User not found" });
+        const { username, password, pin } = req.body;
+        const user = await Users.findOne({ username });
+        if (!user) return res.status(404).json({ success: false, message: "User not found" });
         const getEncryptedPassword = user.password;
         const getEncryptedPin = user.pin;
+
         // Use bycrpt.compare to check if the password submitted is the same as password in the database
         const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword);
         const isPinMatch = await bcrypt.compare(pin, getEncryptedPin);
@@ -60,22 +58,15 @@ exports.adminLogin = async (req, res) => {
 
         const adminDashboardUrl = `/admin/admin-dashboard.html`; // Relative path for admin user redirection
         const errorUrl = '/error.html'; // path to error page
-        // Convert admin user data to plain object and delete password and pin field before sending the data to the frontend
-        const userInfoNoPasswordAndPin = user.toObject();
-        delete userInfoNoPasswordAndPin.password;
-        delete userInfoNoPasswordAndPin.pin;
-        // If user role is 4 or 3, redirect to the admin dashboard. Otherwise, redirect to the error page
-        if (user.role === 4) {
-            // Email is valid, then generate a login token with jwt and save it to the cookie
-            const token = await jwt.sign(userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h' });
-            res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
-            return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard" });
-        } else if (user.role === 3) {
-            const token = await jwt.sign(userInfoNoPasswordAndPin, process.env.SECRETJWT, { expiresIn: '1h' });
+        
+        // If user role is 3 or 4, redirect user to the admin dashboard. Otherwise, redirect to the error page
+        if (user.role === 3 || user.role === 4 ) {
+            // Generate login token with jwt and save it to the cookie
+            const token = await jwt.sign({ userId: user._id, role: user.role }, process.env.SECRETJWT, { expiresIn: '1h' });
             res.cookie('token', token, { httpOnly: true, sameSite: 'strict', path: '/' });
             return res.json({ success: true, path: adminDashboardUrl, role: user.role, token, message: "Login successful. Redirecting to Admin dashboard" });
         } else {
-            return res.status(401).json({ success: false, path: errorUrl, message: "Unauthorized access" });
+            return res.status(401).json({ success: false, path: errorUrl, message: "You are not unauthorized to access this page." });
         }
     } catch (error) {
         res.status(500).json({ success: false, message: "An error occurred during login" });
@@ -84,12 +75,15 @@ exports.adminLogin = async (req, res) => {
 
 // Function to authorize admin to their page
 exports.goToAdminDashboard = async (req, res) => {
-    // This check for the token stored inside the cookies
-    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
-    const userId = req.auth._id; // If there is token, get the userId
-    const user = await Users.findById(userId); // Search for the userId in the database
+    // This checks the token stored inside the cookies
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token was found' })};
+    const userId = req.auth.userId;
+    const userRole = req.auth.role;
+    if (userRole !== 3 && userRole !== 4) return res.status(404).json({ message: 'Unauthorized Access!', success: false });
+    const user = await Users.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found.', success: false });
-    const userInfoNoPasswordAndPin = user.toObject(); // Delete password and pin before sending the data to the admin dashboard
+    // Convert admin user data to plain object and delete password and pin field before sending the data to admin dashboard
+    const userInfoNoPasswordAndPin = user.toObject();
     delete userInfoNoPasswordAndPin.password;
     delete userInfoNoPasswordAndPin.pin;
     res.json({ userInfo: userInfoNoPasswordAndPin, message: 'Accessing user dashboard', success: true });
@@ -97,13 +91,12 @@ exports.goToAdminDashboard = async (req, res) => {
 
 // Get all registered users with role equal to 5 (voters account has a role of 5)
 exports.getAllUsersWithRole5 = async (req, res) => {
-    // Check if token is present inside the cookies
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
-    // Only admin with role = 4 is authorized to access this date
-    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' })};
+    const userRole = req.auth.role;
+    if (userRole !== 3 && userRole !== 4) { return res.status(401).json({ message: 'You are not authorized to access this route.' })};
     try {
         const users = await Users.find({ role: 5 });
-        if (!users || users.length === 0) return res.status(400).json({ message: 'User not found.', success: false });
+        if (!users || users.length === 0) return res.status(400).json({ message: 'No user registered yet.', success: false });
         // Map over users and convert each to a plain JavaScript object and remove password and pin before sending to the frontend
         const usersInfo = users.map(user => {
             const userObj = user.toObject();
@@ -114,7 +107,7 @@ exports.getAllUsersWithRole5 = async (req, res) => {
         res.status(200).json({ usersInfo, message: 'Users retrieved successfully', success: true });
     } catch (error) {
         console.error('Error fetching users:', error);
-        res.status(500).send('Server error');
+        res.status(500).json({ message: "Server error"});
     };
 };
 
