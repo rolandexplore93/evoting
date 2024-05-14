@@ -50,7 +50,7 @@ exports.adminLogin = async (req, res) => {
         const getEncryptedPassword = user.password;
         const getEncryptedPin = user.pin;
 
-        // Use bycrpt.compare to check if the password submitted is the same as password in the database
+        // Using bycrpt.compare to check if the password submitted is the same as password in the database
         const isPasswordMatch = await bcrypt.compare(password, getEncryptedPassword);
         const isPinMatch = await bcrypt.compare(pin, getEncryptedPin);
         if (!isPinMatch) return res.status(409).json({ success: false, message: "PIN is not correct" });
@@ -75,7 +75,7 @@ exports.adminLogin = async (req, res) => {
 
 // Function to authorize admin to their page
 exports.goToAdminDashboard = async (req, res) => {
-    // This checks the token stored inside the cookies
+    // Confirm the token stored inside the cookies
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token was found' })};
     const userId = req.auth.userId;
     const userRole = req.auth.role;
@@ -526,7 +526,8 @@ exports.voteSubmission = async (req, res) => {
 exports.getAllVotes = async (req, res) => {
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
     // Give access to only admin to see list of all votes
-    if (req.auth.role !== 4) { return res.status(401).json({ message: 'You are not authorized to access this path.' }); }
+    const userRole = req.auth.role;
+    if (userRole !== 3 && userRole !== 4) return res.status(404).json({ message: 'Unauthorized Access!', success: false });
     try {
         const votes = await Vote.aggregate([
             {

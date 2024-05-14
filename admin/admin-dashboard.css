@@ -2,11 +2,20 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 /* Main content */
-/* Header layout */
-/* .main-content {
-    border: 1px solid red;
-} */
+#admin-dashboard-container {
+    /* border: 1px solid red; */
+    display: none;
+    width: 100%;
+    height: 100%;
+}
 
 #main-content {
     justify-content: flex-start;
@@ -86,9 +95,7 @@ a {
 .votersTabContent,
 .votesTabContent {
     display: none;
-
-    /* width: 70%; */
-    /* min-width: 300px; */
+    border: 1px solid red;
 }
 
 .tabcontent:not(:first-child) {
@@ -99,15 +106,39 @@ a {
     padding: 20px;
 }
 
+#no-access {
+    border: 1px solid green;
+    display: none;
+    background: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin: auto;
+    padding: 20px;
+    /* margin-top: 30px; */
+}
+
 /* Styling tab content pages */
 .tabcontent-wrapper {
-    /* border: 1px solid red; */
     margin-top: 30px;
     justify-content: flex-start;
     align-items: flex-start;
+    border: 1px solid blue;
+
 }
 
 /* Dashboard tab */
+.user-title {
+    border: 1px solid black;
+    position: absolute;
+    top: 38px;
+    right: 0px;
+    padding: 3px 5px;
+    /* border-radius: 5px; */
+    background-color: rgb(3, 79, 53);
+    color: var(--primary-white);
+    outline: 0;
+    border: 0;
+    font-size: 12px;
+}
 /* #Dashboard {
     border: 2px solid yellow;
 } */
@@ -190,6 +221,8 @@ button {
     background-color: #fff;
     background-color: #fefefe;
 }
+
+
 
 .modal-content {
     background-color: #fefefe;

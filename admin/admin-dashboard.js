@@ -10,6 +10,8 @@ function openTab(e, tabTitle) {
     // Iterate over each tab link and remove 'active' class from it
     tabLinks = document.getElementsByClassName('tablinks');
     for (index = 0; index < tabLinks.length; index++) {
+        document.getElementById('tabcontent-wrapper').style.display = 'block';
+        document.getElementById('no-access').style.display = 'none';
         tabLinks[index].className = tabLinks[index].className.replace(" active", "");
     }
     // Display current tab, and add an "active" class style to it
@@ -46,7 +48,7 @@ const getUserData = async () => {
             window.location.href = '/admin/admin.html';
             return
         };
-        document.getElementById('admin-dashboard-container').style.display = 'block'; 
+        document.getElementById('admin-dashboard-container').style.display = 'flex'; 
         const userData = data.userInfo;
         globalUserData = userData; // Save admin data inside globalUserData variable
         populateUserData(userData) // See line 60
@@ -59,15 +61,38 @@ const getUserData = async () => {
 
 // Function to display admin names on the dashboard tab
 function populateUserData(userData) {
-    const dashboardWelcome = document.getElementById('dashboard-welcome');
-    dashboardWelcome.textContent = `Welcome Admin, ${userData.firstname} ${userData.lastname}`
+    // console.log(userData.role)
+    // const dashboardWelcome = document.getElementById('dashboard-welcome');
+    const userTitle = document.getElementsByClassName('user-title')[0];
+    // dashboardWelcome.textContent = `Admin - Creator, ${userData.firstname} ${userData.lastname}`
+    if (userData.role === 2) {
+        userTitle.textContent =  `Votes Approval Admin, ${userData.firstname} ${userData.lastname}`
+    } else if (userData.role === 3) {
+        userTitle.textContent = `Creator Admin, ${userData.firstname} ${userData.lastname}`
+    } else if (userData.role === 4) {
+        userTitle.textContent = `Voter Approval Admin, ${userData.firstname} ${userData.lastname}`
+    }
 }
+
+// Display No Access card when admin does not have permission to a page
+function NoAccess() {
+    document.getElementById('tabcontent-wrapper').style.display = 'none';
+    document.getElementById('no-access').style.display = 'block';
+}
+
+// Close No Access Card
+document.getElementById('close-no-access-card').addEventListener('click', () => {
+    document.getElementById('no-access').style.display = 'none';
+    document.getElementById('tabcontent-wrapper').style.display = 'block';
+})
+
 
 
 // ADD PARTY LOGIC: openAddPartyForm
 const openAddPartyForm = document.getElementById('openAddPartyForm');
 openAddPartyForm.addEventListener('click', () => {
-    console.log('openAddPartyForm')
+    if (globalUserData.role !== 3) { return NoAccess() }
+    document.getElementById('tabcontent-wrapper').style.display = 'block';
     document.getElementById('openAddPartyForm').style.display = 'none';
     document.getElementById('addPartyFormTitle').style.display = 'block';
     document.getElementById('addPartyForm').style.display = 'block';
@@ -131,6 +156,7 @@ addPartyForm.addEventListener('submit', async (event) => {
 // Display create election form
 const openCreateElectionForm = document.getElementById('createElectionTag');
 openCreateElectionForm.addEventListener('click', () => {
+    if (globalUserData.role !== 3) { return NoAccess() }
     document.getElementById('createElectionForm').style.display = 'block';
 });
 
@@ -255,6 +281,8 @@ const getAllElectionsAndParties = async () => {
 
 // Function to ShowAddPartyToElectionForm
 async function ShowAddPartyToElectionForm() {
+    if (globalUserData.role !== 3) { return NoAccess() }
+
     const noElectionsMessage = document.getElementById('noElectionsMessage'); // Get noElectionsMessage html
     const addPartyToElectionForm = document.getElementById('addPartyToElectionForm'); // Get addPartyToElectionForm html
     const electionCategoryAP2E = document.getElementById('electionCategoryAP2E'); // Get electionCategoryAP2E dropdown html
@@ -354,6 +382,7 @@ const getElectionsAndParticipatingParties = async () => {
 
 // Display add candidate page logic
 const showAddCandidateForm = async () => {
+    if (globalUserData.role !== 3) { return NoAccess() }
     const addCandidateFormTag = document.getElementById('addCandidateFormTag')
     const addCandidateFormTitle = document.getElementById('addCandidateFormTitle')
     const addCandidateForm = document.getElementById('addCandidateForm'); // Get addCandidateForm html

@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
 </head>
 <body>
-    <div class="container" id="admin-dashboard-container" style="display: none;">
-        <div class="main">
+    <div class="container" id="admin-dashboard-container">
+        <div class="main" id="main">
             <div class="main-content" id="main-content">
                 <div class="user-header">  <!-- Header -->
                     <div class="logo"><a href="/index.html" target="_blank"><span class="fi fi-ng"></span> NEVS</a>
@@ -30,8 +30,14 @@
                     </nav>
                     <button id="logout">Logout</button>
                 </div>
+                <!-- No access card -->
+                <div id="no-access">
+                    <p>You do not have access to this page</p>
+                    <button id="close-no-access-card">OK</button>
+                </div>
                 <!-- Tab content -->
-                <div class="tabcontent-wrapper">
+                <div class="tabcontent-wrapper" id="tabcontent-wrapper">
+                    <p class="user-title"></p>
                     <div class="tabcontent" id="Dashboard">
                         <h1 id="dashboard-welcome"></h1>
                         <div style="display: flex;">
@@ -191,7 +197,7 @@
         </div>
         <page-footer></page-footer>
     </div>
-    </div>
+    <!-- </div> -->
     <script src="/script.js"></script>
     <script src="/admin/admin-dashboard.js"></script>
     <script src="/admin/voters.js"></script>
