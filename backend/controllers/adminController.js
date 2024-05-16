@@ -90,6 +90,36 @@ exports.goToAdminDashboard = async (req, res) => {
 };
 
 // Get all registered users with role equal to 5 (voters account has a role of 5)
+exports.getAllUsersWithRole5Pagination = async (req, res) => {
+    if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
+    const userRole = req.auth.role;
+    if (userRole !== 3 && userRole !== 4) { return res.status(401).json({ message: 'You are not authorized to access this route.' })};
+    let page = parseInt(req.query.page, 10);
+    let limit = parseInt(req.query.limit, 10);
+    // Validate the page and limit parameters
+    if (isNaN(page) || page <= 0) page = 1;
+    if (isNaN(limit) || limit <= 0) limit = 10;
+    const skip = (page - 1) * limit; // Skip the data fetched in previous pages
+
+    try {
+        // If you are sorting by a field (e.g firstname), ensure index on this field. - limit().sort({ firstname: 1})
+        await Users.createIndexes({ lastname: 1 });
+        const voters = await Users.find({ role: 5 }).skip(skip).limit(limit).sort({ lastname: 1});
+        if (!voters || voters.length === 0) return res.status(400).json({ message: 'No voter registered yet.', success: false });
+        const totalNumberOfVoters = await Users.find({ role: 5 }).countDocuments();
+        const totalPages = Math.ceil(totalNumberOfVoters / limit);
+        const usersInfo = voters.map(voter => {
+            const userObj = voter.toObject();
+            delete userObj.password;
+            delete userObj.pin;
+            return userObj;
+        });
+        res.status(200).json({ message: 'Voters retrieved successfully', success: true, totalNumberOfVoters, totalPages, currentPage: page, usersInfo })
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.getAllUsersWithRole5 = async (req, res) => {
     if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' })};
     const userRole = req.auth.role;
@@ -154,6 +184,9 @@ const candidateUpload = multer({ storage: candidatePhotoStorage }).fields([{ nam
 // Function to Add Party to the database
 exports.addParty = async (req, res, next) => {
     // Multer library to add or remove file depending on whether party is added successfully to database
+    const userRole = req.auth.role;
+    if (userRole !== 3) return res.status(404).json({ message: 'Unauthorized Access!', success: false });
+
     upload(req, res, async (err) => {
         if (err) {
             return res.status(500).json({ message: 'File upload failed', success: false });

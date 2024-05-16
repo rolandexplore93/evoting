@@ -3,12 +3,15 @@ const adminRouter = express.Router(); // Configure express Router
 const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createElection, getAllElectionsAndParties, 
 addPartiesToElection, getElectionsAndParticipatingParties, addCandidateToElectionAndParty, voterApproval, 
 getElectionsWithPartiesAndCandidates, voteSubmission, getAllVotes, updateVoteStatus, getElectionsWithPartiesAndCandidatesInfo, 
-getAllApprovedVotes } = require('../controllers/adminController'); // Import functions from admin controller file
+getAllApprovedVotes, 
+getAllUsersWithRole5Pagination} = require('../controllers/adminController'); // Import functions from admin controller file
 require('../controllers/updateSchemaController'); // import updateSchemaController
 
 adminRouter.post('/adminLogin', adminLogin);
 adminRouter.get('/adminDashboard', goToAdminDashboard);
 adminRouter.get('/allVoterUsersWithRole5', getAllUsersWithRole5)
+// /getAllUsersWithRole5Pagination?page=${page}&limit=${limit}
+adminRouter.get('/getAllUsersWithRole5Pagination', getAllUsersWithRole5Pagination)
 adminRouter.post('/addParty', addParty)
 adminRouter.post('/createElection', createElection)
 adminRouter.get('/getAllElectionsAndParties', getAllElectionsAndParties);
