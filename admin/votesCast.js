@@ -66,7 +66,7 @@ function convertISOdateToHtmlFormat(isoDateString) {
 }
 
 // Function to display All votes cast in the 'All' tab table
-function openAllVotesTable() {
+async function openAllVotesTable() {
     const container = document.getElementsByClassName('votesTabContent')[0];
     // Sort votes list based on status priority
     const statusPriority = { 'Pending': 1, 'Approved': 2, 'Rejected': 3 };
@@ -99,7 +99,7 @@ function openAllVotesTable() {
     });
     tableHTML += `</tbody></table>`;
     container.innerHTML = tableHTML;
-}
+};
 
 //  Function to display All APPROVED votes in the 'APPROVED' tab table
 function openApprovedVotesTable() {

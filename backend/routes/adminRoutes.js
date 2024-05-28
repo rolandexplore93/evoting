@@ -9,9 +9,10 @@ require('../controllers/updateSchemaController'); // import updateSchemaControll
 
 adminRouter.post('/adminLogin', adminLogin);
 adminRouter.get('/adminDashboard', goToAdminDashboard);
+// adminRouter.get('/allVoterUsersWithRole5', getAllUsersWithRole5Pagination) //getAllUsersWithRole5
 adminRouter.get('/allVoterUsersWithRole5', getAllUsersWithRole5)
 // /getAllUsersWithRole5Pagination?page=${page}&limit=${limit}
-adminRouter.get('/getAllUsersWithRole5Pagination', getAllUsersWithRole5Pagination)
+adminRouter.get('/getAllUsersWithRole5Pagination', getAllUsersWithRole5Pagination) //getAllUsersWithRole5Pagination
 adminRouter.post('/addParty', addParty)
 adminRouter.post('/createElection', createElection)
 adminRouter.get('/getAllElectionsAndParties', getAllElectionsAndParties);

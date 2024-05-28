@@ -1,5 +1,6 @@
 // VOTERS TAB LOGIC
-let voters; // Global variable to store voters information from the database
+let voters = []; // Global variable to store voters information from the database
+console.log(voters)
 
 // VotersTab functionality
 function openVotersTab(e, tabTitle) {
@@ -58,32 +59,50 @@ votersTabHeader.addEventListener('click', async () => {
 })
 
 // Function to display All registered Voters in the 'All' tab table
-function openAllVotersTable() {
-    const container = document.getElementsByClassName('votersTabContent')[0];
+async function openAllVotersTable() {
+    // const container = document.getElementsByClassName('votersTabContent')[0];
+    // Send voter data as argument and render the voters html table, second argument is the class index
+    renderVotersTable(voters, 0);
+
+    // pagination
+    const pagination = document.getElementById('pagination');
+    let currentPage = 1;
+    const limit = 10;
+    const pageGroupSize = 5;
+
+    // Retrieve paginated data from the server
+    const result = await fetchVoters(currentPage, limit)
+    // await renderPagination(result.currentPage, result.totalPages, pageGroupSize, pagination)
+}
+
+function renderVotersTable(voters, index) {
     // Sort voters list based on status priority
     const statusPriority = { 'Under Review': 1, 'Approved': 2, 'Rejected': 3 };
     voters?.sort((a, b) => {
         return statusPriority[a.profileStatus] - statusPriority[b.profileStatus];
     });
+    
+    const container = document.getElementsByClassName('votersTabContent')[index];
     let tableHTML = `<table id='votersTable'>
-                        <thead>
+                        <thead style="position: sticky; top: -2px;">
                             <tr>
-                                <th>Surname</th>
-                                <th>Firstname</th>
+                                <th>Id</th>
+                                <th>Names</th>
                                 <th>Age</th>
                                 <th>Email</th>
+                                <th>Time Created</th>
                                 <th>Profile Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>`;
-    
     voters?.forEach((voter, index) => {
         tableHTML += `<tr>
-                        <td>${voter.lastname}</td>
-                        <td>${voter.firstname}</td>
+                        <td>${voter._id}</td>
+                        <td>${voter.firstname} ${voter.lastname}</td>
                         <td>${voter.age}</td>
                         <td>${voter.email}</td>
+                        <td>${formatISODateToReadableFormat(voter.createdAt)}</td>
                         <td>${voter.profileStatus}</td>
                         <td><button onclick="openVotersModal(${index})">View</button></td>
                     </tr>`;
@@ -92,35 +111,100 @@ function openAllVotersTable() {
     container.innerHTML = tableHTML;
 }
 
+// Pagination
+async function fetchVoters(page, limit) {
+    try {
+        const response = await fetch(`http://localhost:3000/allVoterUsersWithRole5?page=${page}&limit=${limit}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
+        const data =  await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+// async function renderPagination(currentPage, totalPages, pageGroupSize, pagination) {
+//     if (!pagination) {
+//         console.error('Pagination element not found');
+//         return;
+//     }
+//     // console.log(pagination);
+//     pagination.innerHTML = '';
+//     // Calculate the start and last page for the current group page
+//     const startPage = Math.floor((currentPage - 1) / pageGroupSize) * pageGroupSize + 1;
+//     const lastPage = Math.min(startPage + pageGroupSize - 1, totalPages);
+//     // Create (<<) - group previous button
+//     if (startPage > 1) {
+//         const li = document.createElement('li');
+//         li.textContent = '<<';
+//         li.addEventListener('click', () => {
+//             updatePage(startPage - pageGroupSize, 10, 0);
+//         });
+//         pagination.appendChild(li);
+//     }
+//     // Create (<) - previous button
+//     if (currentPage > 1) {
+//         const li = document.createElement('li');
+//         li.textContent = '<';
+//         li.addEventListener('click', () => {
+//             updatePage(currentPage - 1, 10, 0);
+//         });
+//         pagination.appendChild(li);
+//     }
+//     // Create page number buttons
+//     for (let index = startPage; index <= lastPage; index++) {
+//         const li = document.createElement('li');
+//         li.textContent = index;
+//         li.className = index === currentPage ? 'active' : '';
+//         li.addEventListener('click', () => {
+//             updatePage(index, 10, 0);
+//         });
+//         pagination.appendChild(li);
+//     }
+//     // Create (>) - next button
+//     if (currentPage < totalPages) {
+//         const li = document.createElement('li');
+//         li.textContent = '>';
+//         li.addEventListener('click', () => {
+//             updatePage(currentPage + 1, 10, 0);
+//         });
+//         pagination.appendChild(li);
+//     }
+//     // Create (>>) - group next button
+//     if (lastPage < totalPages) {
+//         const li = document.createElement('li');
+//         li.textContent = '>>';
+//         li.addEventListener('click', () => {
+//             updatePage(lastPage + 1, 10, 0);
+//         });
+//         pagination.appendChild(li);
+//     }
+// }
+
+// update pagination page
+async function updatePage(currentPage, limit, tabIndex) {
+    console.log('Click update');
+    const data = await fetchVoters(currentPage, limit);
+    if (data && data.usersInfo) {
+        voters = data.usersInfo;
+        console.log(voters);
+        // openAllVotersTable();
+        renderVotersTable(voters, tabIndex)
+        const pagination = document.getElementById('pagination');
+        // renderPagination(currentPage, data.totalPages, 5, pagination);
+    } else {
+        console.error('Failed to update voters');
+    }
+}
+
 //  Function to display All APPROVED Voters in the 'APPROVED' tab table
 function openApprovedVotersTable() {
-    const container = document.getElementsByClassName('votersTabContent')[1];
-    let tableHTML = `<table id='votersTable'>
-                        <thead>
-                        <tr>
-                            <th>Surname</th>
-                            <th>Firstname</th>
-                            <th>Age</th>
-                            <th>Email</th>
-                            <th>Profile Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>`;
-    
+    // const container = document.getElementsByClassName('votersTabContent')[1];
     // Filter approved voters list
     const approvedVoters = voters?.filter(voter => voter.profileStatus === "Approved");
-    approvedVoters.forEach((voter, index) => {
-        tableHTML += `<tr>
-                        <td>${voter.lastname}</td>
-                        <td>${voter.firstname}</td>
-                        <td>${voter.age}</td>
-                        <td>${voter.email}</td>
-                        <td>${voter.profileStatus}</td>
-                    </tr>`;
-    });
-
-    tableHTML += `</tbody></table>`;
-    container.innerHTML = tableHTML;
+    renderVotersTable(approvedVoters, 1);
 }
 
 //  Function to display All Voters with UNDER REVIEW status in the 'UNDER REVIEW' tab table
@@ -156,46 +240,32 @@ function openUnderReviewVotersTable() {
 
 //  Function to display All REJECTED Voters in the 'REJECTED' tab table
 function openRejectedVotersTable() {
-    const container = document.getElementsByClassName('votersTabContent')[3];
-    let tableHTML = `<table id='votersTable'>
-                        <thead>
-                            <tr>
-                                <th>Surname</th>
-                                <th>Given Names</th>
-                                <th>Age</th>
-                                <th>Email</th>
-                                <th>Profile Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>`;
-    
     // Filter under review voters list
     const rejectedVoters = voters?.filter(voter => voter.profileStatus === "Rejected");
-    rejectedVoters.forEach((voter, index) => {
-        tableHTML += `<tr>
-                        <td>${voter.lastname}</td>
-                        <td>${voter.firstname}</td>
-                        <td>${voter.age}</td>
-                        <td>${voter.email}</td>
-                        <td>${voter.profileStatus}</td>
-                    </tr>`;
-    });
-
-    tableHTML += `</tbody></table>`;
-    container.innerHTML = tableHTML;
+    renderVotersTable(rejectedVoters, 3);
 };
+
+// Format ISO date of birth to human readable format
+function formatISODateToReadableFormat(isoDateString) {
+    const date = new Date(isoDateString);
+    // return date.toISOString().split('T')[0];
+
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 // Function to open a modal when each voter profile is cliecked and populate the voter details in the modal content
 function openVotersModal(index) {
     const voter = voters[index];
     const modalContent = document.getElementById("modal-content-voters");
-    // Format ISO date of birth
-    function convertISOdateToHtmlFormat(isoDateString) {
-        const date = new Date(isoDateString);
-        return date.toISOString().split('T')[0];
-    }
-    const dob = voter.dateOfBirth 
-    const formatedDOB = convertISOdateToHtmlFormat(dob)
     // Update the modal content with voter details
     modalContent.innerHTML = `
     <span class="close">&times;</span>
@@ -209,7 +279,7 @@ function openVotersModal(index) {
             </div>
             <div>
                 <p>Gender: ${voter.gender}</p>
-                <p>Date of Birth: ${formatedDOB}</p>
+                <p>Date of Birth: ${formatISODateToReadableFormat(voter.createdAt)}</p>
                 <p>Age: ${voter.age}</p>
             </div>
             <div>

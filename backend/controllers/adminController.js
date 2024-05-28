@@ -103,8 +103,8 @@ exports.getAllUsersWithRole5Pagination = async (req, res) => {
 
     try {
         // If you are sorting by a field (e.g firstname), ensure index on this field. - limit().sort({ firstname: 1})
-        await Users.createIndexes({ lastname: 1 });
-        const voters = await Users.find({ role: 5 }).skip(skip).limit(limit).sort({ lastname: 1});
+        // await Users.createIndexes({ lastname: 1 });
+        const voters = await Users.find({ role: 5 }).skip(skip).limit(limit);
         if (!voters || voters.length === 0) return res.status(400).json({ message: 'No voter registered yet.', success: false });
         const totalNumberOfVoters = await Users.find({ role: 5 }).countDocuments();
         const totalPages = Math.ceil(totalNumberOfVoters / limit);

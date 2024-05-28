@@ -95,7 +95,7 @@ a {
 .votersTabContent,
 .votesTabContent {
     display: none;
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .tabcontent:not(:first-child) {
@@ -107,7 +107,7 @@ a {
 }
 
 #no-access {
-    border: 1px solid green;
+    /* border: 1px solid green; */
     display: none;
     background: #fff;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -121,7 +121,7 @@ a {
     margin-top: 30px;
     justify-content: flex-start;
     align-items: flex-start;
-    border: 1px solid blue;
+    /* border: 1px solid blue; */
 
 }
 
@@ -262,4 +262,20 @@ button {
 
 .topSectionPersonInfo > div > p {
     flex: 1;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    list-style-type: none;
+}
+
+#pagination {
+    margin: 0 5px;
+    cursor: pointer;
+    /* border: 1px solid red; */
+}
+
+#pagination li.active {
+    font-weight: bold;
 }
