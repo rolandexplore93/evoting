@@ -4,7 +4,9 @@ const { adminLogin, goToAdminDashboard, getAllUsersWithRole5, addParty, createEl
 addPartiesToElection, getElectionsAndParticipatingParties, addCandidateToElectionAndParty, voterApproval, 
 getElectionsWithPartiesAndCandidates, voteSubmission, getAllVotes, updateVoteStatus, getElectionsWithPartiesAndCandidatesInfo, 
 getAllApprovedVotes, 
-getAllUsersWithRole5Pagination} = require('../controllers/adminController'); // Import functions from admin controller file
+getAllUsersWithRole5Pagination,
+getAllParties,
+getAllCandidates} = require('../controllers/adminController'); // Import functions from admin controller file
 require('../controllers/updateSchemaController'); // import updateSchemaController
 
 adminRouter.post('/adminLogin', adminLogin);
@@ -26,5 +28,8 @@ adminRouter.get('/getAllVotes', getAllVotes)
 adminRouter.post('/updateVoteStatus', updateVoteStatus); 
 adminRouter.get('/getElectionsWithPartiesAndCandidatesInfo', getElectionsWithPartiesAndCandidatesInfo);
 adminRouter.post('/approvedVotes', getAllApprovedVotes);
+
+adminRouter.get('/getAllParties', getAllParties);
+adminRouter.get('/getAllCandidates', getAllCandidates);
 
 module.exports = adminRouter;

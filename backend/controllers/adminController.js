@@ -705,3 +705,33 @@ exports.getAllApprovedVotes = async (req, res) => {
         res.status(500).send('Server error');
     }
 }
+
+// Get all parties
+exports.getAllParties = async (req, res) => {
+    try {
+        if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+        const userRole = req.auth.role; // Get user role ID and grant access to only admin
+        if (userRole !== 3 && userRole !== 4) return res.status(404).json({ message: 'Unauthorized Access!', success: false });
+        const parties = await Party.find();
+        if (!parties || parties.length === 0) return res.status(400).json({ message: 'No party created yet.', success: false });
+        res.status(200).json({ message: "Parties retrieved successfully.", success: true, parties})
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: 'Internal server error', success: false })
+    }
+};
+
+// Get all candidates
+exports.getAllCandidates = async (req, res) => {
+    try {
+        if (!req.auth) { return res.status(401).json({ message: 'No authorization token found' }); }
+        const userRole = req.auth.role; // Get user role ID and grant access to only admin
+        if (userRole !== 3 && userRole !== 4) return res.status(404).json({ message: 'Unauthorized Access!', success: false });
+        const candidates = await Candidates.find();
+        if (!candidates || candidates.length === 0) return res.status(400).json({ message: 'No party created yet.', success: false });
+        res.status(200).json({ message: "Candidates retrieved successfully.", success: true, candidates})
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: 'Internal server error', success: false })
+    }
+};
